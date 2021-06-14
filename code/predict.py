@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-14 16:21:59
+LastEditTime: 2021-06-14 16:53:03
 '''
 """ This script loads a base classifier and then runs PREDICT on many examples from a dataset.
 """
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # iterate through the dataset
     if args.dataset == "cifar10-c":
         dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
-    if args.dataset == "cifar10-c-bar":
+    elif args.dataset == "cifar10-c-bar":
         dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
     else:
         dataset = get_dataset(args.dataset, args.split)

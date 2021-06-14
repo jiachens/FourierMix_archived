@@ -22,6 +22,7 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
     elif dataset == "cifar10":
         return _cifar10(split)
     elif dataset == "cifar10-c":
+        # print(data_dir)
         return _cifar10_c(data_dir,corruption,severity)
     elif dataset == "cifar10-c-bar":
         return _cifar10_c_bar(data_dir,corruption,severity)
