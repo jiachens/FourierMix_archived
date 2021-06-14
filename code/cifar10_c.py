@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-10 13:47:49
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-10 16:42:58
+LastEditTime: 2021-06-14 16:39:55
 '''
 import os
 import numpy as np
@@ -83,7 +83,7 @@ def generate_examples(data_dir,corruption,severity):
     pass
     corruption = corruption # _CORRUPTIONS
     severity = severity # (1,2,3,4,5)
-
+    data_dir = os.path.join(data_dir,_DIRNAME)
     images_file = os.path.join(data_dir, _CORRUPTIONS_TO_FILENAMES[corruption])
     labels_file = os.path.join(data_dir, _LABELS_FILENAME)
     labels = np.load(labels_file)

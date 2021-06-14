@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-10 17:50:45
+LastEditTime: 2021-06-14 16:21:08
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -21,6 +21,7 @@ parser.add_argument("dataset", choices=DATASETS, help="which dataset")
 parser.add_argument("base_classifier", type=str, help="path to saved pytorch model of base classifier")
 parser.add_argument("sigma", type=float, help="noise hyperparameter")
 parser.add_argument("outfile", type=str, help="output file")
+parser.add_argument("--path", type=str, help="path to dataset")
 parser.add_argument("--corruption", type=str, default="fog", help="corruption type when using cifar10-c")
 parser.add_argument("--severity", type=int, default=1, help="severity level when using cifar10-c")
 parser.add_argument("--batch", type=int, default=1000, help="batch size")
@@ -47,7 +48,9 @@ if __name__ == "__main__":
 
     # iterate through the dataset
     if args.dataset == "cifar10-c":
-        dataset = get_dataset(args.dataset, None, "./data/CIFAR-10-C/", args.corruption, args.severity)
+        dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
+    if args.dataset == "cifar10-c-bar":
+        dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
     else:
         dataset = get_dataset(args.dataset, args.split)
     

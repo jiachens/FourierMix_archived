@@ -4,6 +4,7 @@ import torch
 import os
 from torch.utils.data import Dataset
 import cifar10_c
+import cifar10_c_bar
 
 # set this environment variable to the location of your imagenet directory if you want to read ImageNet data.
 # make sure your val directory is preprocessed to look like the train directory, e.g. by running this script
@@ -22,6 +23,8 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
         return _cifar10(split)
     elif dataset == "cifar10-c":
         return _cifar10_c(data_dir,corruption,severity)
+    elif dataset == "cifar10-c-bar":
+        return _cifar10_c_bar(data_dir,corruption,severity)
 
 
 def get_num_classes(dataset: str):
@@ -63,6 +66,9 @@ def _cifar10(split: str) -> Dataset:
 
 def _cifar10_c(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_c.generate_examples(data_dir,corruption,severity)
+
+def _cifar10_c_bar(data_dir: str, corruption: str, severity: int) -> Dataset:
+    return cifar10_c_bar.generate_examples(data_dir,corruption,severity)
 
 
 def _imagenet(split: str) -> Dataset:
