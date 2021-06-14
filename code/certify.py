@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-14 16:52:48
+LastEditTime: 2021-06-14 16:54:55
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -31,7 +31,10 @@ parser.add_argument("--split", choices=["train", "test"], default="test", help="
 parser.add_argument("--N0", type=int, default=100)
 parser.add_argument("--N", type=int, default=100000, help="number of samples to use")
 parser.add_argument("--alpha", type=float, default=0.001, help="failure probability")
+parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
 args = parser.parse_args()
+
+os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
 if __name__ == "__main__":
     # load the base classifier
