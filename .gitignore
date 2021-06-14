@@ -1,0 +1,9 @@
+.idea
+*~
+models*
+.DS_Store
+test
+*.tar
+CIFAR-10*
+dataset_cache
+.vscode
