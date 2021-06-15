@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-14 16:24:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-14 16:39:43
+LastEditTime: 2021-06-14 23:18:15
 '''
 import os
 import numpy as np
@@ -16,7 +16,7 @@ _CORRUPTIONS_TO_FILENAMES = {
     'blue_noise_sample': 'blue_noise_sample.npy',
     'checkerboard_cutout': 'checkerboard_cutout.npy',
     'inverse_sparkles': 'inverse_sparkles.npy',
-    'lines': 'lines.npy ',
+    'lines': 'lines.npy',
     'ripple': 'ripple.npy',
     'brownish_noise': 'brownish_noise.npy',
     'circular_motion_blur': 'circular_motion_blur.npy',
@@ -31,7 +31,6 @@ _LABELS_FILENAME = 'labels.npy'
 
 
 def generate_examples(data_dir,corruption,severity):
-    pass
     corruption = corruption # _CORRUPTIONS
     severity = severity # (1,2,3,4,5)
     data_dir = os.path.join(data_dir,_DIRNAME)

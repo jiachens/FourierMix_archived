@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-10 13:47:49
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-14 16:39:55
+LastEditTime: 2021-06-14 23:14:49
 '''
 import os
 import numpy as np
@@ -80,7 +80,6 @@ EXTRA_CORRUPTIONS = [
 ]
 
 def generate_examples(data_dir,corruption,severity):
-    pass
     corruption = corruption # _CORRUPTIONS
     severity = severity # (1,2,3,4,5)
     data_dir = os.path.join(data_dir,_DIRNAME)
