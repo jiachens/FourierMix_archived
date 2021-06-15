@@ -12,7 +12,7 @@ import cifar10_c_bar
 IMAGENET_LOC_ENV = "IMAGENET_DIR"
 
 # list of all datasets
-DATASETS = ["imagenet", "cifar10", "cifar10-c"]
+DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar"]
 
 
 def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None) -> Dataset:
