@@ -36,6 +36,8 @@ def get_num_classes(dataset: str):
         return 10
     elif dataset == "cifar10-c":
         return 10
+    elif dataset == "cifar10-c-bar":
+        return 10
 
 
 def get_normalize_layer(dataset: str) -> torch.nn.Module:
@@ -45,6 +47,8 @@ def get_normalize_layer(dataset: str) -> torch.nn.Module:
     elif dataset == "cifar10":
         return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
     elif dataset == "cifar10-c":
+        return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
+    elif dataset == "cifar10-c-bar":
         return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
 
 
