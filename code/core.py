@@ -50,6 +50,18 @@ class Smooth(object):
             radius = self.sigma * norm.ppf(pABar)
             return cAHat, radius
 
+    def base_predict(self, x: torch.tensor) -> int:
+        '''
+        Modified by Jiachen Sun
+        :param x: the input [channel x height x width]
+        :return: the predicted class, or ABSTAIN
+        '''
+        self.base_classifier.eval()
+        with torch.no_grad():
+            batch = x.repeat((1, 1, 1, 1))
+            prediction = self.base_classifier(batch).argmax(1)
+            return prediction
+
     def predict(self, x: torch.tensor, n: int, alpha: float, batch_size: int) -> int:
         """ Monte Carlo algorithm for evaluating the prediction of g at x.  With probability at least 1 - alpha, the
         class returned by this method will equal g(x).

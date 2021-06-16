@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-14 22:48:45
+LastEditTime: 2021-06-16 17:45:43
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -60,7 +60,9 @@ if __name__ == "__main__":
     
     total = 0
     total_correct = 0
+    base_total_correct = 0
     total_r = 0
+    total_r_with_incorrect = 0
 
     for i in range(len(dataset)):
 
@@ -77,18 +79,27 @@ if __name__ == "__main__":
         x = x.cuda()
         if x.shape[0] != 3:
             x = x.permute(2,0,1)
+        base_prediction = smoothed_classifier.base_predict(x)
         prediction, radius = smoothed_classifier.certify(x, args.N0, args.N, args.alpha, args.batch)
         after_time = time()
         correct = int(prediction == label)
+        base_correct = int(base_prediction == label)
         total_correct += correct
+        base_total_correct += base_correct
+
         if correct == 1:
             total_r += radius
+        
+        total_r_with_incorrect += radius
 
         time_elapsed = str(datetime.timedelta(seconds=(after_time - before_time)))
         print("{}\t{}\t{}\t{:.3}\t{}\t{}".format(
             i, label, prediction, radius, correct, time_elapsed), file=f, flush=True)
         total += 1
-            
-    print("Accuracy: {}".format(total_correct/total), file=f, flush=True)
-    print("Radius: {}".format(total_r/total_correct), file=f, flush=True)
+    
+    print("Empirical Accuracy: {}".format(base_total_correct/total), file=f, flush=True)
+    print("Certified Accuracy: {}".format(total_correct/total), file=f, flush=True)
+    print("Correct Radius: {}".format(total_r/total_correct), file=f, flush=True)
+    print("Correct Radius (with 0 for incorrect): {}".format(total_r/total), file=f, flush=True)
+    print("Radius: {}".format(total_r_with_incorrect/total), file=f, flush=True)
     f.close()
