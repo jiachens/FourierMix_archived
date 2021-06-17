@@ -7,3 +7,4 @@ test
 CIFAR-10*
 dataset_cache
 .vscode
+code/__pycache__
