@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-16 21:21:59
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-17 00:18:41
+LastEditTime: 2021-06-17 14:24:18
 '''
 from typing import Iterator, cast
 
@@ -13,6 +13,7 @@ import torchvision
 
 import torch
 import torch.fft as fft
+import numpy as np
 
 
 def get_spectrum(
@@ -80,7 +81,12 @@ def spectrum_to_basis(
     """
     assert len(spectrum.size()) == 2
     H = spectrum.size(-2)  # currently, only consider the case H==W
-    basis = fft.irfftn(spectrum, s=(H, H), dim=(-2, -1))
+    try:
+        basis = fft.irfftn(spectrum, s=(H, H), dim=(-2, -1))
+    except RuntimeError:
+        pass
+    else:
+        basis = np.fft.irfftn(spectrum, s=(H, H), dim=(-2, -1))
 
     if l2_normalize:
         return cast(torch.Tensor, basis / basis.norm(dim=(-2, -1))[None, None])
