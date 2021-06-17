@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-16 22:48:37
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-17 00:33:12
+LastEditTime: 2021-06-17 14:38:11
 '''
 import argparse
 import os
@@ -94,13 +94,13 @@ if __name__ == "__main__":
 
             (x, label) = dataset[i]
 
-            x += perturbation * random.choice((-1, 1))
-
             before_time = time()
             # certify the prediction of g around x
             x = x.cuda()
             if x.shape[0] != 3:
                 x = x.permute(2,0,1)
+            x += perturbation * random.choice((-1, 1))
+            
             base_prediction = smoothed_classifier.base_predict(x)
             prediction, radius = smoothed_classifier.certify(x, args.N0, args.N, args.alpha, args.batch)
             after_time = time()
