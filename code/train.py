@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 from datasets import get_dataset, DATASETS
 from architectures import ARCHITECTURES, get_architecture
 from torch.optim import SGD, Optimizer
-from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import StepLR, MultiStepLR
 import time
 import datetime
 from train_utils import AverageMeter, accuracy, init_logfile, log
@@ -21,7 +21,7 @@ parser.add_argument('arch', type=str, choices=ARCHITECTURES)
 parser.add_argument('outdir', type=str, help='folder to save model and training log)')
 parser.add_argument('--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
-parser.add_argument('--epochs', default=90, type=int, metavar='N',
+parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--batch', default=256, type=int, metavar='N',
                     help='batchsize (default: 256)')
@@ -66,10 +66,19 @@ def main():
 
     criterion = CrossEntropyLoss().cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    scheduler = StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+    
+    if args.arch in ['cifar_resnet110']:
+        scheduler = MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
+    else:
+        scheduler = StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+
+    if args.arch in ['cifar_resnet110']:
+        # for resnet110 original paper uses lr=0.01 for first 400 minibatches for warm-up
+        # then switch back. In this setup it will correspond for first epoch.
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = args.lr*0.1
 
     for epoch in range(args.epochs):
-        scheduler.step(epoch)
         before = time.time()
         train_loss, train_acc = train(train_loader, model, criterion, optimizer, epoch, args.noise_sd)
         test_loss, test_acc = test(test_loader, model, criterion, args.noise_sd)
@@ -78,6 +87,8 @@ def main():
         log(logfilename, "{}\t{:.3}\t{:.3}\t{:.3}\t{:.3}\t{:.3}\t{:.3}".format(
             epoch, str(datetime.timedelta(seconds=(after - before))),
             scheduler.get_lr()[0], train_loss, train_acc, test_loss, test_acc))
+        
+        scheduler.step(epoch)
 
         torch.save({
             'epoch': epoch + 1,
