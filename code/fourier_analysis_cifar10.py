@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-16 13:03:53
+LastEditTime: 2021-06-17 20:41:00
 '''
 import numpy as np
 import os
@@ -53,12 +53,15 @@ if __name__ == "__main__":
         x = x.numpy()
         x_orig = x_orig.numpy()
         
-        img_grey = rgb2gray((x - x_orig) * 255)
+        # print(x - x_orig)
+        img_grey = rgb2gray(np.round((x - x_orig) * 255))
         img_grey_F = np.fft.fftshift(np.fft.fft2(img_grey))
         ps2D = np.abs(img_grey_F)
         sum_ps2D += ps2D
 
     avg_ps2D = sum_ps2D / len(dataset)
+    print('Max value: {}'.format(np.max(avg_ps2D)))
+    print('Min value: {}'.format(np.min(avg_ps2D)))
 
     ax = sns.heatmap(avg_ps2D,
                 cmap="jet",
