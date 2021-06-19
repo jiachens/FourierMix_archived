@@ -128,6 +128,8 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         elif args.scheme == 'half_ga':
             if i % 2:
                 inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
+        elif args.scheme == 'ga_clip':
+             inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
         # elif args.scheme == 'contrast':
         #     raise NotImplementedError
         #     # torchvision.transforms.RandomAutocontrast
