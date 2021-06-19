@@ -71,6 +71,13 @@ def _cifar10(split: str, scheme) -> Dataset:
                 transformation.Contrast(level=5,maxval=1.8),
                 transforms.ToTensor()
             ]))
+        elif scheme == "autocontrast":
+            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAutocontrast(p=0.5),
+                transforms.ToTensor(),
+            ]))
         else:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
                 transforms.RandomCrop(32, padding=4),
