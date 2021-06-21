@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-17 20:41:00
+LastEditTime: 2021-06-18 22:54:10
 '''
 import numpy as np
 import os
@@ -46,7 +46,13 @@ if __name__ == "__main__":
     sum_ps2D = 0
     for i in range(len(dataset)):
         (x, label) = dataset[i]
+        # save_image(
+        #     x.permute(2,0,1), "./test/test.png"
+        # )
         (x_orig, label) = dataset_orig[i]
+        # save_image(
+        #     x_orig, "./test/test_orig.png"
+        # )
         # x = x.cuda()
         if x_orig.shape[0] != 32:
             x_orig = x_orig.permute(1,2,0)
@@ -54,12 +60,16 @@ if __name__ == "__main__":
         x_orig = x_orig.numpy()
         
         # print(x - x_orig)
-        img_grey = rgb2gray(np.round((x - x_orig) * 255))
+        img_grey = rgb2gray(np.round((x - x_orig) * 255)) / 255
+
         img_grey_F = np.fft.fftshift(np.fft.fft2(img_grey))
         ps2D = np.abs(img_grey_F)
         sum_ps2D += ps2D
-
+        
     avg_ps2D = sum_ps2D / len(dataset)
+    print('Max value: {}'.format(np.max(avg_ps2D)))
+    print('Min value: {}'.format(np.min(avg_ps2D)))
+    avg_ps2D = np.clip(avg_ps2D,0,2)
     print('Max value: {}'.format(np.max(avg_ps2D)))
     print('Min value: {}'.format(np.min(avg_ps2D)))
 
@@ -69,6 +79,6 @@ if __name__ == "__main__":
                 cbar_kws={"ticks":[]},
                 xticklabels=False,
                 yticklabels=False,)
-    plt.savefig('./test/fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '.png',dpi=250,bbox_inches='tight')
+    plt.savefig('./test/fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '_clip_1.png',dpi=250,bbox_inches='tight')
     # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
     plt.close()

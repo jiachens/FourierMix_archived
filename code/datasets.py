@@ -62,7 +62,7 @@ _CIFAR10_STDDEV = [0.2023, 0.1994, 0.2010]
 
 def _cifar10(split: str, scheme) -> Dataset:
     if split == "train":
-        if scheme == "contrast":
+        if scheme in ["contrast",'contrast_ga']:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
                 transforms.RandomCrop(32, padding=4),
                 transforms.RandomHorizontalFlip(),
