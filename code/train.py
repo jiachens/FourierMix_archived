@@ -17,7 +17,8 @@ from train_utils import AverageMeter, accuracy, init_logfile, log
 from PIL import ImageEnhance
 import numpy as np
 import torchvision
-import transformation
+import random
+
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
@@ -126,8 +127,12 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         if args.scheme == 'ga':
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
         elif args.scheme == 'half_ga':
-            if i % 2:
+            if random.choice((-1, 1)) == 1:
                 inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
+        elif args.scheme == 'ga_clip':
+             inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
+        elif args.scheme == 'contrast_ga':
+             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
         # elif args.scheme == 'contrast':
         #     raise NotImplementedError
         #     # torchvision.transforms.RandomAutocontrast

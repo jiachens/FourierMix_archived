@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-16 22:48:37
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-17 14:38:11
+LastEditTime: 2021-06-21 15:15:55
 '''
 import argparse
 import os
@@ -17,6 +17,7 @@ from architectures import get_architecture
 import fourier_basis
 import random
 import torchvision
+from os import path
 
 
 parser = argparse.ArgumentParser(description='Certify many examples')
@@ -74,7 +75,11 @@ if __name__ == "__main__":
         # torchvision.utils.save_image(
         #     perturbation,  "./test/basis_" + str(j) + ".png"
         # )
-
+        if path.exists(args.outfile + '_' + str(j) + '.out'):
+            f_r = open(args.outfile + '_' + str(j) + '.out', 'r')
+            if f_r.readlines()[-1].startswith('Radius'):
+                f_r.close()
+                continue
         f = open(args.outfile + '_' + str(j) + '.out', 'w')
         print("idx\tlabel\tpredict\tradius\tcorrect\ttime", file=f, flush=True)
     
