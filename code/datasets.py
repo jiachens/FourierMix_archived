@@ -5,6 +5,7 @@ import os
 from torch.utils.data import Dataset
 import cifar10_c
 import cifar10_c_bar
+import transformation
 
 # set this environment variable to the location of your imagenet directory if you want to read ImageNet data.
 # make sure your val directory is preprocessed to look like the train directory, e.g. by running this script
@@ -15,12 +16,12 @@ IMAGENET_LOC_ENV = "IMAGENET_DIR"
 DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar"]
 
 
-def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None) -> Dataset:
+def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None,scheme = None) -> Dataset:
     """Return the dataset as a PyTorch Dataset object"""
     if dataset == "imagenet":
         return _imagenet(split)
     elif dataset == "cifar10":
-        return _cifar10(split)
+        return _cifar10(split, scheme)
     elif dataset == "cifar10-c":
         # print(data_dir)
         return _cifar10_c(data_dir,corruption,severity)
@@ -59,13 +60,30 @@ _CIFAR10_MEAN = [0.4914, 0.4822, 0.4465]
 _CIFAR10_STDDEV = [0.2023, 0.1994, 0.2010]
 
 
-def _cifar10(split: str) -> Dataset:
+def _cifar10(split: str, scheme) -> Dataset:
     if split == "train":
-        return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
-            transforms.RandomCrop(32, padding=4),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor()
-        ]))
+        if scheme == "contrast":
+            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.ToPILImage(),
+                transformation.Contrast(level=5,maxval=1.8),
+                transforms.ToTensor()
+            ]))
+        elif scheme == "autocontrast":
+            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAutocontrast(p=0.5),
+                transforms.ToTensor(),
+            ]))
+        else:
+            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor()
+            ]))
     elif split == "test":
         return datasets.CIFAR10("./dataset_cache", train=False, download=True, transform=transforms.ToTensor())
 

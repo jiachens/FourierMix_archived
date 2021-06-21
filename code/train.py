@@ -10,10 +10,14 @@ from torch.utils.data import DataLoader
 from datasets import get_dataset, DATASETS
 from architectures import ARCHITECTURES, get_architecture
 from torch.optim import SGD, Optimizer
-from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import StepLR, MultiStepLR
 import time
 import datetime
 from train_utils import AverageMeter, accuracy, init_logfile, log
+from PIL import ImageEnhance
+import numpy as np
+import torchvision
+import transformation
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
@@ -21,7 +25,7 @@ parser.add_argument('arch', type=str, choices=ARCHITECTURES)
 parser.add_argument('outdir', type=str, help='folder to save model and training log)')
 parser.add_argument('--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
-parser.add_argument('--epochs', default=90, type=int, metavar='N',
+parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--batch', default=256, type=int, metavar='N',
                     help='batchsize (default: 256)')
@@ -39,6 +43,8 @@ parser.add_argument('--noise_sd', default=0.0, type=float,
                     help="standard deviation of Gaussian noise for data augmentation")
 parser.add_argument('--gpu', default=None, type=str,
                     help='id(s) for CUDA_VISIBLE_DEVICES')
+parser.add_argument('--scheme', default='ga', type=str,
+                    help='training schemes like gaussian augmentation')
 parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 args = parser.parse_args()
@@ -51,7 +57,7 @@ def main():
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
 
-    train_dataset = get_dataset(args.dataset, 'train')
+    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
     test_dataset = get_dataset(args.dataset, 'test')
     pin_memory = (args.dataset == "imagenet")
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=args.batch,
@@ -66,10 +72,19 @@ def main():
 
     criterion = CrossEntropyLoss().cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    scheduler = StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+    
+    if args.arch in ['cifar_resnet110']:
+        scheduler = MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
+    else:
+        scheduler = StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+
+    if args.arch in ['cifar_resnet110']:
+        # for resnet110 original paper uses lr=0.01 for first 400 minibatches for warm-up
+        # then switch back. In this setup it will correspond for first epoch.
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = args.lr*0.1
 
     for epoch in range(args.epochs):
-        scheduler.step(epoch)
         before = time.time()
         train_loss, train_acc = train(train_loader, model, criterion, optimizer, epoch, args.noise_sd)
         test_loss, test_acc = test(test_loader, model, criterion, args.noise_sd)
@@ -78,6 +93,8 @@ def main():
         log(logfilename, "{}\t{:.3}\t{:.3}\t{:.3}\t{:.3}\t{:.3}\t{:.3}".format(
             epoch, str(datetime.timedelta(seconds=(after - before))),
             scheduler.get_lr()[0], train_loss, train_acc, test_loss, test_acc))
+        
+        scheduler.step(epoch)
 
         torch.save({
             'epoch': epoch + 1,
@@ -106,7 +123,14 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         targets = targets.cuda()
 
         # augment inputs with noise
-        inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
+        if args.scheme == 'ga':
+            inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
+        elif args.scheme == 'half_ga':
+            if i % 2:
+                inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
+        # elif args.scheme == 'contrast':
+        #     raise NotImplementedError
+        #     # torchvision.transforms.RandomAutocontrast
 
         # compute output
         outputs = model(inputs)
@@ -187,6 +211,7 @@ def test(loader: DataLoader, model: torch.nn.Module, criterion, noise_sd: float)
                     data_time=data_time, loss=losses, top1=top1, top5=top5))
 
         return (losses.avg, top1.avg)
+
 
 
 if __name__ == "__main__":
