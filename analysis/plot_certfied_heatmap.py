@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-23 11:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-23 12:39:56
+LastEditTime: 2021-06-23 16:52:18
 '''
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -17,12 +17,18 @@ parser.add_argument("--path", type=str, help="path to folder")
 args = parser.parse_args()
 
 heatmap = np.zeros((31,31))
+heatmap_1 = np.zeros((31,31))
+heatmap_2 = np.zeros((31,31))
+
 for i in range(961):
     row = i // 31
     col = i % 31
     try:    
         f = open(args.path + "fourier_" + str(i) + ".out", "r")
-        heatmap[row,col] = float(f.readlines()[-4].split(' ')[-1])
+        data = f.readlines()
+        heatmap[row,col] = float(data[-4].split(' ')[-1])
+        heatmap_1[row,col] = float(data[-3].split(' ')[-1])
+        heatmap_2[row,col] = float(data[-2].split(' ')[-1])
     except:
         print(i)
     f.close()
@@ -34,5 +40,25 @@ ax = sns.heatmap(heatmap,
             xticklabels=False,
             yticklabels=False,)
 plt.savefig('./test/certified_accuracy_hm.png',dpi=250,bbox_inches='tight')
+# plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
+plt.close()
+
+ax = sns.heatmap(heatmap_1,
+            cmap="jet",
+            cbar=True,
+            # cbar_kws={"ticks":[]},
+            xticklabels=False,
+            yticklabels=False,)
+plt.savefig('./test/correct_radius_hm.png',dpi=250,bbox_inches='tight')
+# plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
+plt.close()
+
+ax = sns.heatmap(heatmap_2,
+            cmap="jet",
+            cbar=True,
+            # cbar_kws={"ticks":[]},
+            xticklabels=False,
+            yticklabels=False,)
+plt.savefig('./test/incorrect_radius_hm.png',dpi=250,bbox_inches='tight')
 # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
 plt.close()

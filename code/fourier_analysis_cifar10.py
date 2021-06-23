@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-23 11:45:42
+LastEditTime: 2021-06-23 13:18:42
 '''
 import numpy as np
 import os
@@ -75,19 +75,19 @@ if __name__ == "__main__":
 
     relative = np.divide(avg_ps2D,avg_ps2D_orig)
     # print(avg_ps2D.shape)
-    # avg_ps2D[16,16] = 0.
+    avg_ps2D[16,16] = 0.
     # print('Max value: {}'.format(np.max(avg_ps2D)))
     # print('Min value: {}'.format(np.min(avg_ps2D)))
     # avg_ps2D = np.clip(avg_ps2D,0,2)
 
-    ax = sns.heatmap(relative,
+    ax = sns.heatmap(avg_ps2D,
                 cmap="jet",
                 cbar=True,
                 vmin = 0., 
-                vmax = 50.,
+                vmax = 40.,
                 # cbar_kws={"ticks":[]},
                 xticklabels=False,
                 yticklabels=False,)
-    plt.savefig('./test/fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '_relative_unified.png',dpi=250,bbox_inches='tight')
+    plt.savefig('./test/fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '_no_center_unified.png',dpi=250,bbox_inches='tight')
     # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
     plt.close()
