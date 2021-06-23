@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-23 11:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-23 12:37:44
+LastEditTime: 2021-06-23 12:39:56
 '''
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -22,7 +22,7 @@ for i in range(961):
     col = i % 31
     f = open(args.path + "fourier_" + str(i) + ".out", "r")
     heatmap[row,col] = float(f.readlines()[-4].split(' ')[-1])
-
+    f.close()
 
 ax = sns.heatmap(heatmap,
             cmap="jet",
