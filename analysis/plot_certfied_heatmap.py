@@ -20,8 +20,11 @@ heatmap = np.zeros((31,31))
 for i in range(961):
     row = i // 31
     col = i % 31
-    f = open(args.path + "fourier_" + str(i) + ".out", "r")
-    heatmap[row,col] = float(f.readlines()[-4].split(' ')[-1])
+    try:    
+        f = open(args.path + "fourier_" + str(i) + ".out", "r")
+        heatmap[row,col] = float(f.readlines()[-4].split(' ')[-1])
+    except:
+        print(i)
     f.close()
 
 ax = sns.heatmap(heatmap,
