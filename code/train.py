@@ -129,7 +129,7 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         if args.scheme == 'ga':
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
         elif args.scheme == 'half_ga':
-            index = np.random.choice(args.batch,args.batch//2)
+            index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
             inputs[index] = inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd
         elif args.scheme == 'half_ga_clip':
             index = np.random.choice(args.batch,args.batch//2)
