@@ -129,14 +129,17 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         if args.scheme == 'ga':
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
         elif args.scheme == 'half_ga':
-            if random.choice((-1, 1)) == 1:
-                inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
+            index = np.random.choice(args.batch,args.batch//2)
+            inputs[index] = inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd
+        elif args.scheme == 'half_ga_clip':
+            index = np.random.choice(args.batch,args.batch//2)
+            inputs[index] = torch.clamp(inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd,0.,1.)
         elif args.scheme == 'ga_clip':
-             inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
+            inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
         elif args.scheme == 'contrast_ga':
-             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
+            inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
         elif args.scheme == 'contrast_ga_clip':
-             inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
+            inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
 
         # compute output
         outputs = model(inputs)
