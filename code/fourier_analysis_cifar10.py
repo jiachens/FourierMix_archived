@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-23 18:53:21
+LastEditTime: 2021-06-24 17:58:47
 '''
 import numpy as np
 import os
@@ -65,10 +65,21 @@ if __name__ == "__main__":
 
         img_grey_F = np.fft.fftshift(np.fft.fft2(img_grey))
         img_grey_F_orig = np.fft.fftshift(np.fft.fft2(img_grey_orig))
+        print(img_grey_F_orig)
         ps2D = np.abs(img_grey_F)
         ps2D_orig = np.abs(img_grey_F_orig)
         sum_ps2D += ps2D
         sum_ps2D_orig += ps2D_orig
+        ax = sns.heatmap(ps2D_orig,
+                cmap="jet",
+                cbar=True,
+                vmin = 0., 
+                vmax = 40.,
+                # cbar_kws={"ticks":[]},
+                xticklabels=False,
+                yticklabels=False,)
+        plt.savefig('./test/fourier_test/'+ str(i) +'.png',dpi=250,bbox_inches='tight')
+        plt.close()
         
     avg_ps2D = sum_ps2D / len(dataset)
     avg_ps2D_orig = sum_ps2D_orig / len(dataset)
@@ -79,8 +90,7 @@ if __name__ == "__main__":
     # print('Max value: {}'.format(np.max(avg_ps2D)))
     # print('Min value: {}'.format(np.min(avg_ps2D)))
     # avg_ps2D = np.clip(avg_ps2D,0,2)
-
-    ax = sns.heatmap(avg_ps2D,
+    ax = sns.heatmap(avg_ps2D_orig,
                 cmap="jet",
                 cbar=True,
                 vmin = 0., 
@@ -88,6 +98,16 @@ if __name__ == "__main__":
                 # cbar_kws={"ticks":[]},
                 xticklabels=False,
                 yticklabels=False,)
-    plt.savefig('./test/fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '_no_center_unified.png',dpi=250,bbox_inches='tight')
+    plt.savefig('./test/original.png',dpi=250,bbox_inches='tight')
+
+    # ax = sns.heatmap(avg_ps2D,
+    #             cmap="jet",
+    #             cbar=True,
+    #             vmin = 0., 
+    #             vmax = 40.,
+    #             # cbar_kws={"ticks":[]},
+    #             xticklabels=False,
+    #             yticklabels=False,)
+    # plt.savefig('./test/fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '_no_center_unified.png',dpi=250,bbox_inches='tight')
     # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
     plt.close()

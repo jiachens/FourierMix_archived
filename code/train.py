@@ -48,6 +48,8 @@ parser.add_argument('--scheme', default='ga', type=str,
                     help='training schemes like gaussian augmentation')
 parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
+parser.add_argument("--no_normalize", default=True, action='store_false')
+
 args = parser.parse_args()
 
 
@@ -66,7 +68,7 @@ def main():
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=args.batch,
                              num_workers=args.workers, pin_memory=pin_memory)
 
-    model = get_architecture(args.arch, args.dataset)
+    model = get_architecture(args.arch, args.dataset,args.no_normalize)
 
     logfilename = os.path.join(args.outdir, 'log.txt')
     init_logfile(logfilename, "epoch\ttime\tlr\ttrain loss\ttrain acc\ttestloss\ttest acc")
@@ -135,17 +137,13 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
              inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
         elif args.scheme == 'contrast_ga_clip':
              inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
-        # elif args.scheme == 'contrast':
-        #     raise NotImplementedError
-        #     # torchvision.transforms.RandomAutocontrast
 
         # compute output
         outputs = model(inputs)
         if args.scheme in ['double_ga','contrast_double_ga']:
             inputs_2 = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
             outputs_2 = model(inputs_2)
-        
-        if args.scheme in ['double_ga','contrast_double_ga']:
+        # if args.scheme in ['double_ga','contrast_double_ga']:
             loss = criterion(outputs, targets) + criterion(outputs_2, targets)
         else:
             loss = criterion(outputs, targets)

@@ -1,3 +1,10 @@
+'''
+Description: 
+Autor: Jiachen Sun
+Date: 2021-06-09 00:21:36
+LastEditors: Jiachen Sun
+LastEditTime: 2021-06-26 01:23:08
+'''
 import torch
 from torchvision.models.resnet import resnet50
 import torch.backends.cudnn as cudnn
@@ -10,7 +17,7 @@ from torch.nn.functional import interpolate
 # cifar_resnet110 - a 110-layer residual network sized for CIFAR
 ARCHITECTURES = ["resnet50", "cifar_resnet20", "cifar_resnet110"]
 
-def get_architecture(arch: str, dataset: str) -> torch.nn.Module:
+def get_architecture(arch: str, dataset: str, normalize :bool = True) -> torch.nn.Module:
     """ Return a neural network (with random weights)
 
     :param arch: the architecture - should be in the ARCHITECTURES list above
@@ -24,5 +31,8 @@ def get_architecture(arch: str, dataset: str) -> torch.nn.Module:
         model = resnet_cifar(depth=20, num_classes=10).cuda()
     elif arch == "cifar_resnet110":
         model = resnet_cifar(depth=110, num_classes=10).cuda()
-    normalize_layer = get_normalize_layer(dataset)
-    return torch.nn.Sequential(normalize_layer, model)
+    if normalize:
+        normalize_layer = get_normalize_layer(dataset)
+        return torch.nn.Sequential(normalize_layer, model)
+    else:
+        return model

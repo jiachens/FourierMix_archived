@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-16 17:45:43
+LastEditTime: 2021-06-26 01:29:42
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -32,6 +32,7 @@ parser.add_argument("--N0", type=int, default=100)
 parser.add_argument("--N", type=int, default=100000, help="number of samples to use")
 parser.add_argument("--alpha", type=float, default=0.001, help="failure probability")
 parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
+parser.add_argument("--no_normalize", default=True, action='store_false')
 args = parser.parse_args()
 
 os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
@@ -39,7 +40,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 if __name__ == "__main__":
     # load the base classifier
     checkpoint = torch.load(args.base_classifier)
-    base_classifier = get_architecture(checkpoint["arch"], args.dataset)
+    base_classifier = get_architecture(checkpoint["arch"], args.dataset, args.no_normalize)
     base_classifier.load_state_dict(checkpoint['state_dict'])
 
     # create the smooothed classifier g
