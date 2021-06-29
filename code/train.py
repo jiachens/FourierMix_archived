@@ -49,6 +49,7 @@ parser.add_argument('--scheme', default='ga', type=str,
 parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 parser.add_argument("--no_normalize", default=True, action='store_false')
+parser.add_argument("--severity", type=int, default=1, help="severity level to augment training using corruptions")
 
 args = parser.parse_args()
 
@@ -60,7 +61,7 @@ def main():
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
 
-    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
+    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme, severity=args.severity)
     test_dataset = get_dataset(args.dataset, 'test')
     pin_memory = (args.dataset == "imagenet")
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=args.batch,
