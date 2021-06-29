@@ -136,20 +136,12 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
             inputs[index] = torch.clamp(inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd,0.,1.)
         elif args.scheme == 'ga_clip':
             inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
-        elif args.scheme == 'contrast_ga':
+        elif args.scheme in ['contrast_ga','contrast_2_ga']:
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
-        elif args.scheme == 'contrast_ga_clip':
-            inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
 
         # compute output
         outputs = model(inputs)
-        if args.scheme in ['double_ga','contrast_double_ga']:
-            inputs_2 = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
-            outputs_2 = model(inputs_2)
-        # if args.scheme in ['double_ga','contrast_double_ga']:
-            loss = criterion(outputs, targets) + criterion(outputs_2, targets)
-        else:
-            loss = criterion(outputs, targets)
+        loss = criterion(outputs, targets)
 
         # measure accuracy and record loss
         acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
