@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-18 19:07:30
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-28 23:06:09
+LastEditTime: 2021-06-28 23:09:10
 '''
 from PIL import ImageEnhance
 import numpy as np
@@ -138,7 +138,7 @@ class Fog(object):
         c = [(1.5, 2), (2., 2), (2.5, 1.7), (2.5, 1.5), (3., 1.4)][self.severity - 1]
 
         shape = x.shape
-        max_side = torch.max(shape)
+        max_side = torch.max(torch.tensor(shape))
         map_size = self.next_power_of_2(int(max_side))
 
         max_val = torch.max(x)
