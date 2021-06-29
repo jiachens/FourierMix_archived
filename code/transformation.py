@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-18 19:07:30
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-28 23:09:10
+LastEditTime: 2021-06-29 17:14:43
 '''
 from PIL import ImageEnhance
 import numpy as np
@@ -61,7 +61,7 @@ class Contrast_2(object):
 
 
     def contrast(self, img):
-        c = [0.4, .3, .2, .1, .05][self.severity - 1]
+        c = [.75, .5, .4, .3, 0.15][self.severity - 1]
         means = torch.mean(img, dim=(1, 2), keepdim=True)
         return torch.clamp((img - means) * c + means, 0., 1.)
 
@@ -79,7 +79,7 @@ class Fog(object):
         return self.fog(img)
         
     # modification of https://github.com/FLHerne/mapgen/blob/master/diamondsquare.py
-    def plasma_fractal(self,mapsize=256, wibbledecay=3):
+    def plasma_fractal(self,mapsize=32, wibbledecay=3):
         """
         Generate a heightmap using diamond-square algorithm.
         Return square 2d array, side length 'mapsize', of floats in range 0-255.
@@ -92,8 +92,7 @@ class Fog(object):
         wibble = 100
 
         def wibbledmean(array):
-            return array / 4 + wibble * np.random.uniform(-wibble, wibble,
-                                                        array.shape)
+            return array / 4 + wibble * np.random.uniform(-wibble, wibble, array.shape)
 
         def fillsquares():
             """For each square of points stepsize apart,
@@ -108,19 +107,16 @@ class Fog(object):
             """For each diamond of points stepsize apart,
             calculate middle value as mean of points + wibble"""
             mapsize = maparray.shape[0]
-            drgrid = maparray[stepsize // 2:mapsize:stepsize,
-                    stepsize // 2:mapsize:stepsize]
+            drgrid = maparray[stepsize // 2:mapsize:stepsize, stepsize // 2:mapsize:stepsize]
             ulgrid = maparray[0:mapsize:stepsize, 0:mapsize:stepsize]
             ldrsum = drgrid + np.roll(drgrid, 1, axis=0)
             lulsum = ulgrid + np.roll(ulgrid, -1, axis=1)
             ltsum = ldrsum + lulsum
-            maparray[0:mapsize:stepsize,
-            stepsize // 2:mapsize:stepsize] = wibbledmean(ltsum)
+            maparray[0:mapsize:stepsize, stepsize // 2:mapsize:stepsize] = wibbledmean(ltsum)
             tdrsum = drgrid + np.roll(drgrid, 1, axis=1)
             tulsum = ulgrid + np.roll(ulgrid, -1, axis=0)
             ttsum = tdrsum + tulsum
-            maparray[stepsize // 2:mapsize:stepsize,
-            0:mapsize:stepsize] = wibbledmean(ttsum)
+            maparray[stepsize // 2:mapsize:stepsize, 0:mapsize:stepsize] = wibbledmean(ttsum)
 
         while stepsize >= 2:
             fillsquares()
@@ -135,19 +131,7 @@ class Fog(object):
         return 1 if x == 0 else 2 ** (x - 1).bit_length()
 
     def fog(self,x):
-        c = [(1.5, 2), (2., 2), (2.5, 1.7), (2.5, 1.5), (3., 1.4)][self.severity - 1]
-
-        shape = x.shape
-        max_side = torch.max(torch.tensor(shape))
-        map_size = self.next_power_of_2(int(max_side))
-
+        c = [(.2,3), (.5,3), (0.75,2.5), (1,2), (1.5,1.75)][self.severity - 1]
         max_val = torch.max(x)
-
-        if len(shape) < 3 or shape[2] < 3:
-            x += torch.Tensor(c[0] * self.plasma_fractal(mapsize=map_size, wibbledecay=c[1])[
-                        :shape[0], :shape[1]])
-        else:
-            x += torch.Tensor(c[0] * \
-                self.plasma_fractal(mapsize=map_size, wibbledecay=c[1])[:shape[0],
-                :shape[1]][..., np.newaxis])
-        return torch.clamp(x * max_val / (max_val + c[0]), 0, 1) 
+        x += torch.Tensor(c[0] * self.plasma_fractal(wibbledecay=c[1])[:32, :32][..., np.newaxis]).permute(2,0,1)
+        return torch.clamp(x * max_val / (max_val + c[0]), 0., 1.)

@@ -132,11 +132,16 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         elif args.scheme in ['half_ga','contrast_half_ga','contrast_2_half_ga','fog_half_ga']:
             index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
             inputs[index] = inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd
-        elif args.scheme == 'half_ga_clip':
-            index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
-            inputs[index] = torch.clamp(inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd,0.,1.)
-        elif args.scheme == 'ga_clip':
-            inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
+        # elif args.scheme == 'half_ga_clip':
+        #     index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
+        #     inputs[index] = torch.clamp(inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd,0.,1.)
+        # elif args.scheme == 'ga_clip':
+        #     inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
+        if i == 0:
+            test_img = torchvision.utils.make_grid(inputs, nrow = 16)
+            torchvision.utils.save_image(
+                test_img, "./test/test.png", nrow = 16
+            )
 
         # compute output
         outputs = model(inputs)
