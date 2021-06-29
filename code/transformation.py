@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-18 19:07:30
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-28 22:57:37
+LastEditTime: 2021-06-28 23:06:09
 '''
 from PIL import ImageEnhance
 import numpy as np
@@ -73,6 +73,10 @@ class Contrast_2(object):
 class Fog(object):
     def __init__(self,severity) -> None:
         self.severity = severity
+
+    def __call__(self, img):
+
+        return self.fog(img)
         
     # modification of https://github.com/FLHerne/mapgen/blob/master/diamondsquare.py
     def plasma_fractal(self,mapsize=256, wibbledecay=3):
