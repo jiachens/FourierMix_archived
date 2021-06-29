@@ -21,9 +21,8 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
     if dataset == "imagenet":
         return _imagenet(split)
     elif dataset == "cifar10":
-        return _cifar10(split, scheme)
+        return _cifar10(split, scheme, severity)
     elif dataset == "cifar10-c":
-        # print(data_dir)
         return _cifar10_c(data_dir,corruption,severity)
     elif dataset == "cifar10-c-bar":
         return _cifar10_c_bar(data_dir,corruption,severity)
@@ -60,7 +59,7 @@ _CIFAR10_MEAN = [0.4914, 0.4822, 0.4465]
 _CIFAR10_STDDEV = [0.2023, 0.1994, 0.2010]
 
 
-def _cifar10(split: str, scheme) -> Dataset:
+def _cifar10(split: str, scheme, severity: int) -> Dataset:
     if split == "train":
         if scheme in ['contrast_ga']:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
@@ -76,7 +75,7 @@ def _cifar10(split: str, scheme) -> Dataset:
                 transforms.RandomCrop(32, padding=4),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
-                transformation.Contrast_2(severity=5)
+                transformation.Contrast_2(severity=severity)
             ]))
         elif scheme == "autocontrast":
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
