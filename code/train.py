@@ -127,7 +127,7 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         targets = targets.cuda()
 
         # augment inputs with noise
-        if args.scheme == 'ga':
+        if args.scheme in ['ga', 'contrast_ga','contrast_2_ga','fog_ga']:
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
         elif args.scheme == 'half_ga':
             index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
@@ -137,8 +137,6 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
             inputs[index] = torch.clamp(inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd,0.,1.)
         elif args.scheme == 'ga_clip':
             inputs = torch.clamp(inputs + torch.randn_like(inputs, device='cuda') * noise_sd,0.,1.)
-        elif args.scheme in ['contrast_ga','contrast_2_ga']:
-            inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
 
         # compute output
         outputs = model(inputs)
