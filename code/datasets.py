@@ -63,8 +63,8 @@ def _cifar10(split: str, scheme, severity: int) -> Dataset:
     if split == "train":
         if scheme in ['contrast_ga']:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
-                transforms.RandomCrop(32, padding=4),
-                transforms.RandomHorizontalFlip(),
+                # transforms.RandomCrop(32, padding=4),
+                # transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 transforms.ToPILImage(),
                 transformation.Contrast(level=5,maxval=1.8),
@@ -72,8 +72,8 @@ def _cifar10(split: str, scheme, severity: int) -> Dataset:
             ]))
         elif scheme in ['contrast_2_ga']:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
-                transforms.RandomCrop(32, padding=4),
-                transforms.RandomHorizontalFlip(),
+                # transforms.RandomCrop(32, padding=4),
+                # transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 transformation.Contrast_2(severity=severity)
             ]))
