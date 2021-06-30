@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-29 21:29:17
+LastEditTime: 2021-06-30 11:45:37
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # prepare output file
     dir = args.outfile[:-(len(args.outfile.split('/')[-1])+1)]
     if not os.path.exists(dir):
-        os.makedirs(dir)
+        os.makedirs(dir,exist_ok = True)
     f = open(args.outfile, 'w')
     print("idx\tlabel\tpredict\tradius\tcorrect\ttime", file=f, flush=True)
 
