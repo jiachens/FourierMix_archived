@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-18 19:07:30
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-29 17:14:43
+LastEditTime: 2021-07-01 20:15:58
 '''
 from PIL import ImageEnhance
 import numpy as np
@@ -61,7 +61,11 @@ class Contrast_2(object):
 
 
     def contrast(self, img):
-        c = [.75, .5, .4, .3, 0.15][self.severity - 1]
+        if self.severity == 0:
+            choice = np.random.randint(low = 0, high =5)
+            c = [.75, .5, .4, .3, 0.15][choice]
+        else:
+            c = [.75, .5, .4, .3, 0.15][self.severity - 1]
         means = torch.mean(img, dim=(1, 2), keepdim=True)
         return torch.clamp((img - means) * c + means, 0., 1.)
 
@@ -131,7 +135,11 @@ class Fog(object):
         return 1 if x == 0 else 2 ** (x - 1).bit_length()
 
     def fog(self,x):
-        c = [(.2,3), (.5,3), (0.75,2.5), (1,2), (1.5,1.75)][self.severity - 1]
+        if self.severity == 0:
+            choice = np.random.randint(low = 0, high =5)
+            c = [(.2,3), (.5,3), (0.75,2.5), (1,2), (1.5,1.75)][choice]
+        else:
+            c = [(.2,3), (.5,3), (0.75,2.5), (1,2), (1.5,1.75)][self.severity - 1]
         max_val = torch.max(x)
         x += torch.Tensor(c[0] * self.plasma_fractal(wibbledecay=c[1])[:32, :32][..., np.newaxis]).permute(2,0,1)
         return torch.clamp(x * max_val / (max_val + c[0]), 0., 1.)
