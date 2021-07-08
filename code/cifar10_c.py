@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-10 13:47:49
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-14 23:14:49
+LastEditTime: 2021-07-07 20:56:59
 '''
 import os
 import numpy as np
@@ -90,6 +90,21 @@ def generate_examples(data_dir,corruption,severity):
     labels = labels[:num_images]
     images = np.load(images_file)
     images = images[(severity - 1) * num_images:severity * num_images]
+    # return zip(torch.Tensor(images), torch.Tensor(labels))
+    dataset = []
+    for (image, label) in zip(images, labels):
+        dataset.append((torch.Tensor(image / 255), label))
+    return dataset
+
+
+def generate_all_examples(data_dir,corruption):
+    corruption = corruption # _CORRUPTIONS
+    data_dir = os.path.join(data_dir,_DIRNAME)
+    images_file = os.path.join(data_dir, _CORRUPTIONS_TO_FILENAMES[corruption])
+    labels_file = os.path.join(data_dir, _LABELS_FILENAME)
+    labels = np.load(labels_file)
+    images = np.load(images_file)
+    # images = images[(severity - 1) * num_images:severity * num_images]
     # return zip(torch.Tensor(images), torch.Tensor(labels))
     dataset = []
     for (image, label) in zip(images, labels):

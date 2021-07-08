@@ -91,6 +91,11 @@ def _cifar10(split: str, scheme, severity: int) -> Dataset:
                 transforms.RandomAutocontrast(p=0.5),
                 transforms.ToTensor(),
             ]))
+        elif scheme in ["augmix","augmix_half_ga","'augmix_ga'"]:
+            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip()
+            ]))
         else:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
                 transforms.RandomCrop(32, padding=4),
