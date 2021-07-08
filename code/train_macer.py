@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 18:15:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-08 16:58:40
+LastEditTime: 2021-07-08 17:03:16
 '''
 import argparse
 import time
@@ -16,7 +16,7 @@ from architectures import ARCHITECTURES
 from datasets import DATASETS, get_num_classes
 from train_utils import log, test
 from train_utils import prologue
-from ..third_party.macer import macer_train
+from third_party.macer import macer_train
 
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
