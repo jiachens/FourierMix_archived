@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-08 16:51:56
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-08 16:51:56
+LastEditTime: 2021-07-08 17:17:42
 '''
 import argparse
 import time
@@ -52,6 +52,9 @@ parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 parser.add_argument('--id', default=None, type=int,
                     help='experiment id, `randint(10000)` if None')
+parser.add_argument('--gpu', default=None, type=str,
+                    help='id(s) for CUDA_VISIBLE_DEVICES')
+parser.add_argument("--no_normalize", default=True, action='store_false')
 
 #####################
 # Options added by Salman et al. (2019)
