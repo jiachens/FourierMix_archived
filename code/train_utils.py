@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-07 23:00:39
+LastEditTime: 2021-07-08 19:52:16
 '''
 import os
 import shutil
@@ -13,7 +13,7 @@ import numpy as np
 import torch.nn as nn
 from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, Optimizer
-from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import StepLR, MultiStepLR
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 
@@ -123,7 +123,18 @@ def prologue(args):
 
     criterion = CrossEntropyLoss().to(device)
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    scheduler = StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+    # scheduler = StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+    if args.arch in ['cifar_resnet110']:
+        scheduler = MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
+    else:
+        scheduler = StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+
+    if args.arch in ['cifar_resnet110']:
+        # for resnet110 original paper uses lr=0.01 for first 400 minibatches for warm-up
+        # then switch back. In this setup it will correspond for first epoch.
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = args.lr*0.1
+    
     starting_epoch = 0
 
     # Load latest checkpoint if exists (to handle philly failures)

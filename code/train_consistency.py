@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-08 16:51:56
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-08 17:17:42
+LastEditTime: 2021-07-08 18:05:56
 '''
 import argparse
 import time
@@ -30,6 +30,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
 parser.add_argument('arch', type=str, choices=ARCHITECTURES)
+parser.add_argument('outdir', type=str, help='folder to save model and training log)')
 parser.add_argument('--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--epochs', default=150, type=int, metavar='N',
@@ -82,7 +83,7 @@ if args.adv_training:
     mode = f"salman_{args.epsilon}_{args.num_steps}_{args.warmup}"
 else:
     mode = f"cohen"
-args.outdir = f"logs/{args.dataset}/consistency/{mode}/num_{args.num_noise_vec}/lbd_{args.lbd}/eta_{args.eta}/noise_{args.noise_sd}"
+args.outdir = args.outdir + f"/logs/{args.dataset}/consistency/{mode}/num_{args.num_noise_vec}/lbd_{args.lbd}/eta_{args.eta}/noise_{args.noise_sd}"
 
 args.epsilon /= 256.0
 
@@ -112,7 +113,7 @@ def main():
 
         # In PyTorch 1.1.0 and later, you should call `optimizer.step()` before `lr_scheduler.step()`.
         # See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
-        scheduler.step(epoch)
+        scheduler.step()
 
         torch.save({
             'epoch': epoch + 1,

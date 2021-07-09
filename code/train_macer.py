@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 18:15:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-08 17:03:16
+LastEditTime: 2021-07-08 19:56:55
 '''
 import argparse
 import time
@@ -25,7 +25,7 @@ parser.add_argument('arch', type=str, choices=ARCHITECTURES)
 parser.add_argument('outdir', type=str, help='folder to save model and training log)')
 parser.add_argument('--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
-parser.add_argument('--epochs', default=90, type=int, metavar='N',
+parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--batch', default=256, type=int, metavar='N',
                     help='batchsize (default: 256)')

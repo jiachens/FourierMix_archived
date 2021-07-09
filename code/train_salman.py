@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-08 16:52:49
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-08 16:52:50
+LastEditTime: 2021-07-08 19:57:11
 '''
 # this file is based on code publicly available at
 #   https://github.com/Hadisalman/smoothing-adversarial
@@ -29,9 +29,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
 parser.add_argument('arch', type=str, choices=ARCHITECTURES)
+parser.add_argument('outdir', type=str, help='folder to save model and training log)')
 parser.add_argument('--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
-parser.add_argument('--epochs', default=90, type=int, metavar='N',
+parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--batch', default=256, type=int, metavar='N',
                     help='batchsize (default: 256)')
@@ -51,6 +52,8 @@ parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 parser.add_argument('--id', default=None, type=int,
                     help='experiment id, `randint(10000)` if None')
+parser.add_argument("--no_normalize", default=True, action='store_false')
+
 
 #####################
 # Options added by Salman et al. (2019)
@@ -86,7 +89,7 @@ elif args.attack == 'DDN':
     mode = f"ddn_{args.epsilon}_{args.num_steps}_{args.warmup}_{args.init_norm_DDN}_{args.gamma_DDN}"
 else:
     raise Exception('Unknown attack')
-args.outdir = f"logs/{args.dataset}/salman/{mode}/num_{args.num_noise_vec}/noise_{args.noise_sd}"
+args.outdir += f"/logs/{args.dataset}/salman/{mode}/num_{args.num_noise_vec}/noise_{args.noise_sd}"
 
 args.epsilon /= 256.0
 args.init_norm_DDN /= 256.0
