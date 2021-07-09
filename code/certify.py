@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-30 11:45:37
+LastEditTime: 2021-07-09 12:15:55
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -40,8 +40,12 @@ os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 if __name__ == "__main__":
     # load the base classifier
     checkpoint = torch.load(args.base_classifier)
-    base_classifier = get_architecture(checkpoint["arch"], args.dataset, args.no_normalize)
-    base_classifier.load_state_dict(checkpoint['state_dict'])
+    try:
+        base_classifier = get_architecture(checkpoint["arch"], args.dataset, args.no_normalize)
+        base_classifier.load_state_dict(checkpoint['state_dict'])
+    except:
+        base_classifier = get_architecture("cifar_resnet110", args.dataset, args.no_normalize)
+        base_classifier.load_state_dict(checkpoint['model_state_dict'])
 
     # create the smooothed classifier g
     smoothed_classifier = Smooth(base_classifier, get_num_classes(args.dataset), args.sigma)

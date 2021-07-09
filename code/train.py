@@ -132,11 +132,11 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         elif args.scheme in ['half_ga','contrast_half_ga','contrast_2_half_ga','fog_half_ga']:
             index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
             inputs[index] = inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd
-        # if i == 0:
-        #     test_img = torchvision.utils.make_grid(inputs, nrow = 16)
-        #     torchvision.utils.save_image(
-        #         test_img, "./test/test_3.png", nrow = 16
-        #     )
+        if i == 0:
+            test_img = torchvision.utils.make_grid(inputs, nrow = 16)
+            torchvision.utils.save_image(
+                test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.severity)+".png", nrow = 16
+            )
 
         # compute output
         outputs = model(inputs)
