@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-09 12:38:35
+LastEditTime: 2021-07-09 12:45:24
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -45,8 +45,17 @@ if __name__ == "__main__":
         base_classifier.load_state_dict(checkpoint['state_dict'])
     except:
         base_classifier = get_architecture("cifar_resnet110", args.dataset, args.no_normalize)
-        print(checkpoint['model_state_dict'].keys())
-        base_classifier.load_state_dict(checkpoint['model_state_dict'])
+        # print(checkpoint['model_state_dict'].keys())
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for key, val in checkpoint['model_state_dict'].items():
+            # print(key)
+            if key[:6] == 'module':
+                name = key[7:]  # remove 'module.'
+            else:
+                name = key
+            new_state_dict[name] = val
+        base_classifier.load_state_dict(new_state_dict)
 
     # create the smooothed classifier g
     smoothed_classifier = Smooth(base_classifier, get_num_classes(args.dataset), args.sigma)
