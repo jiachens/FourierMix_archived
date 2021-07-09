@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-09 12:15:55
+LastEditTime: 2021-07-09 12:38:35
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -45,6 +45,7 @@ if __name__ == "__main__":
         base_classifier.load_state_dict(checkpoint['state_dict'])
     except:
         base_classifier = get_architecture("cifar_resnet110", args.dataset, args.no_normalize)
+        print(checkpoint['model_state_dict'].keys())
         base_classifier.load_state_dict(checkpoint['model_state_dict'])
 
     # create the smooothed classifier g
