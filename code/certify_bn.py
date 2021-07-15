@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 17:53:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 22:44:40
+LastEditTime: 2021-07-15 00:03:10
 '''
 import argparse
 import os
@@ -48,10 +48,11 @@ args = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
 def adapt(data,dir,model):
-    model = bn_helper.configure_model(model)
+    model = bn_helper.configure_model(model,eps=1e-5, momentum=0.1,reset_stats=True)
     index = np.random.choice(len(data),args.batch_size,replace=False)
     inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
     inputs = torch.stack(inputs).cuda()
+    inputs += torch.randn_like(inputs, device='cuda') * args.sigma
     model(inputs)
     print("Adaptation Done ...")
     torch.save({
