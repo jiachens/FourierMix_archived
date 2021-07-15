@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 14:42:17
+LastEditTime: 2021-07-15 14:43:13
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         # certify the prediction of g around x
         x = x.cuda()
         if x.shape[1] != 3:
-            x = x.permute(3,1,2)
+            x = x.permute(0,3,1,2)
         x = BoundedTensor(x, ptb)
         prediction = model(x)
         after_time = time()
