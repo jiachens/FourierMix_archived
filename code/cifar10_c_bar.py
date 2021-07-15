@@ -3,11 +3,13 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-14 16:24:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-14 23:18:15
+LastEditTime: 2021-07-15 14:11:55
 '''
 import os
 import numpy as np
 import torch
+from torch.utils.data import Dataset
+
 
 _CIFAR_IMAGE_SIZE = (32, 32, 3)
 _CIFAR_CLASSES = 10
@@ -42,7 +44,20 @@ def generate_examples(data_dir,corruption,severity):
     images = np.load(images_file)
     images = images[(severity - 1) * num_images:severity * num_images]
     # return zip(torch.Tensor(images), torch.Tensor(labels))
-    dataset = []
-    for (image, label) in zip(images, labels):
-        dataset.append((torch.Tensor(image / 255), label))
+    dataset = CustomDataset(images,labels)
+    # for (image, label) in zip(images, labels):
+    #     dataset.append((torch.Tensor(image / 255), label))
     return dataset
+
+class CustomDataset(Dataset):
+    def __init__(self, data, label):
+        self.data = data
+        self.label = label
+
+    def __len__(self):
+        return len(self.label)
+
+    def __getitem__(self, idx):
+        image = torch.Tensor(self.data[idx] / 255)
+        label = self.label[idx]
+        return image, label
