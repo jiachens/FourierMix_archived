@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 15:54:17
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 00:47:53
+LastEditTime: 2021-07-15 11:21:35
 '''
 import argparse
 import os
@@ -51,12 +51,12 @@ def adapt(data,dir,model):
     model = tent_helper.configure_model(model,eps=1e-5, momentum=0.1)
     parameter,_ = tent_helper.collect_params(model)
     optimizer_tent = optim.SGD(parameter, lr=0.001)
+    index = np.random.choice(len(data),args.batch_size,replace=False)
+    inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
+    inputs = torch.stack(inputs).cuda()
+    inputs += torch.randn_like(inputs, device='cuda') * args.sigma
 
     for iteration in range(args.niter):
-        index = np.random.choice(len(data),args.batch_size,replace=False)
-        inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
-        inputs = torch.stack(inputs).cuda()
-        inputs += torch.randn_like(inputs, device='cuda') * args.sigma
         tent_helper.forward_and_adapt(inputs,model,optimizer_tent)
     print("Adaptation Done ...")
     torch.save({
