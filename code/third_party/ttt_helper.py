@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-13 18:06:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-13 23:05:09
+LastEditTime: 2021-07-15 17:28:56
 '''
 import numpy as np
 import torch
@@ -30,9 +30,10 @@ def build_model(args):
         head = head_on_layer2(net, 4)
     ssh = ExtractorHead(ext, head).cuda()
 
-    if len(args.gpu) > 1:
-        net = torch.nn.DataParallel(net)
-        ssh = torch.nn.DataParallel(ssh)
+    # if len(args.gpu) > 1:
+    net = torch.nn.DataParallel(net)
+    ssh = torch.nn.DataParallel(ssh)
+    
     return net, ext, head, ssh
 
 def rotate_batch(batch, label):
