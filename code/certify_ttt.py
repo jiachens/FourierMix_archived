@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-13 22:48:22
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 23:15:33
+LastEditTime: 2021-07-15 17:01:06
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -57,14 +57,15 @@ def adapt(data,arch,dir,net,ext,ssh):
     # else:
     #     ssh.train()
     #     optimizer_ssh = optim.SGD(ssh.parameters(), lr=0.001)
-
+    index = np.random.choice(len(data),args.batch_size,replace=False)
+    inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
+    inputs = torch.stack(inputs).cuda()
+    inputs += torch.randn_like(inputs, device='cuda') * args.sigma
+    inputs_ssh, labels_ssh = ttt_helper.rotate_batch(inputs, 'rand')
+    inputs_ssh, labels_ssh = inputs_ssh.cuda(), labels_ssh.cuda()
+    
     for iteration in range(args.niter):
-        index = np.random.choice(len(data),args.batch_size,replace=False)
-        inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
-        inputs = torch.stack(inputs).cuda()
-        inputs += torch.randn_like(inputs, device='cuda') * args.sigma
-        inputs_ssh, labels_ssh = ttt_helper.rotate_batch(inputs, 'rand')
-        inputs_ssh, labels_ssh = inputs_ssh.cuda(), labels_ssh.cuda()
+        
         optimizer_ssh.zero_grad()
         outputs_ssh = ssh(inputs_ssh)
         loss_ssh = criterion_ssh(outputs_ssh, labels_ssh)
