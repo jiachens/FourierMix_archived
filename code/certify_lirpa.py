@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 14:43:13
+LastEditTime: 2021-07-15 14:44:20
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     if not os.path.exists(dir):
         os.makedirs(dir,exist_ok = True)
     f = open(args.outfile, 'w')
-    print("idx\tlabel\tpredict\tradius\tcorrect\ttime", file=f, flush=True)
+    # print("idx\tlabel\tpredict\tradius\tcorrect\ttime", file=f, flush=True)
 
     # iterate through the dataset
     if args.dataset == "cifar10-c":
@@ -121,14 +121,14 @@ if __name__ == "__main__":
             lb, ub = model.compute_bounds(x=(x,), method=method.split()[0])
             lb = lb.detach().cpu().numpy()
             ub = ub.detach().cpu().numpy()
-            print("Bounding method:", method)
+            print("Bounding method:", method, file=f, flush=True)
             for i in range(args.batch):
-                print("Image {} top-1 prediction {} ground-truth {}".format(i, p_label[i], label[i]))
+                print("Image {} top-1 prediction {} ground-truth {}".format(i, p_label[i], label[i]), file=f, flush=True)
                 for j in range(10):
                     indicator = '(ground-truth)' if j == label[i] else ''
                     print("f_{j}(x_0): {l:8.3f} <= f_{j}(x_0+delta) <= {u:8.3f} {ind}".format(
-                        j=j, l=lb[i][j], u=ub[i][j], ind=indicator))
-            print()
+                        j=j, l=lb[i][j], u=ub[i][j], ind=indicator), file=f, flush=True)
+            print('\n', file=f, flush=True)
 
     #     total_correct += correct
 
