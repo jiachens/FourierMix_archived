@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 17:53:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 00:34:44
+LastEditTime: 2021-07-15 19:06:04
 '''
 import argparse
 import os
@@ -52,7 +52,7 @@ def adapt(data,dir,model):
     index = np.random.choice(len(data),args.batch_size,replace=False)
     inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
     inputs = torch.stack(inputs).cuda()
-    inputs += torch.randn_like(inputs, device='cuda') * args.sigma
+    # inputs += torch.randn_like(inputs, device='cuda') * args.sigma
     model(inputs)
     print("Adaptation Done ...")
     torch.save({
