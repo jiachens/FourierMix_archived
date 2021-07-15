@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 17:53:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 17:54:46
+LastEditTime: 2021-07-14 22:44:40
 '''
 import argparse
 import os
@@ -51,7 +51,7 @@ def adapt(data,dir,model):
     model = bn_helper.configure_model(model)
     index = np.random.choice(len(data),args.batch_size,replace=False)
     inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
-    inputs = torch.stack(inputs)
+    inputs = torch.stack(inputs).cuda()
     model(inputs)
     print("Adaptation Done ...")
     torch.save({
