@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 15:54:17
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 23:08:49
+LastEditTime: 2021-07-14 23:55:03
 '''
 import argparse
 import os
@@ -64,6 +64,7 @@ def adapt(data,dir,model):
         'state_dict': model.state_dict(), 
         'optimizer': optimizer_tent.state_dict(),
     }, os.path.join(dir, 'tent_checkpoint_{}_{}.pth.tar'.format(args.corruption, args.severity)))
+    model.eval()
     return model
 
 if __name__ == "__main__":

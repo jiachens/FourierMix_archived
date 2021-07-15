@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 16:18:10
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 23:51:39
+LastEditTime: 2021-07-14 23:56:13
 '''
 import torch
 import torch.nn as nn
@@ -45,9 +45,7 @@ def configure_model(model):
             m.track_running_stats = True
             # m.running_mean -= m.running_mean
             # m.running_var /= m.running_var
-            m.running_mean.zero_()
-            m.running_var.fill_(1)
-            m.num_batches_tracked.zero_()
+            m.reset_running_stats()
     return model
 
 @torch.enable_grad()  # ensure grads in possible no grad context for testing
