@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 16:18:10
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 23:56:13
+LastEditTime: 2021-07-15 00:45:54
 '''
 import torch
 import torch.nn as nn
@@ -31,7 +31,7 @@ def softmax_entropy(x: torch.Tensor) -> torch.Tensor:
     """Entropy of softmax distribution from logits."""
     return -(x.softmax(1) * x.log_softmax(1)).sum(1)
 
-def configure_model(model):
+def configure_model(model,eps, momentum):
     """Configure model for use with tent."""
     # train mode, because tent optimizes the model to minimize entropy
     model.train()
@@ -41,11 +41,13 @@ def configure_model(model):
     for m in model.modules():
         if isinstance(m, nn.BatchNorm2d):
             m.requires_grad_(True)
+            m.eps = eps
+            m.momentum = momentum
             # force use of batch stats in train and eval modes
             m.track_running_stats = True
             # m.running_mean -= m.running_mean
             # m.running_var /= m.running_var
-            m.reset_running_stats()
+            # m.reset_running_stats()
     return model
 
 @torch.enable_grad()  # ensure grads in possible no grad context for testing
