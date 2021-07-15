@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 14:31:48
+LastEditTime: 2021-07-15 14:41:20
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     else:
         dataset = get_dataset(args.dataset, args.split)
 
-    img = dataset.data[:args.batch]
+    img = torch.Tensor(dataset.data[:args.batch])
     if img.shape[1] != 3:
         img = img.permute(3,1,2)
 
