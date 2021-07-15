@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-13 22:48:22
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 17:55:02
+LastEditTime: 2021-07-14 21:47:24
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -62,6 +62,7 @@ def adapt(data,arch,dir,net,ext,ssh):
         index = np.random.choice(len(data),args.batch_size,replace=False)
         inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
         inputs = torch.stack(inputs)
+        inputs += torch.randn_like(inputs, device='cuda') * args.sigma
         inputs_ssh, labels_ssh = ttt_helper.rotate_batch(inputs, 'rand')
         inputs_ssh, labels_ssh = inputs_ssh.cuda(), labels_ssh.cuda()
         optimizer_ssh.zero_grad()
