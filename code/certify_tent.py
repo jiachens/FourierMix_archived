@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 15:54:17
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 17:54:54
+LastEditTime: 2021-07-14 22:41:56
 '''
 import argparse
 import os
@@ -49,7 +49,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
 def adapt(data,dir,model):
     model = tent_helper.configure_model(model)
-    parameter = tent_helper.collect_params(model)
+    parameter,_ = tent_helper.collect_params(model)
     optimizer_tent = optim.SGD(parameter, lr=0.001)
 
     for iteration in range(args.niter):
