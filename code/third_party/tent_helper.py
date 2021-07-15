@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 16:18:10
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 23:26:53
+LastEditTime: 2021-07-14 23:29:50
 '''
 import torch
 import torch.nn as nn
@@ -43,8 +43,8 @@ def configure_model(model):
             m.requires_grad_(True)
             # force use of batch stats in train and eval modes
             # m.track_running_stats = False
-            m.running_mean = None
-            m.running_var = None
+            m.running_mean = 0.
+            m.running_var = 1.
     return model
 
 @torch.enable_grad()  # ensure grads in possible no grad context for testing
