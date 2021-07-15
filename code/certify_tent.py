@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 15:54:17
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-14 22:44:30
+LastEditTime: 2021-07-14 23:08:49
 '''
 import argparse
 import os
@@ -56,6 +56,7 @@ def adapt(data,dir,model):
         index = np.random.choice(len(data),args.batch_size,replace=False)
         inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
         inputs = torch.stack(inputs).cuda()
+        inputs += torch.randn_like(inputs, device='cuda') * args.sigma
         tent_helper.forward_and_adapt(inputs,model,optimizer_tent)
     print("Adaptation Done ...")
     torch.save({
