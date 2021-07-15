@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 14:44:20
+LastEditTime: 2021-07-15 14:46:58
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -14,6 +14,7 @@ from core import Smooth
 from time import time
 import torch
 import datetime
+import numpy as np
 from architectures import get_architecture
 from auto_LiRPA import BoundedModule, BoundedTensor, PerturbationLpNorm
 
@@ -88,7 +89,7 @@ if __name__ == "__main__":
     test_data = torch.utils.data.DataLoader(dataset, batch_size=args.batch, pin_memory=True, num_workers=4)
     
     model = BoundedModule(base_classifier, torch.empty_like(img), bound_opts={"conv_mode": "patches"})
-    ptb = PerturbationLpNorm(norm=2, eps=0.2)
+    ptb = PerturbationLpNorm(norm=np.inf, eps=0.1)
     
     total = 0
     total_correct = 0
