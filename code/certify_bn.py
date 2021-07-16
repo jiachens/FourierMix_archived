@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 17:53:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 19:06:04
+LastEditTime: 2021-07-15 21:27:44
 '''
 import argparse
 import os
@@ -32,8 +32,10 @@ parser.add_argument("--path", type=str, help="path to dataset")
 parser.add_argument("--corruption", type=str, default="fog", help="corruption type when using cifar10-c")
 parser.add_argument("--severity", type=int, default=1, help="severity level when using cifar10-c")
 parser.add_argument("--batch", type=int, default=1000, help="batch size")
+parser.add_argument("--number", type=int, default=500, help="number of test samples for Tent")
 parser.add_argument("--batch_size", type=int, default=500, help="batch size for Tent")
 parser.add_argument("--skip", type=int, default=1, help="how many examples to skip")
+parser.add_argument("--epoch", type=int, default=1, help="how many epochs to leverage")
 parser.add_argument("--max", type=int, default=-1, help="stop after this many examples")
 parser.add_argument("--split", choices=["train", "test"], default="test", help="train or test set")
 parser.add_argument("--N0", type=int, default=100)
@@ -49,11 +51,13 @@ os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
 def adapt(data,dir,model):
     model = bn_helper.configure_model(model,eps=1e-5, momentum=0.1,reset_stats=False,no_stats=False)
-    index = np.random.choice(len(data),args.batch_size,replace=False)
-    inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
+    index = np.random.choice(len(data),args.number,replace=False)
+    inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.number)]
     inputs = torch.stack(inputs).cuda()
     # inputs += torch.randn_like(inputs, device='cuda') * args.sigma
-    model(inputs)
+    for _ in range(args.epoch):
+        index = np.random.choice(args.number,args.batch_size,replace=False)
+        model(inputs[index])
     print("Adaptation Done ...")
     torch.save({
         'arch': args.arch,
