@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 21:36:02
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-07 21:36:03
+LastEditTime: 2021-07-16 16:45:24
 '''
 # this file is copied from
 #   https://github.com/RuntianZ/macer
@@ -18,6 +18,7 @@ ICLR 2020 Submission
 import torch
 import torch.nn.functional as F
 from torch.distributions.normal import Normal
+import numpy as np
 
 
 def macer_train(sigma, lbd, gauss_num, beta, gamma, num_classes,
@@ -37,8 +38,10 @@ def macer_train(sigma, lbd, gauss_num, beta, gamma, num_classes,
     new_shape = [input_size * gauss_num]
     new_shape.extend(inputs[0].shape)
     inputs = inputs.repeat((1, gauss_num, 1, 1)).view(new_shape)
-    noise = torch.randn_like(inputs, device=device) * sigma
-    noisy_inputs = inputs + noise
+    index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
+    noise = torch.randn_like(inputs[index], device=device) * sigma
+    noisy_inputs = inputs 
+    noisy_inputs[index] += noise
 
     outputs = model(noisy_inputs)
     outputs = outputs.reshape((input_size, gauss_num, num_classes))
