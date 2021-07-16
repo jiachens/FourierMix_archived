@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-13 22:48:22
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 17:01:06
+LastEditTime: 2021-07-15 21:46:54
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -31,7 +31,8 @@ parser.add_argument("--path", type=str, help="path to dataset")
 parser.add_argument("--corruption", type=str, default="fog", help="corruption type when using cifar10-c")
 parser.add_argument("--severity", type=int, default=1, help="severity level when using cifar10-c")
 parser.add_argument("--batch", type=int, default=1000, help="batch size")
-parser.add_argument("--batch_size", type=int, default=500, help="batch size for TTT")
+parser.add_argument("--number", type=int, default=500, help="number of test samples for Tent")
+parser.add_argument("--batch_size", type=int, default=128, help="batch size for Tent")
 parser.add_argument("--skip", type=int, default=1, help="how many examples to skip")
 parser.add_argument("--max", type=int, default=-1, help="stop after this many examples")
 parser.add_argument("--split", choices=["train", "test"], default="test", help="train or test set")
@@ -57,18 +58,18 @@ def adapt(data,arch,dir,net,ext,ssh):
     # else:
     #     ssh.train()
     #     optimizer_ssh = optim.SGD(ssh.parameters(), lr=0.001)
-    index = np.random.choice(len(data),args.batch_size,replace=False)
-    inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
+    index = np.random.choice(len(data),args.number,replace=False)
+    inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.number)]
     inputs = torch.stack(inputs).cuda()
     inputs += torch.randn_like(inputs, device='cuda') * args.sigma
     inputs_ssh, labels_ssh = ttt_helper.rotate_batch(inputs, 'rand')
     inputs_ssh, labels_ssh = inputs_ssh.cuda(), labels_ssh.cuda()
     
     for iteration in range(args.niter):
-        
+        index = np.random.choice(args.number,args.batch_size,replace=False)
         optimizer_ssh.zero_grad()
-        outputs_ssh = ssh(inputs_ssh)
-        loss_ssh = criterion_ssh(outputs_ssh, labels_ssh)
+        outputs_ssh = ssh(inputs_ssh[index])
+        loss_ssh = criterion_ssh(outputs_ssh, labels_ssh[index])
         loss_ssh.backward()
         optimizer_ssh.step()
     print("Adaptation Done ...")
