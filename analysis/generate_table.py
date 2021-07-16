@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-16 14:45:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-16 15:26:55
+LastEditTime: 2021-07-16 15:28:44
 '''
 import argparse
 import os
@@ -59,7 +59,7 @@ if args.dataset == 'cifar10-c':
             cer_acc = lines[-4].split(':')[-1].strip()
             r = lines[-3].split(':')[-1].strip()
             c_r = lines[-2].split(':')[-1].strip()
-            f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r + '/' + c_r +'\n')
+            f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:5] + '/' + c_r[:5]  +'\n')
             f.close()
 
 elif args.dataset == 'cifar10-c-bar':
@@ -73,7 +73,7 @@ elif args.dataset == 'cifar10-c-bar':
             cer_acc = lines[-4].split(':')[-1].strip()
             r = lines[-3].split(':')[-1].strip()
             c_r = lines[-2].split(':')[-1].strip()
-            f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r + '/' + c_r +'\n')
+            f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:5]  + '/' + c_r[:5] +'\n')
             f.close()
 
 f_w.close()
