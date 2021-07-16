@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 17:53:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 21:30:52
+LastEditTime: 2021-07-15 21:31:24
 '''
 import argparse
 import os
@@ -33,7 +33,7 @@ parser.add_argument("--corruption", type=str, default="fog", help="corruption ty
 parser.add_argument("--severity", type=int, default=1, help="severity level when using cifar10-c")
 parser.add_argument("--batch", type=int, default=1000, help="batch size")
 parser.add_argument("--number", type=int, default=500, help="number of test samples for Tent")
-parser.add_argument("--batch_size", type=int, default=500, help="batch size for Tent")
+parser.add_argument("--batch_size", type=int, default=128, help="batch size for Tent")
 parser.add_argument("--skip", type=int, default=1, help="how many examples to skip")
 parser.add_argument("--epoch", type=int, default=10, help="how many epochs to leverage")
 parser.add_argument("--max", type=int, default=-1, help="stop after this many examples")
