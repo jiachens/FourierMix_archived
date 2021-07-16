@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-13 22:48:22
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 21:46:54
+LastEditTime: 2021-07-16 12:53:10
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -51,13 +51,13 @@ os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
 def adapt(data,arch,dir,net,ext,ssh):
     criterion_ssh = nn.CrossEntropyLoss().cuda()
-    if True:
+    if False:
         ssh.eval()
         ext.train()
         optimizer_ssh = optim.SGD(ext.parameters(), lr=0.001)
-    # else:
-    #     ssh.train()
-    #     optimizer_ssh = optim.SGD(ssh.parameters(), lr=0.001)
+    else:
+        ssh.train()
+        optimizer_ssh = optim.SGD(ssh.parameters(), lr=0.001)
     index = np.random.choice(len(data),args.number,replace=False)
     inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.number)]
     inputs = torch.stack(inputs).cuda()
