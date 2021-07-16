@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-14 15:54:17
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-15 11:28:41
+LastEditTime: 2021-07-15 21:59:28
 '''
 import argparse
 import os
@@ -32,7 +32,8 @@ parser.add_argument("--path", type=str, help="path to dataset")
 parser.add_argument("--corruption", type=str, default="fog", help="corruption type when using cifar10-c")
 parser.add_argument("--severity", type=int, default=1, help="severity level when using cifar10-c")
 parser.add_argument("--batch", type=int, default=1000, help="batch size")
-parser.add_argument("--batch_size", type=int, default=500, help="batch size for Tent")
+parser.add_argument("--number", type=int, default=500, help="number of test samples for Tent")
+parser.add_argument("--batch_size", type=int, default=128, help="batch size for Tent")
 parser.add_argument("--skip", type=int, default=1, help="how many examples to skip")
 parser.add_argument("--max", type=int, default=-1, help="stop after this many examples")
 parser.add_argument("--split", choices=["train", "test"], default="test", help="train or test set")
@@ -51,14 +52,16 @@ def adapt(data,dir,model):
     model = tent_helper.configure_model(model,eps=1e-5, momentum=0.1)
     parameter,_ = tent_helper.collect_params(model)
     optimizer_tent = optim.SGD(parameter, lr=0.001,momentum=0.9)
-    index = np.random.choice(len(data),args.batch_size,replace=False)
-    inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.batch_size)]
+    index = np.random.choice(len(data),args.number,replace=False)
+    inputs = [data[index[j]][0].permute(2,0,1) for j in range(args.number)]
     inputs = torch.stack(inputs).cuda()
     inputs += torch.randn_like(inputs, device='cuda') * args.sigma
 
     for iteration in range(args.niter):
-        tent_helper.forward_and_adapt(inputs,model,optimizer_tent)
+        index = np.random.choice(args.number,args.batch_size,replace=False)
+        tent_helper.forward_and_adapt(inputs[index],model,optimizer_tent)
     print("Adaptation Done ...")
+    
     torch.save({
         'arch': args.arch,
         'state_dict': model.state_dict(), 
