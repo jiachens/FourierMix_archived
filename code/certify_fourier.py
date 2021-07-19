@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-16 22:48:37
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-21 15:15:55
+LastEditTime: 2021-07-19 17:02:44
 '''
 import argparse
 import os
@@ -39,6 +39,8 @@ parser.add_argument("--N", type=int, default=100000, help="number of samples to 
 parser.add_argument("--alpha", type=float, default=0.001, help="failure probability")
 parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
 parser.add_argument("--eps", type=float, default=4.0, help="which epsilon to use")
+parser.add_argument("--no_normalize", default=True, action='store_false')
+
 args = parser.parse_args()
 
 os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
@@ -46,8 +48,31 @@ os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 if __name__ == "__main__":
     # load the base classifier
     checkpoint = torch.load(args.base_classifier)
-    base_classifier = get_architecture(checkpoint["arch"], args.dataset)
-    base_classifier.load_state_dict(checkpoint['state_dict'])
+    try:
+        base_classifier = get_architecture(checkpoint["arch"], args.dataset, args.no_normalize)
+        base_classifier.load_state_dict(checkpoint['state_dict'])
+    except:
+        base_classifier = get_architecture("cifar_resnet110", args.dataset, args.no_normalize)
+        # print(checkpoint['model_state_dict'].keys())
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        if 'model_state_dict' in checkpoint.keys():
+            for key, val in checkpoint['model_state_dict'].items():
+                # print(key)
+                if key[:6] == 'module':
+                    name = key[7:]  # remove 'module.'
+                else:
+                    name = key
+                new_state_dict[name] = val
+        else:
+            for key, val in checkpoint['state_dict'].items():
+                # print(key)
+                if key[:6] == 'module':
+                    name = key[7:]  # remove 'module.'
+                else:
+                    name = key
+                new_state_dict[name] = val
+        base_classifier.load_state_dict(new_state_dict)
 
     # create the smooothed classifier g
     smoothed_classifier = Smooth(base_classifier, get_num_classes(args.dataset), args.sigma)
