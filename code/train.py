@@ -49,6 +49,7 @@ parser.add_argument('--scheme', default='ga', type=str,
 parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 parser.add_argument("--no_normalize", default=True, action='store_false')
+parser.add_argument("--adv", default=False, action='store_true')
 parser.add_argument("--severity", type=int, default=1, help="severity level to augment training using corruptions")
 
 args = parser.parse_args()
@@ -139,6 +140,9 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
             )
 
         # compute output
+        if args.adv:
+            inputs = LinfPGD(inputs,targets,model,criterion)
+            model.train()
         outputs = model(inputs)
         loss = criterion(outputs, targets)
 
@@ -168,6 +172,26 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
                 data_time=data_time, loss=losses, top1=top1, top5=top5))
 
     return (losses.avg, top1.avg)
+
+def LinfPGD(images,labels,model,criterion,step_size = 2,num_step = 7, epsilon = 8):
+    model.eval()
+    step_size /= 255.
+    epsilon /= 255.
+    ori_images = images.data
+
+
+    for i in range(num_step):
+        images.requires_grad = True
+        outputs = model(images)
+        model.zero_grad()
+        cost = criterion(outputs, labels)
+        cost.backward()
+
+        adv_images = images + step_size*images.grad.sign()
+        eta = torch.clamp(adv_images - ori_images, min=-epsilon, max=epsilon)
+        images = torch.clamp(ori_images + eta, min=0, max=1).detach_()
+        
+    return images
 
 
 def test(loader: DataLoader, model: torch.nn.Module, criterion, noise_sd: float):

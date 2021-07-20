@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-08 16:11:00
+LastEditTime: 2021-07-19 22:35:49
 '''
 import time
 import matplotlib.pyplot as plt
@@ -68,7 +68,7 @@ def main():
     epochs = args.epochs
     k = 3
     alpha = 1.
-    js_loss = True
+    js_loss = False
     batch_size = args.batch
 
     if args.gpu:
@@ -144,6 +144,11 @@ def main():
 
             else:
                 images, targets = images.to(device), targets.to(device)
+                if args.scheme in ['augmix_half_ga']:
+                    index = np.random.choice(images.shape[0],images.shape[0]//2)
+                    images[index] = images[index] + torch.randn_like(images[index], device='cuda') * args.noise_sd
+                elif args.scheme in ['augmix_ga']:
+                    images = images + torch.randn_like(images, device='cuda') * args.noise_sd
                 logits = model(images)
                 loss = F.cross_entropy(logits, targets)
 
