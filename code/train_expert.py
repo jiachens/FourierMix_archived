@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 13:30:57
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-21 17:54:36
+LastEditTime: 2021-07-21 18:04:20
 '''
 import argparse
 import os
@@ -159,11 +159,11 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
             inputs = LinfPGD(inputs,targets,model,criterion)
             model.train()
 
-        # if i == 0:
-        #     test_img = torchvision.utils.make_grid(inputs, nrow = 16)
-        #     torchvision.utils.save_image(
-        #         test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.severity)+".png", nrow = 16
-        #     )
+        if i == 0:
+            test_img = torchvision.utils.make_grid(inputs, nrow = 16)
+            torchvision.utils.save_image(
+                test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.expert)+".png", nrow = 16
+            )
 
         outputs = model(inputs)
         loss = criterion(outputs, targets)
