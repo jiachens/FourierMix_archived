@@ -103,7 +103,10 @@ def _cifar10(split: str, scheme, severity: int) -> Dataset:
                 transforms.ToTensor()
             ]))
     elif split == "test":
-        return datasets.CIFAR10("./dataset_cache", train=False, download=True, transform=transforms.ToTensor())
+        if scheme in ["expert_half_ga","expert_ga"]:
+            return datasets.CIFAR10("./dataset_cache", train=False, download=True, transform=None)
+        else:
+            return datasets.CIFAR10("./dataset_cache", train=False, download=True, transform=transforms.ToTensor())
 
 def _cifar10_c(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_c.generate_examples(data_dir,corruption,severity)
