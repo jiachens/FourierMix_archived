@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 13:30:57
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-21 18:04:20
+LastEditTime: 2021-07-21 18:11:47
 '''
 import argparse
 import os
@@ -148,9 +148,9 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         targets = targets.cuda()
 
         # augment inputs with noise
-        if args.scheme in ['ga']:
+        if args.scheme in ['expert_ga']:
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
-        elif args.scheme in ['half_ga']:
+        elif args.scheme in ['expert_half_ga']:
             index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
             inputs[index] = inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd
 
