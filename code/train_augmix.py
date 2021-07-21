@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-19 22:35:49
+LastEditTime: 2021-07-21 15:09:03
 '''
 import time
 import matplotlib.pyplot as plt
@@ -68,7 +68,7 @@ def main():
     epochs = args.epochs
     k = 3
     alpha = 1.
-    js_loss = False
+    js_loss = True
     batch_size = args.batch
 
     if args.gpu:

@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:51
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-07 15:16:11
+LastEditTime: 2021-07-21 16:46:15
 '''
 # Copyright 2019 Google LLC
 #
@@ -142,7 +142,12 @@ def sharpness(pil_img, level):
 
 
 augmentations = [
-    autocontrast, equalize, posterize, rotate, solarize, shear_x, shear_y,
+    autocontrast, equalize, posterize, solarize, rotate, shear_x, shear_y,
+    translate_x, translate_y
+]
+
+augmentations_x = [
+    rotate, shear_x, shear_y,
     translate_x, translate_y
 ]
 

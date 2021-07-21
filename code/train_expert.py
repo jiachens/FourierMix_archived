@@ -1,7 +1,10 @@
-# this file is based on code publicly available at
-#   https://github.com/bearpaw/pytorch-classification
-# written by Wei Yang.
-
+'''
+Description: 
+Autor: Jiachen Sun
+Date: 2021-07-21 13:30:57
+LastEditors: Jiachen Sun
+LastEditTime: 2021-07-21 16:24:15
+'''
 import argparse
 import os
 import torch
@@ -18,6 +21,10 @@ from PIL import ImageEnhance
 import numpy as np
 import torchvision
 import random
+from torchvision import transforms
+from augment_and_mix import ExpDataset
+
+
 
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
@@ -46,27 +53,41 @@ parser.add_argument('--gpu', default='0', type=str,
                     help='id(s) for CUDA_VISIBLE_DEVICES')
 parser.add_argument('--scheme', default='ga', type=str,
                     help='training schemes like gaussian augmentation')
+parser.add_argument('--expert', default='autocontrast', type=str,
+                    help='augmix expert')
 parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 parser.add_argument("--no_normalize", default=True, action='store_false')
 parser.add_argument("--adv", default=False, action='store_true')
-parser.add_argument("--severity", type=int, default=1, help="severity level to augment training using corruptions")
+parser.add_argument("--jsd", default=False, action='store_true')
 
 args = parser.parse_args()
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
 def main():
-
+    preprocess = transforms.Compose([
+        # transforms.ToPILImage(),
+        transforms.ToTensor()
+    ])
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
 
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme, severity=args.severity)
     test_dataset = get_dataset(args.dataset, 'test')
     pin_memory = (args.dataset == "imagenet")
-    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=args.batch,
+
+    train_data = ExpDataset(train_dataset, preprocess, args.expert, not(args.jsd))
+    test_data = ExpDataset(test_dataset, preprocess, args.expert)
+
+    
+    train_loader = DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)
-    test_loader = DataLoader(test_dataset, shuffle=False, batch_size=args.batch,
+                              
+    # train_loader = DataLoader(train_dataset, shuffle=True, batch_size=args.batch,
+    #                           num_workers=args.workers, pin_memory=pin_memory)
+                              
+    test_loader = DataLoader(test_data, shuffle=False, batch_size=args.batch,
                              num_workers=args.workers, pin_memory=pin_memory)
 
     model = get_architecture(args.arch, args.dataset,args.no_normalize)
@@ -127,9 +148,9 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         targets = targets.cuda()
 
         # augment inputs with noise
-        if args.scheme in ['ga', 'contrast_ga','contrast_2_ga','fog_ga']:
+        if args.scheme in ['ga']:
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
-        elif args.scheme in ['half_ga','contrast_half_ga','contrast_2_half_ga','fog_half_ga']:
+        elif args.scheme in ['half_ga']:
             index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
             inputs[index] = inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd
 
@@ -138,11 +159,11 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
             inputs = LinfPGD(inputs,targets,model,criterion)
             model.train()
 
-        if i == 0:
-            test_img = torchvision.utils.make_grid(inputs, nrow = 16)
-            torchvision.utils.save_image(
-                test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.severity)+".png", nrow = 16
-            )
+        # if i == 0:
+        #     test_img = torchvision.utils.make_grid(inputs, nrow = 16)
+        #     torchvision.utils.save_image(
+        #         test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.severity)+".png", nrow = 16
+        #     )
 
         outputs = model(inputs)
         loss = criterion(outputs, targets)
