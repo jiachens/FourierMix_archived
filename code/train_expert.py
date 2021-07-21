@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 13:30:57
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-21 16:24:15
+LastEditTime: 2021-07-21 17:43:17
 '''
 import argparse
 import os
@@ -73,12 +73,12 @@ def main():
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
 
-    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme, severity=args.severity)
+    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
     test_dataset = get_dataset(args.dataset, 'test')
     pin_memory = (args.dataset == "imagenet")
 
-    train_data = ExpDataset(train_dataset, preprocess, args.expert, not(args.jsd))
-    test_data = ExpDataset(test_dataset, preprocess, args.expert)
+    train_data = ExpDataset(train_dataset, preprocess, args.expert, 'train', not(args.jsd))
+    test_data = ExpDataset(test_dataset, preprocess, args.expert, 'test')
 
     
     train_loader = DataLoader(train_data, shuffle=True, batch_size=args.batch,
