@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 17:52:36
+LastEditTime: 2021-07-22 18:41:13
 '''
 import argparse
 import os
@@ -71,6 +71,7 @@ EXPERT = ['autocontrast','equalize','solarize','posterize']
 
 
 class MixModel(torch.nn.Module):
+    
     def __init__(self, expert_model, gating_model) -> None:
         super(MixModel, self).__init__()
         self.expert_model = expert_model
@@ -80,7 +81,7 @@ class MixModel(torch.nn.Module):
         expert_output = [expert(x) for expert in self.expert_model]
         weight_output = torch.unsqueeze(self.gating_model(x),dim=-1)  
         expert_output = torch.stack(expert_output,dim=1)
-        print(expert_output[:,:,:4])
+        print(weight_output)
         outputs = torch.mul(expert_output,weight_output)
         outputs = torch.sum(outputs,dim=1)
 
