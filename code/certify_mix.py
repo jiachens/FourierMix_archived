@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 15:44:16
+LastEditTime: 2021-07-22 16:08:35
 '''
 import argparse
 import os
@@ -35,7 +35,7 @@ parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
 parser.add_argument("--no_normalize", default=True, action='store_false')
 args = parser.parse_args()
 
-os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
+# os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
 
 def loadcheckpoint(path,arch):
