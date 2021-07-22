@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 14:25:25
+LastEditTime: 2021-07-22 16:28:18
 '''
 import argparse
 import os
@@ -171,6 +171,8 @@ def train(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, o
 
     # switch to train mode
     model.train()
+    for expert in expert_model:
+        expert.train()
 
     for i, (inputs, targets) in enumerate(loader):
         # measure data loading time
@@ -241,6 +243,8 @@ def test(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, no
 
     # switch to eval mode
     model.eval()
+    for expert in expert_model:
+        expert.eval()
 
     with torch.no_grad():
         for i, (inputs, targets) in enumerate(loader):

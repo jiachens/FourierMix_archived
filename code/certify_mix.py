@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 16:08:35
+LastEditTime: 2021-07-22 16:09:29
 '''
 import argparse
 import os
@@ -31,7 +31,7 @@ parser.add_argument("--split", choices=["train", "test"], default="test", help="
 parser.add_argument("--N0", type=int, default=100)
 parser.add_argument("--N", type=int, default=100000, help="number of samples to use")
 parser.add_argument("--alpha", type=float, default=0.001, help="failure probability")
-parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
+# parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
 parser.add_argument("--no_normalize", default=True, action='store_false')
 args = parser.parse_args()
 
