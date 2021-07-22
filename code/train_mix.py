@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 16:28:18
+LastEditTime: 2021-07-22 16:35:28
 '''
 import argparse
 import os
@@ -102,7 +102,7 @@ def main():
     expert_model = [loadcheckpoint(args.pre_path + '/expert_half_ga_no_normalize_' + path + '/checkpoint.pth.tar') for path in EXPERT]
     para = []
     for expert in expert_model:
-        para += list(expert.layer3.parameters()) + list(expert.fc.parameters())
+        para += list(expert.fc.parameters()) #list(expert.layer3.parameters())
     # para_total = [para + list(expert.layer3.parameters()) + list(expert.fc.parameters()) for expert in expert_model]
 
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)

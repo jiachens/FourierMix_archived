@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 16:29:17
+LastEditTime: 2021-07-22 16:35:37
 '''
 import argparse
 import os
@@ -79,7 +79,6 @@ class MixModel(torch.nn.Module):
     def forward(self,x):
         expert_output = [expert(x) for expert in self.expert_model]
         weight_output = torch.unsqueeze(self.gating_model(x),dim=-1)  
-        print(weight_output)
         expert_output = torch.stack(expert_output,dim=1)
 
         outputs = torch.mul(expert_output,weight_output)
@@ -140,7 +139,6 @@ if __name__ == "__main__":
         after_time = time()
         correct = int(prediction == label)
         base_correct = int(base_prediction == label)
-        print(base_correct)
         total_correct += correct
         base_total_correct += base_correct
 
