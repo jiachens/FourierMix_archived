@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 14:12:23
+LastEditTime: 2021-07-22 14:14:46
 '''
 import argparse
 import os
@@ -76,7 +76,7 @@ class MixModel(torch.nn.Module):
         self.expert_model = expert_model
         self.gating_model = gating_model
    
-    def forwad(self,x):
+    def forward(self,x):
         expert_output = [expert(x) for expert in self.expert_model]
         weight_output = torch.unsqueeze(self.gating_model(x),dim=-1)  
         expert_output = torch.stack(expert_output,dim=1)
