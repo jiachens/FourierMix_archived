@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 13:34:00
+LastEditTime: 2021-07-22 14:12:23
 '''
 import argparse
 import os
@@ -72,6 +72,7 @@ EXPERT = ['autocontrast','equalize','solarize','posterize']
 
 class MixModel(torch.nn.Module):
     def __init__(self, expert_model, gating_model) -> None:
+        super(MixModel, self).__init__()
         self.expert_model = expert_model
         self.gating_model = gating_model
    
