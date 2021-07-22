@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 02:32:05
+LastEditTime: 2021-07-22 02:41:18
 '''
 import torch
 from torchvision.models.resnet import resnet50
@@ -15,7 +15,7 @@ from torch.nn.functional import interpolate
 # resnet50 - the classic ResNet-50, sized for ImageNet
 # cifar_resnet20 - a 20-layer residual network sized for CIFAR
 # cifar_resnet110 - a 110-layer residual network sized for CIFAR
-ARCHITECTURES = ["resnet50", "cifar_resnet20", "cifar_resnet110"]
+ARCHITECTURES = ["resnet50", "cifar_resnet20", "cifar_resnet110","cifar_resnet20_4"]
 
 def get_architecture(arch: str, dataset: str, normalize :bool = True) -> torch.nn.Module:
     """ Return a neural network (with random weights)
