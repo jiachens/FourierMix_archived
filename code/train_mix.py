@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 02:47:35
+LastEditTime: 2021-07-22 02:50:49
 '''
 import argparse
 import os
@@ -106,7 +106,7 @@ def main():
     # para_total = [para + list(expert.layer3.parameters()) + list(expert.fc.parameters()) for expert in expert_model]
 
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
-    test_dataset = get_dataset(args.dataset, 'test', scheme = args.scheme)
+    test_dataset = get_dataset(args.dataset, 'test')
     pin_memory = (args.dataset == "imagenet")
     train_data =  AugMixDataset(train_dataset, preprocess, 3, 1., not(args.jsd)) #MixDataset(train_dataset, preprocess, args.expert, 'train', not(args.jsd))
     # test_data = MixDataset(test_dataset, preprocess, args.expert, 'test')
