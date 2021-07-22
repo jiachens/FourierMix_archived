@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 16:35:37
+LastEditTime: 2021-07-22 16:47:56
 '''
 import argparse
 import os
@@ -139,6 +139,7 @@ if __name__ == "__main__":
         after_time = time()
         correct = int(prediction == label)
         base_correct = int(base_prediction == label)
+        print(base_correct)
         total_correct += correct
         base_total_correct += base_correct
 

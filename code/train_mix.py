@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 16:35:28
+LastEditTime: 2021-07-22 16:37:28
 '''
 import argparse
 import os
@@ -23,6 +23,8 @@ import torchvision
 import random
 from torchvision import transforms
 from augment_and_mix import AugMixDataset 
+
+# BN could be a problem 
 
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
