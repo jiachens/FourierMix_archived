@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 12:59:31
+LastEditTime: 2021-07-22 14:25:25
 '''
 import argparse
 import os
@@ -153,6 +153,12 @@ def main():
             'state_dict': model.state_dict(),
             'optimizer': optimizer.state_dict(),
         }, os.path.join(args.outdir, 'checkpoint.pth.tar'))
+
+        for i,expert in enumerate(EXPERT):
+            torch.save({
+                'arch': "cifar_resnet110",
+                'state_dict': expert_model[i].state_dict(),
+            }, os.path.join(args.outdir, expert + '_checkpoint.pth.tar'))
 
 
 def train(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, optimizer: Optimizer, epoch: int, noise_sd: float):
