@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 02:46:53
+LastEditTime: 2021-07-22 02:47:35
 '''
 import argparse
 import os
@@ -181,11 +181,11 @@ def train(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, o
             inputs[index] = inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd
 
 
-        if i == 0:
-            test_img = torchvision.utils.make_grid(inputs, nrow = 16)
-            torchvision.utils.save_image(
-                test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.expert)+".png", nrow = 16
-            )
+        # if i == 0:
+        #     test_img = torchvision.utils.make_grid(inputs, nrow = 16)
+        #     torchvision.utils.save_image(
+        #         test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.expert)+".png", nrow = 16
+        #     )
 
         expert_output = [expert(inputs) for expert in expert_model]
         weight_output = torch.unsqueeze(model(inputs),dim=-1)  
