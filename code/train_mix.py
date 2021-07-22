@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 02:34:46
+LastEditTime: 2021-07-22 02:40:26
 '''
 import argparse
 import os
@@ -52,8 +52,8 @@ parser.add_argument('--gpu', default='0', type=str,
                     help='id(s) for CUDA_VISIBLE_DEVICES')
 parser.add_argument('--scheme', default='ga', type=str,
                     help='training schemes like gaussian augmentation')
-parser.add_argument('--expert', default='autocontrast', type=str,
-                    help='augmix expert')
+# parser.add_argument('--expert', default='autocontrast', type=str,
+#                     help='augmix expert')
 parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 parser.add_argument("--no_normalize", default=True, action='store_false')
@@ -189,6 +189,8 @@ def train(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, o
         expert_output = torch.stack(expert_output,dim=1)
 
         outputs = torch.mul(expert_output,weight_output)
+        outputs = torch.mean(outputs,dim=1)
+
         loss = criterion(outputs, targets)
 
         # measure accuracy and record loss
@@ -243,7 +245,14 @@ def test(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, no
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
 
             # compute output
-            outputs = model(inputs)
+            expert_output = [expert(inputs) for expert in expert_model]
+            weight_output = torch.unsqueeze(model(inputs),dim=-1)  
+            expert_output = torch.stack(expert_output,dim=1)
+
+            outputs = torch.mul(expert_output,weight_output)
+            outputs = torch.mean(outputs,dim=1)
+
+            
             loss = criterion(outputs, targets)
 
             # measure accuracy and record loss
