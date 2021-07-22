@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 02:42:38
+LastEditTime: 2021-07-22 02:44:05
 '''
 import argparse
 import os
@@ -88,6 +88,7 @@ def loadcheckpoint(path):
                     name = key
                 new_state_dict[name] = val
         base_classifier.load_state_dict(new_state_dict)
+    return base_classifier
 
 EXPERT = ['autocontrast','equalize','solarize','posterize']
 
