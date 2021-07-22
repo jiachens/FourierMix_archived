@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 02:50:49
+LastEditTime: 2021-07-22 12:59:31
 '''
 import argparse
 import os
@@ -192,7 +192,7 @@ def train(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, o
         expert_output = torch.stack(expert_output,dim=1)
 
         outputs = torch.mul(expert_output,weight_output)
-        outputs = torch.mean(outputs,dim=1)
+        outputs = torch.sum(outputs,dim=1)
 
         loss = criterion(outputs, targets)
 
@@ -253,7 +253,7 @@ def test(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, no
             expert_output = torch.stack(expert_output,dim=1)
 
             outputs = torch.mul(expert_output,weight_output)
-            outputs = torch.mean(outputs,dim=1)
+            outputs = torch.sum(outputs,dim=1)
 
             
             loss = criterion(outputs, targets)
