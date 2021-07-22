@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 16:37:28
+LastEditTime: 2021-07-22 18:27:51
 '''
 import argparse
 import os
@@ -263,6 +263,8 @@ def test(loader: DataLoader, model: torch.nn.Module, expert_model, criterion, no
             expert_output = [expert(inputs) for expert in expert_model]
             weight_output = torch.unsqueeze(model(inputs),dim=-1)  
             expert_output = torch.stack(expert_output,dim=1)
+            print(expert_output)
+            print(weight_output)
 
             outputs = torch.mul(expert_output,weight_output)
             outputs = torch.sum(outputs,dim=1)
