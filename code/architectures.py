@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-26 01:23:08
+LastEditTime: 2021-07-22 02:32:05
 '''
 import torch
 from torchvision.models.resnet import resnet50
@@ -29,6 +29,8 @@ def get_architecture(arch: str, dataset: str, normalize :bool = True) -> torch.n
         cudnn.benchmark = True
     elif arch == "cifar_resnet20":
         model = resnet_cifar(depth=20, num_classes=10).cuda()
+    elif arch == "cifar_resnet20_4":
+        model = torch.nn.Sequential(resnet_cifar(depth=20, num_classes=4).cuda(),torch.nn.Softmax(dim=-1).cuda())
     elif arch == "cifar_resnet110":
         model = resnet_cifar(depth=110, num_classes=10).cuda()
     if normalize:
