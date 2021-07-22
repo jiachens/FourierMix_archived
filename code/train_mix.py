@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 02:40:26
+LastEditTime: 2021-07-22 02:42:38
 '''
 import argparse
 import os
@@ -98,7 +98,7 @@ def main():
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
 
-    expert_model = [loadcheckpoint(args.pre_path + '/expert_half_ga_no_normalize_' + path) for path in EXPERT]
+    expert_model = [loadcheckpoint(args.pre_path + '/expert_half_ga_no_normalize_' + path + '/checkpoint.pth.tar') for path in EXPERT]
     para = []
     para_total = [para + list(expert.layer3.parameters()) + list(expert.fc.parameters()) for expert in expert_model]
 
