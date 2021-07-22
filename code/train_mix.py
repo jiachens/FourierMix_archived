@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-21 21:25:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 02:44:05
+LastEditTime: 2021-07-22 02:46:53
 '''
 import argparse
 import os
@@ -101,7 +101,9 @@ def main():
 
     expert_model = [loadcheckpoint(args.pre_path + '/expert_half_ga_no_normalize_' + path + '/checkpoint.pth.tar') for path in EXPERT]
     para = []
-    para_total = [para + list(expert.layer3.parameters()) + list(expert.fc.parameters()) for expert in expert_model]
+    for expert in expert_model:
+        para += list(expert.layer3.parameters()) + list(expert.fc.parameters())
+    # para_total = [para + list(expert.layer3.parameters()) + list(expert.fc.parameters()) for expert in expert_model]
 
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
     test_dataset = get_dataset(args.dataset, 'test', scheme = args.scheme)
@@ -120,7 +122,7 @@ def main():
     init_logfile(logfilename, "epoch\ttime\tlr\ttrain loss\ttrain acc\ttestloss\ttest acc")
 
     criterion = CrossEntropyLoss().cuda()
-    optimizer = SGD(para_total + list(model.parameters()), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+    optimizer = SGD(para + list(model.parameters()), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
     
     if args.arch in ['cifar_resnet110','cifar_resnet20_4']:
         scheduler = MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
