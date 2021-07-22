@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 14:14:46
+LastEditTime: 2021-07-22 15:44:16
 '''
 import argparse
 import os
@@ -17,7 +17,7 @@ from architectures import get_architecture
 
 parser = argparse.ArgumentParser(description='Certify many examples')
 parser.add_argument("dataset", choices=DATASETS, help="which dataset")
-parser.add_argument("gate_model", type=str, help="path to saved pytorch model of gate classifier")
+# parser.add_argument("gate_model", type=str, help="path to saved pytorch model of gate classifier")
 parser.add_argument("pre_path", type=str, help="path to saved pytorch model of expert classifier")
 parser.add_argument("sigma", type=float, help="noise hyperparameter")
 parser.add_argument("outfile", type=str, help="output file")
@@ -90,8 +90,8 @@ class MixModel(torch.nn.Module):
 
 if __name__ == "__main__":
     # load the base classifier
-    expert_model = [loadcheckpoint(args.pre_path + '/expert_half_ga_no_normalize_' + path + '/checkpoint.pth.tar',"cifar_resnet110") for path in EXPERT]
-    gating_model = loadcheckpoint(args.gate_model, "cifar_resnet20_4")
+    expert_model = [loadcheckpoint(args.pre_path + '/' + path + '_checkpoint.pth.tar',"cifar_resnet110") for path in EXPERT]
+    gating_model = loadcheckpoint(args.pre_path + '/checkpoint.pth.tar', "cifar_resnet20_4")
     # create the smooothed classifier g
     base_classifier = MixModel(expert_model,gating_model)
 
