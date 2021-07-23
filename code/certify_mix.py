@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 19:43:44
+LastEditTime: 2021-07-22 20:52:34
 '''
 import argparse
 import os
@@ -74,7 +74,7 @@ class MixModel(torch.nn.Module):
     
     def __init__(self, expert_model, gating_model) -> None:
         super(MixModel, self).__init__()
-        self.expert_model = expert_model
+        self.expert_model = [expert_model[0]]
         self.gating_model = gating_model
    
     def forward(self,x):
@@ -86,8 +86,6 @@ class MixModel(torch.nn.Module):
         outputs = torch.mean(expert_output,dim=1)
 
         return outputs
-    
-
 
 if __name__ == "__main__":
     # load the base classifier
