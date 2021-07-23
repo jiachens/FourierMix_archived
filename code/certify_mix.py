@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 21:18:51
+LastEditTime: 2021-07-22 21:19:35
 '''
 import argparse
 import os
@@ -89,7 +89,8 @@ class MixModel(torch.nn.Module):
 
 if __name__ == "__main__":
     # load the base classifier
-    expert_model = [loadcheckpoint(args.pre_path + '/' + path + '_checkpoint.pth.tar',"cifar_resnet110") for path in EXPERT]
+    # expert_model = [loadcheckpoint(args.pre_path + '/' + path + '_checkpoint.pth.tar',"cifar_resnet110") for path in EXPERT]
+    expert_model = [loadcheckpoint(args.pre_path + '/' + 'autocontrast' + '_checkpoint.pth.tar',"cifar_resnet110")]
     gating_model = loadcheckpoint(args.pre_path + '/checkpoint.pth.tar', "cifar_resnet20_4")
     # create the smooothed classifier g
     base_classifier = MixModel(expert_model,gating_model)
