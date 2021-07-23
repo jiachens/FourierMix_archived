@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 21:21:15
+LastEditTime: 2021-07-22 21:24:00
 '''
 import argparse
 import os
@@ -74,23 +74,22 @@ class MixModel(torch.nn.Module):
     
     def __init__(self, expert_model, gating_model) -> None:
         super(MixModel, self).__init__()
-        self.expert_model = expert_model[0]
+        self.expert_model = [expert_model[0]]
         self.gating_model = gating_model
    
     def forward(self,x):
-        # expert_output = [expert(x) for expert in self.expert_model]
+        expert_output = [expert(x) for expert in self.expert_model]
         # weight_output = torch.unsqueeze(self.gating_model(x),dim=-1)  
         # expert_output = torch.stack(expert_output,dim=1)
         # # print(weight_output)
         # # outputs = torch.mul(expert_output,weight_output)
         # outputs = torch.mean(expert_output,dim=1)
-        outputs = self.expert_model(x)
+        outputs = expert_output[0]
         return outputs
 
 if __name__ == "__main__":
     # load the base classifier
     expert_model = [loadcheckpoint(args.pre_path + '/' + path + '_checkpoint.pth.tar',"cifar_resnet110") for path in EXPERT]
-    # expert_model = [loadcheckpoint(args.pre_path + '/' + 'autocontrast' + '_checkpoint.pth.tar',"cifar_resnet110")]
     gating_model = loadcheckpoint(args.pre_path + '/checkpoint.pth.tar', "cifar_resnet20_4")
     # create the smooothed classifier g
     base_classifier = MixModel(expert_model,gating_model)
