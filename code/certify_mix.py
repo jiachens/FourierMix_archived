@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 21:34:37
+LastEditTime: 2021-07-22 21:36:54
 '''
 import argparse
 import os
@@ -83,8 +83,8 @@ class MixModel(torch.nn.Module):
         weight_output = torch.unsqueeze(self.gating_model(x),dim=-1)  
         expert_output = torch.stack(expert_output,dim=1)
         # print(weight_output)
-        # outputs = torch.mul(expert_output,weight_output)
-        outputs = torch.mean(expert_output,dim=1)
+        outputs = torch.mul(expert_output,weight_output)
+        outputs = torch.sum(expert_output,dim=1)
         # outputs = expert_output[0]
         return outputs
 
