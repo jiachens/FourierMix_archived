@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-22 12:37:15
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-22 20:52:34
+LastEditTime: 2021-07-22 21:18:51
 '''
 import argparse
 import os
@@ -74,17 +74,17 @@ class MixModel(torch.nn.Module):
     
     def __init__(self, expert_model, gating_model) -> None:
         super(MixModel, self).__init__()
-        self.expert_model = [expert_model[0]]
+        self.expert_model = expert_model[0]
         self.gating_model = gating_model
    
     def forward(self,x):
-        expert_output = [expert(x) for expert in self.expert_model]
-        weight_output = torch.unsqueeze(self.gating_model(x),dim=-1)  
-        expert_output = torch.stack(expert_output,dim=1)
-        # print(weight_output)
-        # outputs = torch.mul(expert_output,weight_output)
-        outputs = torch.mean(expert_output,dim=1)
-
+        # expert_output = [expert(x) for expert in self.expert_model]
+        # weight_output = torch.unsqueeze(self.gating_model(x),dim=-1)  
+        # expert_output = torch.stack(expert_output,dim=1)
+        # # print(weight_output)
+        # # outputs = torch.mul(expert_output,weight_output)
+        # outputs = torch.mean(expert_output,dim=1)
+        outputs = self.expert_model(x)
         return outputs
 
 if __name__ == "__main__":
