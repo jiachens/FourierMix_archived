@@ -363,6 +363,7 @@ def train(loader: DataLoader, denoiser: torch.nn.Module, criterion, optimizer: O
         denoiser.eval()
     else:
         denoiser.train()
+        
     if classifier:
         classifier.eval()
     if args.objective == 'both':

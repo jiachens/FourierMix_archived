@@ -21,6 +21,8 @@ parser.add_argument("--dataset", choices=DATASETS, help="which dataset")
 parser.add_argument("--base_classifier", type=str, help="path to saved pytorch model of base classifier")
 parser.add_argument("--sigma", type=float, help="noise hyperparameter")
 parser.add_argument("--outfile", type=str, help="output file")
+parser.add_argument("--corruption", type=str, default="fog", help="corruption type when using cifar10-c")
+parser.add_argument("--severity", type=int, default=1, help="severity level when using cifar10-c")
 parser.add_argument("--batch", type=int, default=1000, help="batch size")
 parser.add_argument("--skip", type=int, default=1, help="how many examples to skip")
 parser.add_argument("--max", type=int, default=-1, help="stop after this many examples")
@@ -94,7 +96,13 @@ if __name__ == "__main__":
     f.close()
 
     # iterate through the dataset
-    dataset = get_dataset(args.dataset, args.split)
+    if args.dataset == "cifar10-c":
+        # print(args.path)
+        dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
+    elif args.dataset == "cifar10-c-bar":
+        dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
+    else:
+        dataset = get_dataset(args.dataset, args.split)
 
 
     total = 0
