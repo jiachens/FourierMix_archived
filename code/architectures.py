@@ -9,6 +9,7 @@ import torch
 from torchvision.models.resnet import resnet50
 import torch.backends.cudnn as cudnn
 from archs.cifar_resnet import resnet as resnet_cifar
+from archs.dncnn import DnCNN
 from datasets import get_normalize_layer
 from torch.nn.functional import interpolate
 
@@ -16,6 +17,11 @@ from torch.nn.functional import interpolate
 # cifar_resnet20 - a 20-layer residual network sized for CIFAR
 # cifar_resnet110 - a 110-layer residual network sized for CIFAR
 ARCHITECTURES = ["resnet50", "cifar_resnet20", "cifar_resnet110","cifar_resnet20_4"]
+
+DENOISERS_ARCHITECTURES = ["cifar_dncnn", "cifar_dncnn_wide"
+                        ]
+
+IMAGENET_CLASSIFIERS = ["resnet50"]
 
 def get_architecture(arch: str, dataset: str, normalize :bool = True) -> torch.nn.Module:
     """ Return a neural network (with random weights)
@@ -33,6 +39,12 @@ def get_architecture(arch: str, dataset: str, normalize :bool = True) -> torch.n
         model = torch.nn.Sequential(resnet_cifar(depth=20, num_classes=4).cuda(),torch.nn.Softmax(dim=-1).cuda())
     elif arch == "cifar_resnet110":
         model = resnet_cifar(depth=110, num_classes=10).cuda()
+    elif arch == "cifar_dncnn":
+        model = DnCNN(image_channels=3, depth=17, n_channels=64).cuda()
+        return model
+    elif arch == "cifar_dncnn_wide":
+        model = DnCNN(image_channels=3, depth=17, n_channels=128).cuda()
+        return model
     if normalize:
         normalize_layer = get_normalize_layer(dataset)
         return torch.nn.Sequential(normalize_layer, model)
