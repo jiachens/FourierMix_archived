@@ -17,6 +17,8 @@ from torchvision.transforms import ToPILImage
 from train_utils import AverageMeter, accuracy, init_logfile, log, copy_code, requires_grad_
 from augment_and_mix import AugMixDataset
 from torchvision import transforms
+import torch.nn.functional as F
+
 
 import argparse
 import datetime
@@ -73,6 +75,7 @@ parser.add_argument('--azure_datastore_path', type=str, default='',
 parser.add_argument('--philly_imagenet_path', type=str, default='',
                     help='Path to imagenet on philly')
 parser.add_argument("--no_normalize", default=True, action='store_false')
+parser.add_argument("--jsd", default=False, action='store_true')
 parser.add_argument('--scheme', default='no', type=str,
                     help='training schemes like gaussian augmentation')
 args = parser.parse_args()
@@ -103,7 +106,7 @@ def main():
     test_dataset = get_dataset(args.dataset, 'test')
     pin_memory = (args.dataset == "imagenet")
 
-    train_data = AugMixDataset(train_dataset, preprocess, 3, 1.0, True)
+    train_data = AugMixDataset(train_dataset, preprocess, 3, 1.0, not(args.jsd))
 
     if args.scheme == 'augmix':
         train_loader = DataLoader(train_data, shuffle=True, batch_size=args.batch,
@@ -373,39 +376,66 @@ def train(loader: DataLoader, denoiser: torch.nn.Module, criterion, optimizer: O
         # measure data loading time
         data_time.update(time.time() - end)
 
-        inputs = inputs.cuda()
-        targets = targets.cuda()
+        # inputs = inputs.cuda()
+        # targets = targets.cuda()
 
         # augment inputs with noise
-        noise = torch.randn_like(inputs, device='cuda') * noise_sd
         # if i == 0:
         #     test_img = torchvision.utils.make_grid(inputs + noise, nrow = 16)
         #     torchvision.utils.save_image(
         #         test_img, "./test/denoiser_output_dir/denoise_orig_"+str(noise_sd)+".png", nrow = 16
         #     )
         # compute output
-        outputs = denoiser(inputs + noise)
 
-        # if i == 0:
-        #     test_img = torchvision.utils.make_grid(outputs, nrow = 16)
-        #     torchvision.utils.save_image(
-        #         test_img, "./test/denoiser_output_dir/denoise_train_"+str(noise_sd)+".png", nrow = 16
-        #     )
-        if classifier:
-            outputs2 = classifier(outputs)
-        
-        if isinstance(criterion, MSELoss):
-            loss = criterion(outputs, inputs)
-        elif isinstance(criterion, CrossEntropyLoss):
-            if args.objective in ['stability','classification','finetune']:
-                if args.objective == 'stability':
-                    with torch.no_grad():
-                        targets = classifier(inputs)
-                        targets = targets.argmax(1).detach().clone()
-                loss = criterion(outputs2, targets)
-            else:
-                criterion2 = MSELoss(size_average=None, reduce=None, reduction = 'mean').cuda()
-                loss = criterion(outputs2, targets) + criterion2(outputs, inputs)
+        if args.jsd:
+            bs = inputs[0].size(0)
+            inputs = torch.cat(inputs, dim = 0).cuda() # [3 * batch, 3, 32, 32]
+            targets = targets.cuda()
+            noise = torch.randn_like(inputs, device='cuda') * noise_sd
+
+            outputs = denoiser(inputs + noise)
+
+            logits = classifier(outputs)
+            logits_orig, logits_augmix1, logits_augmix2 = logits[:bs], logits[bs:2*bs], logits[2*bs:]
+
+            loss = criterion(logits_orig, targets)
+
+            p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig, dim = -1), F.softmax(logits_augmix1, dim = -1), F.softmax(logits_augmix2, dim = -1)
+
+            # Clamp mixture distribution to avoid exploding KL divergence
+            p_mixture = torch.clamp((p_orig + p_augmix1 + p_augmix2) / 3., 1e-7, 1).log()
+            loss += 12 * (F.kl_div(p_mixture, p_orig, reduction='batchmean') +
+                            F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
+                            F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
+
+        else:
+
+            inputs = inputs.cuda()
+            targets = targets.cuda()
+            noise = torch.randn_like(inputs, device='cuda') * noise_sd
+
+            outputs = denoiser(inputs + noise)
+
+            # if i == 0:
+            #     test_img = torchvision.utils.make_grid(outputs, nrow = 16)
+            #     torchvision.utils.save_image(
+            #         test_img, "./test/denoiser_output_dir/denoise_train_"+str(noise_sd)+".png", nrow = 16
+            #     )
+            if classifier:
+                outputs2 = classifier(outputs)
+            
+            if isinstance(criterion, MSELoss):
+                loss = criterion(outputs, inputs)
+            elif isinstance(criterion, CrossEntropyLoss):
+                if args.objective in ['stability','classification','finetune']:
+                    if args.objective == 'stability':
+                        with torch.no_grad():
+                            targets = classifier(inputs)
+                            targets = targets.argmax(1).detach().clone()
+                    loss = criterion(outputs2, targets)
+                else:
+                    criterion2 = MSELoss(size_average=None, reduce=None, reduction = 'mean').cuda()
+                    loss = criterion(outputs2, targets) + criterion2(outputs, inputs)
 
         # record loss
         losses.update(loss.item(), inputs.size(0))

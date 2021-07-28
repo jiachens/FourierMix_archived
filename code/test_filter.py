@@ -97,12 +97,12 @@ if __name__ == "__main__":
         # img_grey = rgb2gray(np.round((x - x_orig) * 255)) / 255
         # img_grey_corr = rgb2gray(np.round((x) * 255)) / 255
         # img_grey_orig = rgb2gray(np.round((x_orig) * 255)) / 255
-        if True:
+        if False:
             x_orig_f = torch.fft.fftshift(torch.fft.fft2(x_orig))
         else:
             x_orig_f = torch.fft.fft2(x_orig)
 
-        size = 16
+        size = 31
         mask = torch.zeros_like(x_orig_f)
         start_id = (x_orig_f.shape[1] - size) // 2
         end_id = (x_orig_f.shape[1] + size) // 2
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         mask[:,start_id:end_id,start_id:end_id] = 1.
         x_orig_f *= mask        
 
-        if True:
+        if False:
             x_restored = torch.abs(torch.fft.ifft2(torch.fft.ifftshift(x_orig_f)))
         else:
             x_restored = torch.abs(torch.fft.ifft2(x_orig_f))
