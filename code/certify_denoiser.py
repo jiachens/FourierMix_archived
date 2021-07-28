@@ -88,8 +88,8 @@ if __name__ == "__main__":
     smoothed_classifier = Smooth(base_classifier, get_num_classes(args.dataset), args.sigma)
 
     # prepare output file
-    if not os.path.exists(args.outfile.split('sigma')[0]):
-        os.makedirs(args.outfile.split('sigma')[0])
+    if not os.path.exists(args.outfile.split(args.corruption)[0]):
+        os.makedirs(args.outfile.split(args.corruption)[0])
 
     f = open(args.outfile, 'w')
     print("idx\tlabel\tpredict\tradius\tcorrect\ttime", file=f, flush=True)
