@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-16 21:21:59
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-17 14:29:05
+LastEditTime: 2021-07-29 18:04:40
 '''
 from typing import Iterator, cast
 
@@ -120,7 +120,7 @@ def generate_basis_png(eps=4.0):
     basis = torch.stack(
         [spectrum_to_basis(s, l2_normalize=True) * eps for s in spectrum]
     )
-    # print(basis[:, None, :, :].shape)
+    # print(torch.max(basis[:, None, :, :]))
     basis_rightside = torchvision.utils.make_grid(
         basis[:, None, :, :], nrow=width - width_ignore_edge_size, padding=padding
     )[:, (image_size + padding) :, : -(image_size + padding)]

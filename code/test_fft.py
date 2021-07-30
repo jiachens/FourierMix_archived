@@ -1,9 +1,9 @@
 '''
 Description: 
 Autor: Jiachen Sun
-Date: 2021-07-20 16:54:37
+Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-29 22:43:35
+LastEditTime: 2021-07-29 23:04:34
 '''
 import numpy as np
 import os
@@ -90,9 +90,9 @@ if __name__ == "__main__":
         if x.shape[0] != 3:
             x = x.permute(2,0,1)
         # x = x.numpy()
-        x_orig = x
+        x_orig = x_orig
         # x_orig = x_orig.numpy()
-        x_orig += torch.randn_like(x_orig) * 0.25
+        # x_orig += torch.randn_like(x_orig) * 0.25
         # print(x - x_orig)
         # img_grey = rgb2gray(np.round((x - x_orig) * 255)) / 255
         # img_grey_corr = rgb2gray(np.round((x) * 255)) / 255
@@ -111,6 +111,16 @@ if __name__ == "__main__":
         x_orig_f *= mask        
 
         if True:
+            # for _ in range(10):
+            #     row = np.random.choice(6) + 12
+            #     col = np.random.choice(6) + 12
+            #     # perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] * np.random.uniform(0.5, 2)
+            #     # print(perturbation.shape)
+            #     # perturbation = perturbation
+            #     x_orig_f[0,row,col] *=  np.random.uniform(0., 1)
+            #     x_orig_f[1,row,col] *=  np.random.uniform(0., 1)
+            #     x_orig_f[2,row,col] *=  np.random.uniform(0., 1)
+            x_orig_f *= 0.2
             x_restored = torch.abs(torch.fft.ifft2(torch.fft.ifftshift(x_orig_f)))
         else:
             x_restored = torch.abs(torch.fft.ifft2(x_orig_f))
@@ -123,7 +133,7 @@ if __name__ == "__main__":
     plot = torch.stack(plot)
     test_img = torchvision.utils.make_grid(plot, nrow = 10)
     torchvision.utils.save_image(
-        test_img, "./test/filter/test.png", nrow = 10
+        test_img, "./test/filter/test_fft.png", nrow = 10
     )
    
     plt.close()
