@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-30 21:35:49
+LastEditTime: 2021-07-30 21:37:30
 '''
 import torch
 import fourier_basis
@@ -35,7 +35,7 @@ class FourierDataset(torch.utils.data.Dataset):
 def augment(x_orig, k, p, basis):
     p = np.random.choice(p)
     k = np.random.choice(k) 
-    seen = {}
+    seen = set()
 
     for _ in range(p):
         r = np.random.uniform(0.,k) 
