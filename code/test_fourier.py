@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 20:52:26
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-30 21:38:03
+LastEditTime: 2021-07-30 21:38:49
 '''
 import numpy as np
 import os
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         # x_orig += torch.randn_like(x_orig) * 0.25
         x_orig = x_orig.cuda()
 
-        p = np.random.choice(10)
+        p = np.random.choice(15)
         k = np.random.choice(10) 
         seen = set()
 
