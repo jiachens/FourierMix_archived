@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 20:52:26
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-31 01:58:27
+LastEditTime: 2021-07-31 16:58:54
 '''
 import numpy as np
 import os
@@ -54,6 +54,7 @@ if __name__ == "__main__":
         p = np.random.choice(50)
         k = np.random.choice(10) 
         seen = set()
+        x_orig_f = torch.fft.fftshift(torch.fft.fft2(x_orig))
 
         for _ in range(p):
             r = np.random.uniform(0.,k) 
@@ -64,16 +65,18 @@ if __name__ == "__main__":
                 continue
             else:
                 seen.add((row,col))
-            perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] * (1. / np.sqrt((row-15.5)**2+(col-15.5)**2)) #* np.random.uniform(1., 2.)
-            x_orig += perturbation * torch.tensor(np.random.choice((-1, 1),size=(3,1,1))).cuda()
+            # perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] * (1. / np.sqrt((row-15.5)**2+(col-15.5)**2)) #* np.random.uniform(1., 2.)
+            # x_orig += perturbation * torch.tensor(np.random.choice((-1, 1),size=(3,1,1))).cuda()
+            x_orig_f[:,row,col] *=  torch.tensor(np.random.uniform(0.25,0.5,size=(3,1,1))).cuda()
+            x_restored = torch.abs(torch.fft.ifft2(torch.fft.ifftshift(x_orig_f)))
             # print(np.random.choice((-1,1),size=(3,1,1)))
         # x_orig += torch.randn_like(x_orig) * 0.25
-        plot.append(x_orig)
+        plot.append(x_restored)
         
     plot = torch.stack(plot)
     test_img = torchvision.utils.make_grid(plot, nrow = 10)
     torchvision.utils.save_image(
-        test_img, "./test/fourier/test.png", nrow = 10
+        test_img, "./test/fourier/test_2.png", nrow = 10
     )
    
     plt.close()
