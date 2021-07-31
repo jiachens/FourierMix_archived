@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-30 21:43:29
+LastEditTime: 2021-07-30 21:46:56
 '''
 import torch
 import fourier_basis
@@ -17,7 +17,7 @@ class FourierDataset(torch.utils.data.Dataset):
         self.k = k
         self.p = p
         self.no_jsd = no_jsd
-        self.basis = fourier_basis.generate_basis(1)
+        self.basis = fourier_basis.generate_basis(1).cpu()
     
 
     def __getitem__(self, i):
@@ -47,6 +47,6 @@ def augment(x_orig, k, p, basis):
         else:
             seen.add((row,col))
         perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] * (3. / np.sqrt((row-15.5)**2+(col-15.5)**2)) #* np.random.uniform(1., 2.)
-        x_orig += perturbation * torch.tensor(np.random.choice((-1, 1),size=(3,1,1)))#.cuda()
+        x_orig += perturbation * torch.tensor(np.random.choice((-1, 1),size=(3,1,1)))
 
     return x_orig
