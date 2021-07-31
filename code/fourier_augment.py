@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-30 18:39:01
+LastEditTime: 2021-07-30 21:23:06
 '''
 import torch
 import fourier_basis
@@ -33,11 +33,15 @@ class FourierDataset(torch.utils.data.Dataset):
         return len(self.dataset)
 
 def augment(x_orig, k, p, basis):
-
+    p = np.random.choice(1,p)
+    k = np.random.uniform(1,k) 
+    
     for _ in range(p):
-        row = np.random.choice(k) + ((31 - k) // 2)
-        col = np.random.choice(k) + ((31 - k) // 2)
-        perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] * (2. / np.sqrt((row-15.5)**2+(col-15.5)**2)) * np.random.uniform(1., 2.)
+        r = np.random.uniform(0.,k) 
+        theta = np.random.uniform(0.,2*np.pi) 
+        row = int(r * np.cos(theta) + 15.5)
+        col = int(r * np.sin(theta) + 15.5)
+        perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] * (3. / np.sqrt((row-15.5)**2+(col-15.5)**2)) #* np.random.uniform(1., 2.)
         x_orig += perturbation * torch.tensor(np.random.choice((-1, 1),size=(3,1,1))).cuda()
 
     return x_orig

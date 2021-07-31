@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-30 20:39:20
+LastEditTime: 2021-07-30 21:23:35
 '''
 import time
 import matplotlib.pyplot as plt
@@ -67,7 +67,7 @@ CORRUPTIONS = [
 def main():
     epochs = args.epochs
     k = 10
-    p = 10
+    p = 15
     js_loss = True
     batch_size = args.batch
 
