@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-30 18:37:17
+LastEditTime: 2021-07-30 20:39:20
 '''
 import time
 import matplotlib.pyplot as plt
@@ -67,6 +67,7 @@ CORRUPTIONS = [
 def main():
     epochs = args.epochs
     k = 10
+    p = 10
     js_loss = True
     batch_size = args.batch
 
@@ -84,7 +85,7 @@ def main():
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
     test_data = get_dataset(args.dataset, 'test')
 
-    train_data = FourierDataset(train_dataset, k, not(js_loss))
+    train_data = FourierDataset(train_dataset, k, p, not(js_loss))
     
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)

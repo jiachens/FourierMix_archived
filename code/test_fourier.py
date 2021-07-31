@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 20:52:26
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-30 18:35:26
+LastEditTime: 2021-07-30 20:37:58
 '''
 import numpy as np
 import os
@@ -55,7 +55,7 @@ if __name__ == "__main__":
             row = np.random.choice(10) + 10
             col = np.random.choice(10) + 10
             # print(basis.shape)
-            perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] *  (2. / np.sqrt((row-15.5)**2+(col-15.5)**2)) * np.random.uniform(0.5, 1.5) 
+            perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] *  (2. / np.sqrt((row-15.5)**2+(col-15.5)**2)) * np.random.uniform(1., 2.) 
             # print(perturbation.shape)
             # perturbation = perturbation
             x_orig += perturbation  * torch.tensor(np.random.choice((-1, 1),size=(3,1,1))).cuda()
