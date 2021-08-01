@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-31 18:06:15
+LastEditTime: 2021-07-31 18:14:25
 '''
 import torch
 import fourier_basis
@@ -48,8 +48,10 @@ def augment(x_orig, k, p, basis):
             continue
         else:
             seen.add((row,col)) 
-        x_orig_f[:,row,col] *=  torch.tensor(np.random.uniform(0.25,0.5,size=(3,1,1)))
-        x_restored = torch.abs(torch.fft.ifft2(torch.fft.ifftshift(x_orig_f)))
+        # print(x_orig_f[:,row,col].shape)
+        x_orig_f[:,row,col] *=  torch.tensor(np.random.uniform(0.25,0.5,size=(3,)))
+    
+    x_restored = torch.abs(torch.fft.ifft2(torch.fft.ifftshift(x_orig_f)))
         # perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34] * (1. / np.sqrt((row-15.5)**2+(col-15.5)**2)) #* np.random.uniform(1., 2.)
         # x_orig += perturbation * torch.tensor(np.random.choice((-1, 1),size=(3,1,1)))
 
