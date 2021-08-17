@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-29 23:04:34
+LastEditTime: 2021-08-17 15:14:02
 '''
 import numpy as np
 import os
@@ -97,18 +97,16 @@ if __name__ == "__main__":
         # img_grey = rgb2gray(np.round((x - x_orig) * 255)) / 255
         # img_grey_corr = rgb2gray(np.round((x) * 255)) / 255
         # img_grey_orig = rgb2gray(np.round((x_orig) * 255)) / 255
-        if True:
-            x_orig_f = torch.fft.fftshift(torch.fft.fft2(x_orig))
-        else:
-            x_orig_f = torch.fft.fft2(x_orig)
+        x_orig_f = torch.fft.fftshift(torch.fft.fft2(x_orig))
+        x_orig_f_abs = x_orig_f.abs()
+        x_orig_f_ang = x_orig_f.angle()
+        # size = 31
+        # mask = torch.zeros_like(x_orig_f)
+        # start_id = (x_orig_f.shape[1] - size) // 2
+        # end_id = (x_orig_f.shape[1] + size) // 2
 
-        size = 31
-        mask = torch.zeros_like(x_orig_f)
-        start_id = (x_orig_f.shape[1] - size) // 2
-        end_id = (x_orig_f.shape[1] + size) // 2
-
-        mask[:,start_id:end_id,start_id:end_id] = 1.
-        x_orig_f *= mask        
+        # mask[:,start_id:end_id,start_id:end_id] = 1.
+        # x_orig_f *= mask        
 
         if True:
             # for _ in range(10):
@@ -120,8 +118,14 @@ if __name__ == "__main__":
             #     x_orig_f[0,row,col] *=  np.random.uniform(0., 1)
             #     x_orig_f[1,row,col] *=  np.random.uniform(0., 1)
             #     x_orig_f[2,row,col] *=  np.random.uniform(0., 1)
-            x_orig_f *= 0.2
+            x_orig_f_abs *= 1. - np.random.rand(*x_orig_f_abs.shape) * 0.8
+            x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / 5
+
+            x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
+            x_orig_f.imag = x_orig_f_abs * torch.sin(x_orig_f_ang)
+            
             x_restored = torch.abs(torch.fft.ifft2(torch.fft.ifftshift(x_orig_f)))
+            # x_restored_1 = torch.FloatTensor(x_restored_1)
         else:
             x_restored = torch.abs(torch.fft.ifft2(x_orig_f))
             mean = torch.mean(x_restored)
