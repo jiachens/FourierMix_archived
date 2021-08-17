@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-21 15:09:03
+LastEditTime: 2021-08-03 02:45:11
 '''
 import time
 import matplotlib.pyplot as plt
@@ -16,6 +16,7 @@ import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 from torchvision import datasets
 from torchvision import transforms
+import torchvision
 import cifar10_c
 import cifar10_c_bar
 from architectures import ARCHITECTURES, get_architecture

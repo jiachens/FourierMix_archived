@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:51
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-21 16:46:15
+LastEditTime: 2021-08-02 17:46:37
 '''
 # Copyright 2019 Google LLC
 #
@@ -50,6 +50,27 @@ def float_parameter(level, maxval):
     A float that results from scaling `maxval` according to `level`.
   """
   return float(level) * maxval / 10.
+
+
+def fourier_abs(pil_img, level):
+
+  pil_img_f = np.fft.fftshift(np.fft.fft2(pil_img))
+  pil_img_f_abs = np.abs(pil_img_f) * np.random.uniform()
+  pil_img_f_ang = np.angle(pil_img_f)
+  pil_img_f.real = pil_img_f_abs * np.cos(pil_img_f_ang)
+  pil_img_f.imag = pil_img_f_abs * np.sin(pil_img_f_ang)
+  pil_img_res = np.abs(np.fft.ifft2(np.fft.ifftshift(pil_img_f)))
+  return pil_img_res
+
+def fourier_angle(pil_img, level):
+  
+  pil_img_f = np.fft.fftshift(np.fft.fft2(pil_img))
+  pil_img_f_abs = np.abs(pil_img_f) 
+  pil_img_f_ang = np.angle(pil_img_f) + np.random.uniform()
+  pil_img_f.real = pil_img_f_abs * np.cos(pil_img_f_ang)
+  pil_img_f.imag = pil_img_f_abs * np.sin(pil_img_f_ang)
+  pil_img_res = np.abs(np.fft.ifft2(np.fft.ifftshift(pil_img_f)))
+  return pil_img_res
 
 
 def sample_level(n):
@@ -144,6 +165,10 @@ def sharpness(pil_img, level):
 augmentations = [
     autocontrast, equalize, posterize, solarize, rotate, shear_x, shear_y,
     translate_x, translate_y
+]
+
+augmentations_f = [
+    fourier_abs, fourier_angle
 ]
 
 augmentations_x = [

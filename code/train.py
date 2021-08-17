@@ -5,6 +5,7 @@
 import argparse
 import os
 import torch
+import setGPU
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from datasets import get_dataset, DATASETS
@@ -54,7 +55,7 @@ parser.add_argument("--severity", type=int, default=1, help="severity level to a
 
 args = parser.parse_args()
 
-# os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
 def main():
 
@@ -129,7 +130,7 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         # augment inputs with noise
         if args.scheme in ['ga', 'contrast_ga','contrast_2_ga','fog_ga']:
             inputs = inputs + torch.randn_like(inputs, device='cuda') * noise_sd
-        elif args.scheme in ['half_ga','contrast_half_ga','contrast_2_half_ga','fog_half_ga']:
+        elif args.scheme in ['half_ga','contrast_half_ga','contrast_2_half_ga','fog_half_ga','auto_half_ga']:
             index = np.random.choice(inputs.shape[0],inputs.shape[0]//2)
             inputs[index] = inputs[index] + torch.randn_like(inputs[index], device='cuda') * noise_sd
 

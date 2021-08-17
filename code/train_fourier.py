@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-31 02:00:52
+LastEditTime: 2021-08-17 14:30:12
 '''
 import time
 import matplotlib.pyplot as plt
@@ -16,6 +16,7 @@ import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 from torchvision import datasets
 from torchvision import transforms
+import torchvision
 import cifar10_c
 import cifar10_c_bar
 from architectures import ARCHITECTURES, get_architecture
@@ -50,11 +51,11 @@ parser.add_argument('--scheme', default='ga', type=str,
                     help='training schemes like gaussian augmentation')
 parser.add_argument("--no_normalize", default=True, action='store_false')
 parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
+parser.add_argument("--k", type=int, default= 10)
+parser.add_argument("--p", type=int, default= 50)
 
 args = parser.parse_args()
 
-
-# PATH = "./ckpt/AugMix_epoch_"
 
 CORRUPTIONS = [
     'gaussian_noise', 'shot_noise', 'impulse_noise', 'defocus_blur',
@@ -66,8 +67,8 @@ CORRUPTIONS = [
 
 def main():
     epochs = args.epochs
-    k = 10
-    p = 40
+    k = args.k
+    p = args.p
     js_loss = True
     batch_size = args.batch
 
@@ -77,21 +78,20 @@ def main():
     if not os.path.exists(args.outdir):
         os.makedirs(args.outdir, exist_ok = True)
 
+    f = open(file=os.path.join(args.outdir,'log.txt'),mode='a')
 
     device = torch.device('cuda' if (torch.cuda.is_available()) else 'cpu')
     pin_memory = (args.dataset == "imagenet")
 
     # load data
-    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
-    test_data = get_dataset(args.dataset, 'test')
-
+    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
     train_data = FourierDataset(train_dataset, k, p, not(js_loss))
     
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)
 
     # 2. model
-    model = get_architecture(args.arch, args.dataset,args.no_normalize)
+    model = get_architecture(args.arch, args.dataset, args.no_normalize)
 
     # 3. Optimizer & Scheduler
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
@@ -113,14 +113,19 @@ def main():
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
             if js_loss:
+                if i == 0:
+                    test_img = torchvision.utils.make_grid(images[1], nrow = 16)
+                    torchvision.utils.save_image(
+                            test_img, "./test/fourier/test_3.png", nrow = 16
+                        )
                 bs = images[0].size(0)
                 images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
                 targets = targets.to(device)
 
-                if args.scheme in ['half_ga']:
+                if args.scheme in ['half_ga','fourier_half_ga']:
                     index = np.random.choice(images_cat.shape[0],images_cat.shape[0]//2)
                     images_cat[index] = images_cat[index] + torch.randn_like(images_cat[index], device='cuda') * args.noise_sd
-                elif args.scheme in ['ga']:
+                elif args.scheme in ['ga','fourier_ga']:
                     images_cat = images_cat + torch.randn_like(images_cat, device='cuda') * args.noise_sd
 
                 logits = model(images_cat)
@@ -138,10 +143,10 @@ def main():
 
             else:
                 images, targets = images.to(device), targets.to(device)
-                if args.scheme in ['half_ga']:
+                if args.scheme in ['half_ga','fourier_half_ga']:
                     index = np.random.choice(images.shape[0],images.shape[0]//2)
                     images[index] = images[index] + torch.randn_like(images[index], device='cuda') * args.noise_sd
-                elif args.scheme in ['ga']:
+                elif args.scheme in ['ga','fourier_ga']:
                     images = images + torch.randn_like(images, device='cuda') * args.noise_sd
                 logits = model(images)
                 loss = F.cross_entropy(logits, targets)
@@ -154,6 +159,8 @@ def main():
             if (i+1) % 10 == 0 or i+1 == len(train_loader):
                 print("[%d/%d][%d/%d] Train Loss: %.4f | time : %.2fs"
                         %(epoch + 1, epochs, i + 1, len(train_loader), loss.item(), time.time() - t))
+                print("[%d/%d][%d/%d] Train Loss: %.4f | time : %.2fs"
+                        %(epoch + 1, epochs, i + 1, len(train_loader), loss.item(), time.time() - t), file=f, flush=True)
                 t = time.time()
 
         if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
@@ -171,6 +178,7 @@ def main():
 
                 error, total = 0, 0
                 print("Test on CIFAR-10")
+                print("Test on CIFAR-10",file=f, flush= True)
 
                 t = time.time()
                 for i, (images, targets) in enumerate(test_loader):
@@ -180,11 +188,13 @@ def main():
                     total += targets.size(0)
 
                 print("Test error rate on CIFAR-10 : %.4f | time : %.2fs"%((error/total), time.time() - t))
+                print("Test error rate on CIFAR-10 : %.4f | time : %.2fs"%((error/total), time.time() - t),file=f,flush=True)
 
                 # evaluate on cifar10-c
                 for corruption in CORRUPTIONS:
                     test_data_c = cifar10_c.generate_all_examples(args.path,corruption)
                     print("Test on " + corruption)
+                    print("Test on " + corruption,file=f,flush=True)
                     test_loader_c = torch.utils.data.DataLoader(test_data_c, shuffle=False, batch_size=args.batch,
                                     num_workers=args.workers, pin_memory=pin_memory)
                     error, total = 0, 0
@@ -199,6 +209,9 @@ def main():
                         total += targets.size(0)
 
                     print("Test error rate on CIFAR-10-C with " + corruption + " : %.4f | time : %.2fs"%(error/total, time.time() - t))
+                    print("Test error rate on CIFAR-10-C with " + corruption + " : %.4f | time : %.2fs"%(error/total, time.time() - t),file=f,flush=True)
+    
+    f.close()
 
 if __name__=="__main__":
     main()
