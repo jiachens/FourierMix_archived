@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-17 14:49:59
+LastEditTime: 2021-08-17 15:31:08
 '''
 import time
 import matplotlib.pyplot as plt
@@ -51,8 +51,9 @@ parser.add_argument('--scheme', default='ga', type=str,
                     help='training schemes like gaussian augmentation')
 parser.add_argument("--no_normalize", default=True, action='store_false')
 parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
-parser.add_argument("--k", type=int, default= 10)
-parser.add_argument("--p", type=int, default= 50)
+
+parser.add_argument("--k", type=int,default=10)
+parser.add_argument("--p", type=int,default=50)
 
 args = parser.parse_args()
 
@@ -85,8 +86,10 @@ def main():
 
     # load data
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
+    test_data = get_dataset(args.dataset, 'test')
+
     train_data = FourierDataset(train_dataset, k, p, not(js_loss))
-    
+
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)
 
