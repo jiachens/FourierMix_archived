@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-17 14:30:12
+LastEditTime: 2021-08-17 14:49:59
 '''
 import time
 import matplotlib.pyplot as plt
@@ -84,7 +84,7 @@ def main():
     pin_memory = (args.dataset == "imagenet")
 
     # load data
-    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
+    train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
     train_data = FourierDataset(train_dataset, k, p, not(js_loss))
     
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
