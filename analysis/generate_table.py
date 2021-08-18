@@ -42,8 +42,8 @@ C_BAR = [
 
 
 parser = argparse.ArgumentParser(description='Certify many examples')
-parser.add_argument('path', type=str)
-parser.add_argument("dataset", choices=['cifar10-c','cifar10-c-bar'], help="which dataset")
+parser.add_argument('--path', type=str)
+parser.add_argument("--dataset", choices=['cifar10-c','cifar10-c-bar'], help="which dataset")
 args = parser.parse_args()
 
 f_w = open(os.path.join(args.path,'output.txt'),'w')
@@ -51,7 +51,7 @@ f_w = open(os.path.join(args.path,'output.txt'),'w')
 if args.dataset == 'cifar10-c':
     for cor in C:
         f_w.write(cor+'\n')
-        f_w.write('Severity EmpAcc AvgAcc AvgRadius\n')
+        f_w.write('Severity EmpAcc AvgAcc AvgRadius ACR\n')
         for sev in ['1','2','3','4','5']:
             f = open(os.path.join(args.path,cor + '_' + sev + '.out'))
             lines = f.readlines()
@@ -59,13 +59,13 @@ if args.dataset == 'cifar10-c':
             cer_acc = lines[-4].split(':')[-1].strip()
             r = lines[-3].split(':')[-1].strip()
             c_r = lines[-2].split(':')[-1].strip()
-            f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:5] + '/' + c_r[:5]  +'\n')
+            f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:6] + ' ' + c_r[:6]  +'\n')
             f.close()
 
 elif args.dataset == 'cifar10-c-bar':
     for cor in C_BAR:
         f_w.write(cor+'\n')
-        f_w.write('Severity EmpAcc AvgAcc AvgRadius\n')
+        f_w.write('Severity EmpAcc AvgAcc AvgRadius ACR\n')
         for sev in ['1','2','3','4','5']:
             f = open(os.path.join(args.path,cor + '_' + sev + '.out'))
             lines = f.readlines()
@@ -73,7 +73,7 @@ elif args.dataset == 'cifar10-c-bar':
             cer_acc = lines[-4].split(':')[-1].strip()
             r = lines[-3].split(':')[-1].strip()
             c_r = lines[-2].split(':')[-1].strip()
-            f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:5]  + '/' + c_r[:5] +'\n')
+            f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:6]  + ' ' + c_r[:6] +'\n')
             f.close()
 
 f_w.close()
