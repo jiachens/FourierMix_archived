@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-18 03:17:22
+LastEditTime: 2021-08-18 10:17:01
 '''
 import numpy as np
 import os
@@ -45,9 +45,9 @@ if __name__ == "__main__":
         x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig))
         x_orig_f_abs = np.abs(x_orig_f)
         x_orig_f_ang = np.angle(x_orig_f)
-        x_orig_f_abs *=  1 - np.random.rand(*x_orig_f_abs.shape) * 0.4
+        x_orig_f_abs *=  1 - np.random.rand(*x_orig_f_abs.shape) * 0.6
         # print(x_orig_f_abs/np.abs(x_orig_f))
-        # x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / 2
+        x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / 2
 
         x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
         x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
@@ -67,11 +67,11 @@ if __name__ == "__main__":
     np.save('./data/CIFAR-10-F/test.npy',plot)
     np.save('./data/CIFAR-10-F/label.npy',labels)
 
-    # plot = torch.FloatTensor(plot).permute(0,3,1,2)
+    plot = torch.FloatTensor(plot).permute(0,3,1,2)
     
-    # test_img = torchvision.utils.make_grid(plot[:100], nrow = 10)
-    # torchvision.utils.save_image(
-    #     test_img, "./test/filter/test_fft.png", nrow = 10
-    # )
+    test_img = torchvision.utils.make_grid(plot[:100]/255, nrow = 10)
+    torchvision.utils.save_image(
+        test_img, "./test/filter/test_fft.png", nrow = 10
+    )
    
     # plt.close()
