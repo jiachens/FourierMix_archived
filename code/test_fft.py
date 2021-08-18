@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-18 02:58:59
+LastEditTime: 2021-08-18 03:17:22
 '''
 import numpy as np
 import os
@@ -57,7 +57,9 @@ if __name__ == "__main__":
         plot.append(x_restored)
         labels.append(label)
         
-    plot = np.stack(plot)
+    plot = np.clip((np.stack(plot) * 255).astype(int), 0,255)
+    # print(plot)
+
     plot = np.transpose(plot, (0, 2, 3, 1))
     labels = np.array(labels)
     os.makedirs('./data/CIFAR-10-F',exist_ok = True)
@@ -65,11 +67,11 @@ if __name__ == "__main__":
     np.save('./data/CIFAR-10-F/test.npy',plot)
     np.save('./data/CIFAR-10-F/label.npy',labels)
 
-    plot = torch.FloatTensor(plot).permute(0,3,1,2)
+    # plot = torch.FloatTensor(plot).permute(0,3,1,2)
     
-    test_img = torchvision.utils.make_grid(plot[:100], nrow = 10)
-    torchvision.utils.save_image(
-        test_img, "./test/filter/test_fft.png", nrow = 10
-    )
+    # test_img = torchvision.utils.make_grid(plot[:100], nrow = 10)
+    # torchvision.utils.save_image(
+    #     test_img, "./test/filter/test_fft.png", nrow = 10
+    # )
    
     # plt.close()
