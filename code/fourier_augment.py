@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-18 03:02:53
+LastEditTime: 2021-08-18 18:14:45
 '''
 import torch
 import fourier_basis
@@ -76,13 +76,13 @@ def augment(x_orig, k, p, basis):
     x_restored_1 = torch.FloatTensor(x_restored_1)
 
     ######### Spatial #########
-    severity_3 = random.choice(range(1,6))
-    severity_4 = random.choice(range(1,6))
-    severity_5 = random.choice(range(1,6))
+    severity_3 = random.choice(range(1,9))
+    severity_4 = random.choice(range(1,9))
+    severity_5 = random.choice(range(1,9))
 
-    d = [0,5,10,15,20][severity_3-1]
-    t = [None,(1/24.,1/24.),(1/12.,1/12.),(1/8.,1/8.),(1/6.,1/6.)][severity_4-1]
-    s = [None,0.03,0.07,0.11,0.15][severity_5-1]
+    d = [0,0,0,0,5,10,15,20][severity_3-1]
+    t = [None,None,None,None,(1/24.,1/24.),(1/12.,1/12.),(1/8.,1/8.),(1/6.,1/6.)][severity_4-1]
+    s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
     
     space = torchvision.transforms.RandomAffine(degrees=d, translate=t, scale=None, shear=s)
     x_restored_2 = space(x_orig)
