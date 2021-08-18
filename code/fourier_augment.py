@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-17 16:31:29
+LastEditTime: 2021-08-17 23:29:09
 '''
 import torch
 import fourier_basis
@@ -12,7 +12,7 @@ import random
 import torchvision
 
 pre = torchvision.transforms.Compose([
-                # torchvision.transforms.RandomCrop(32, padding=4),
+                torchvision.transforms.RandomCrop(32, padding=4),
                 torchvision.transforms.RandomHorizontalFlip()
             ])
 
@@ -42,36 +42,36 @@ class FourierDataset(torch.utils.data.Dataset):
 def augment(x_orig, k, p, basis):
 
     ######### Fourier #########
-    p = np.random.choice(p)
+    # p = np.random.choice(p)
     # k = np.random.choice(k) 
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
-    seen = set()
-
     x_orig_1 = x_orig.detach().numpy()
     x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
     x_orig_f_abs = np.abs(x_orig_f) 
     x_orig_f_ang = np.angle(x_orig_f) 
-    
+
+    # seen = set()
     # for _ in range(p):
     #     r = np.random.uniform(0.,k)
     #     theta = np.random.uniform(0.,2*np.pi)
     #     row = int(r * np.cos(theta) + 15.5)
     #     col = int(r * np.sin(theta) + 15.5)
-        
     #     if (row,col) in seen:
     #         continue
     #     else:
     #         seen.add((row,col))
-            
-    x_orig_f_abs *= 1. - np.random.rand(*x_orig_f_abs.shape) * c
+    flag = np.random.uniform()
+    if flag > 0.5:
+        x_orig_f_abs *= 1. - np.random.rand(*x_orig_f_abs.shape) * c
+    else:
+        x_orig_f_abs *= 1. + np.random.rand(*x_orig_f_abs.shape) * c
+        
     x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / d
-
     x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
-    
     x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
     x_restored_1 = torch.FloatTensor(x_restored_1)
 

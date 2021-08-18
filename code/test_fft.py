@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-17 15:14:02
+LastEditTime: 2021-08-17 23:24:38
 '''
 import numpy as np
 import os
@@ -118,8 +118,8 @@ if __name__ == "__main__":
             #     x_orig_f[0,row,col] *=  np.random.uniform(0., 1)
             #     x_orig_f[1,row,col] *=  np.random.uniform(0., 1)
             #     x_orig_f[2,row,col] *=  np.random.uniform(0., 1)
-            x_orig_f_abs *= 1. - np.random.rand(*x_orig_f_abs.shape) * 0.8
-            x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / 5
+            x_orig_f_abs *=  0.2
+            x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / 2
 
             x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
             x_orig_f.imag = x_orig_f_abs * torch.sin(x_orig_f_ang)
