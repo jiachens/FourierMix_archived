@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-17 23:29:09
+LastEditTime: 2021-08-18 03:00:34
 '''
 import torch
 import fourier_basis
@@ -48,7 +48,7 @@ def augment(x_orig, k, p, basis):
     severity_2 = random.choice(range(1,6))
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
-    x_orig_1 = x_orig.detach().numpy()
+    x_orig_1 = x_orig.clone().numpy()
     x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
     x_orig_f_abs = np.abs(x_orig_f) 
     x_orig_f_ang = np.angle(x_orig_f) 
@@ -68,8 +68,8 @@ def augment(x_orig, k, p, basis):
         x_orig_f_abs *= 1. - np.random.rand(*x_orig_f_abs.shape) * c
     else:
         x_orig_f_abs *= 1. + np.random.rand(*x_orig_f_abs.shape) * c
-        
-    x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / d
+
+    x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d
     x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
     x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
