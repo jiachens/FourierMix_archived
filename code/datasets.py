@@ -5,6 +5,7 @@ import os
 from torch.utils.data import Dataset
 import cifar10_c
 import cifar10_c_bar
+import cifar10_f
 import transformation
 
 # set this environment variable to the location of your imagenet directory if you want to read ImageNet data.
@@ -13,7 +14,7 @@ import transformation
 IMAGENET_LOC_ENV = "IMAGENET_DIR"
 
 # list of all datasets
-DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar"]
+DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f"]
 
 
 def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None,scheme = None) -> Dataset:
@@ -26,7 +27,8 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
         return _cifar10_c(data_dir,corruption,severity)
     elif dataset == "cifar10-c-bar":
         return _cifar10_c_bar(data_dir,corruption,severity)
-
+    elif dataset == "cifar10-f":
+        return _cifar10_f(data_dir,corruption,severity)
 
 def get_num_classes(dataset: str):
     """Return the number of classes in the dataset. """
@@ -37,6 +39,8 @@ def get_num_classes(dataset: str):
     elif dataset == "cifar10-c":
         return 10
     elif dataset == "cifar10-c-bar":
+        return 10
+    elif dataset == "cifar10-f":
         return 10
 
 
@@ -50,7 +54,8 @@ def get_normalize_layer(dataset: str) -> torch.nn.Module:
         return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
     elif dataset == "cifar10-c-bar":
         return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
-
+    elif dataset == "cifar10-f":
+        return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
 
 _IMAGENET_MEAN = [0.485, 0.456, 0.406]
 _IMAGENET_STDDEV = [0.229, 0.224, 0.225]
@@ -122,6 +127,9 @@ def _cifar10_c(data_dir: str, corruption: str, severity: int) -> Dataset:
 
 def _cifar10_c_bar(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_c_bar.generate_examples(data_dir,corruption,severity)
+
+def _cifar10_f(data_dir: str, corruption: str, severity: int) -> Dataset:
+    return cifar10_f.generate_examples(data_dir,corruption,severity)
 
 
 def _imagenet(split: str) -> Dataset:
