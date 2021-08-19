@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-03 02:45:11
+LastEditTime: 2021-08-18 21:28:37
 '''
 import time
 import matplotlib.pyplot as plt
@@ -21,7 +21,7 @@ import cifar10_c
 import cifar10_c_bar
 from architectures import ARCHITECTURES, get_architecture
 from datasets import get_dataset, DATASETS
-from augment_and_mix import AugMixDataset
+from augment_and_mix import AugMixDataset, AutoDataset
 
 parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
@@ -92,7 +92,10 @@ def main():
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
     test_data = get_dataset(args.dataset, 'test')
 
-    train_data = AugMixDataset(train_dataset, preprocess, k, alpha, not(js_loss))
+    if args.scheme in ['augmix_half_ga']:
+        train_data = AugMixDataset(train_dataset, preprocess, k, alpha, not(js_loss))
+    elif args.scheme in ['auto_half_ga']:
+        train_data = AutoDataset(train_dataset, not(js_loss))
     
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)
@@ -124,10 +127,10 @@ def main():
                 images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
                 targets = targets.to(device)
 
-                if args.scheme in ['augmix_half_ga']:
+                if args.scheme in ['augmix_half_ga','auto_half_ga']:
                     index = np.random.choice(images_cat.shape[0],images_cat.shape[0]//2)
                     images_cat[index] = images_cat[index] + torch.randn_like(images_cat[index], device='cuda') * args.noise_sd
-                elif args.scheme in ['augmix_ga']:
+                elif args.scheme in ['augmix_ga','auto_ga']:
                     images_cat = images_cat + torch.randn_like(images_cat, device='cuda') * args.noise_sd
 
                 logits = model(images_cat)
@@ -145,10 +148,10 @@ def main():
 
             else:
                 images, targets = images.to(device), targets.to(device)
-                if args.scheme in ['augmix_half_ga']:
+                if args.scheme in ['augmix_half_ga','auto_half_ga']:
                     index = np.random.choice(images.shape[0],images.shape[0]//2)
                     images[index] = images[index] + torch.randn_like(images[index], device='cuda') * args.noise_sd
-                elif args.scheme in ['augmix_ga']:
+                elif args.scheme in ['augmix_ga','auto_ga']:
                     images = images + torch.randn_like(images, device='cuda') * args.noise_sd
                 logits = model(images)
                 loss = F.cross_entropy(logits, targets)

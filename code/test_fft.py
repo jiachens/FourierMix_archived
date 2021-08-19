@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-18 15:36:44
+LastEditTime: 2021-08-18 23:24:47
 '''
 import numpy as np
 import os
@@ -20,12 +20,15 @@ import torch
 from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
 import seaborn as sns
+import fourier_basis
+
 
 
 parser = argparse.ArgumentParser(description='Fourier Analysis')
 parser.add_argument("--path", type=str, help="path to dataset")
 parser.add_argument("--type", type=str, default='mag', help="cor type")
 parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
+
 args = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
@@ -41,8 +44,9 @@ if __name__ == "__main__":
         plot = []
         labels = []
         c = [0.2,0.3,0.4,0.5,0.6][sev-1]
-        d = [6,5,4,3,2][sev-1]
-        
+        d = [3.5,3,2.5,2,1.5][sev-1]
+        e = [2,3,4,5,6][sev-1]
+        basis = fourier_basis.generate_basis(e).cpu().numpy()
         for i in range(len(dataset_orig)):
 
             (x_orig, label) = dataset_orig[i]
@@ -53,16 +57,24 @@ if __name__ == "__main__":
             x_orig_f_ang = np.angle(x_orig_f)
             if args.type == 'abs_neg':
                 x_orig_f_abs *=  1 - np.random.rand(*x_orig_f_abs.shape) * c
-            # print(x_orig_f_abs/np.abs(x_orig_f))
             elif args.type == 'abs_pos':
                 x_orig_f_abs *=  1 + np.random.rand(*x_orig_f_abs.shape) * c
             elif args.type == 'angle':
                 x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / d
-
-            x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
-            x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
-            
-            x_restored = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
+            elif args.type == 'basis':
+                x_restored = x_orig
+                row = 1
+                col = 1
+                perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34]
+                x_restored += perturbation
+                
+            if args.type == 'basis':
+                x_restored = x_restored
+            else:  
+                x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
+                x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
+                
+                x_restored = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
 
             plot.append(x_restored)
             labels.append(label)
@@ -86,11 +98,11 @@ if __name__ == "__main__":
     np.save('./data/CIFAR-10-F/label.npy',all_label)
     print(all_label[:10])
 
-    # plot = torch.FloatTensor(plot).permute(0,3,1,2)
+    plot = torch.FloatTensor(plot).permute(0,3,1,2)
     
-    # test_img = torchvision.utils.make_grid(plot[:100]/255, nrow = 10)
-    # torchvision.utils.save_image(
-    #     test_img, "./test/filter/test_fft.png", nrow = 10
-    # )
+    test_img = torchvision.utils.make_grid(plot[:100]/255, nrow = 10)
+    torchvision.utils.save_image(
+        test_img, "./test/filter/test_fft.png", nrow = 10
+    )
    
     # plt.close()
