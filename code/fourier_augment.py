@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-19 22:55:35
+LastEditTime: 2021-08-19 23:15:04
 '''
 import torch
 import fourier_basis
@@ -24,7 +24,7 @@ class FourierDataset(torch.utils.data.Dataset):
         self.k = k
         self.p = p
         self.no_jsd = no_jsd
-        self.basis = fourier_basis.generate_basis(1).cpu()
+        self.basis = None#fourier_basis.generate_basis(1).cpu()
     
 
     def __getitem__(self, i):
@@ -65,7 +65,6 @@ def augment(x_orig, k, p, basis):
     # x_orig_f *= mask
     x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
     x_restored_1 = torch.FloatTensor(x_restored_1) 
-
 
     ######### Spatial #########
     severity_3 = random.choice(range(1,9))
