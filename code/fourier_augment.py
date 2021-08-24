@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-22 15:40:48
+LastEditTime: 2021-08-24 16:47:28
 '''
 import torch
 import fourier_basis
@@ -55,7 +55,7 @@ def augment(x_orig, k, p, basis,chain = 3):
     skip_conn_weight = skip_conn_weight_dist.sample()
 
     x_fourier = skip_conn_weight * x_aug + (1 - skip_conn_weight) * x_orig
-    return x_fourier
+    return x_aug
 
 def augment_single(x_orig):
 
@@ -77,10 +77,6 @@ def augment_single(x_orig):
     x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d
     x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
-    # mask = np.zeros_like(x_orig_f)
-    # start = (32 - e) // 2 - 1
-    # mask[:,start:start+e,start:start+e] = 1
-    # x_orig_f *= mask
     x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
     x_restored_1 = torch.FloatTensor(x_restored_1) 
 
@@ -94,14 +90,14 @@ def augment_single(x_orig):
     s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
     
     space = torchvision.transforms.RandomAffine(degrees=d, translate=t, scale=None, shear=s)
-    x_restored_2 = space(x_restored_1)
+    x_restored_2 = space(x_orig)
     ##############################
 
-    # b = np.random.uniform()
+    b = np.random.uniform()
     # # b = 0
-    # x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
+    x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
 
     # # a = np.random.uniform()
     # # x_restored = x_restored * a + x_orig * (1-a)
 
-    return x_restored_2
+    return x_restored
