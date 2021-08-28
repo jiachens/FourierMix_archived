@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-17 15:31:08
+LastEditTime: 2021-08-24 17:02:00
 '''
 import time
 import matplotlib.pyplot as plt
@@ -120,6 +120,10 @@ def main():
                     test_img = torchvision.utils.make_grid(images[1], nrow = 16)
                     torchvision.utils.save_image(
                             test_img, "./test/fourier/test_3.png", nrow = 16
+                        )
+                    test_img = torchvision.utils.make_grid(images[0], nrow = 16)
+                    torchvision.utils.save_image(
+                            test_img, "./test/fourier/orig_3.png", nrow = 16
                         )
                 bs = images[0].size(0)
                 images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
