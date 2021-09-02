@@ -107,6 +107,11 @@ def _cifar10(split: str, scheme, severity: int) -> Dataset:
             ]))
         elif scheme in ["auto_half_ga"]:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=None)
+        elif scheme in ["c_half_ga"]:
+            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor()
+            ]))
         else:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
                 transforms.RandomCrop(32, padding=4),
