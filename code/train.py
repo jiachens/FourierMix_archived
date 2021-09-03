@@ -125,6 +125,7 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         data_time.update(time.time() - end)
 
         orig = inputs = inputs.cuda()
+        # print(targets)
         targets = targets.cuda()
 
         # augment inputs with noise

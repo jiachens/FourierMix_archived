@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-01 22:11:08
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-02 01:15:56
+LastEditTime: 2021-09-03 01:26:13
 '''
 import time
 import matplotlib.pyplot as plt
@@ -70,6 +70,7 @@ assert args.corruption in CORRUPTIONS
 def main():
     epochs = args.epochs
     batch_size = args.batch
+    js_loss = True
 
     if args.gpu:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
@@ -87,7 +88,7 @@ def main():
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
     test_data = get_dataset(args.dataset, 'test')
 
-    train_data = CorruptionDataset(train_dataset, args.corruption)
+    train_data = CorruptionDataset(train_dataset, args.corruption, not(js_loss))
 
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)
@@ -114,58 +115,59 @@ def main():
         model.train()
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
-            # if js_loss:
-            #     if i == 0:
-            #         test_img = torchvision.utils.make_grid(images[1], nrow = 16)
-            #         torchvision.utils.save_image(
-            #                 test_img, "./test/fourier/test_3.png", nrow = 16
-            #             )
-            #         test_img = torchvision.utils.make_grid(images[0], nrow = 16)
-            #         torchvision.utils.save_image(
-            #                 test_img, "./test/fourier/orig_3.png", nrow = 16
-            #             )
-            #     bs = images[0].size(0)
-            #     images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
-            #     targets = targets.to(device)
+            if js_loss:
+                # if i == 0:
+                #     test_img = torchvision.utils.make_grid(images[1], nrow = 16)
+                #     torchvision.utils.save_image(
+                #             test_img, "./test/fourier/test_3.png", nrow = 16
+                #         )
+                #     test_img = torchvision.utils.make_grid(images[0], nrow = 16)
+                #     torchvision.utils.save_image(
+                #             test_img, "./test/fourier/orig_3.png", nrow = 16
+                #         )
+                bs = images[0].size(0)
+                images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
+                targets = targets.to(device)
 
-            #     if args.scheme in ['half_ga','fourier_half_ga']:
-            #         index = np.random.choice(images_cat.shape[0],images_cat.shape[0]//2)
-            #         images_cat[index] = images_cat[index] + torch.randn_like(images_cat[index], device='cuda') * args.noise_sd
-            #     elif args.scheme in ['ga','fourier_ga']:
-            #         images_cat = images_cat + torch.randn_like(images_cat, device='cuda') * args.noise_sd
+                if args.scheme in ['c_half_ga']:
+                    index = np.random.choice(images_cat.shape[0],images_cat.shape[0]//2)
+                    images_cat[index] = images_cat[index] + torch.randn_like(images_cat[index], device='cuda') * args.noise_sd
+                # elif args.scheme in ['ga','fourier_ga']:
+                #     images_cat = images_cat + torch.randn_like(images_cat, device='cuda') * args.noise_sd
 
-            #     logits = model(images_cat)
-            #     logits_orig, logits_augmix1, logits_augmix2 = logits[:bs], logits[bs:2*bs], logits[2*bs:]
+                logits = model(images_cat)
+                logits_orig, logits_augmix1, logits_augmix2 = logits[:bs], logits[bs:2*bs], logits[2*bs:]
 
-            #     loss = F.cross_entropy(logits_orig, targets)
+                loss = F.cross_entropy(logits_orig, targets)
 
-            #     p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig, dim = -1), F.softmax(logits_augmix1, dim = -1), F.softmax(logits_augmix2, dim = -1)
+                p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig, dim = -1), F.softmax(logits_augmix1, dim = -1), F.softmax(logits_augmix2, dim = -1)
 
-            #     # Clamp mixture distribution to avoid exploding KL divergence
-            #     p_mixture = torch.clamp((p_orig + p_augmix1 + p_augmix2) / 3., 1e-7, 1).log()
-            #     loss += 12 * (F.kl_div(p_mixture, p_orig, reduction='batchmean') +
-            #                     F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
-            #                     F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
+                # Clamp mixture distribution to avoid exploding KL divergence
+                p_mixture = torch.clamp((p_orig + p_augmix1 + p_augmix2) / 3., 1e-7, 1).log()
+                loss += 12 * (F.kl_div(p_mixture, p_orig, reduction='batchmean') +
+                                F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
+                                F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
 
-            # else:
-            images, targets = images.to(device), targets.to(device)
-            if i == 0:
-                test_img = torchvision.utils.make_grid(images, nrow = 16)
-                torchvision.utils.save_image(
-                        test_img, "./test/fourier/test_4.png", nrow = 16
-                    )
-            if args.scheme in ['c_half_ga']:
-                index = np.random.choice(images.shape[0],images.shape[0]//2)
-                images[index] = images[index] + torch.randn_like(images[index], device='cuda') * args.noise_sd
-                
-            logits = model(images)
-            loss = F.cross_entropy(logits, targets)
+            else:
+                images, targets = images.to(device), targets.to(device)
+                if i == 0:
+                    test_img = torchvision.utils.make_grid(images, nrow = 16)
+                    torchvision.utils.save_image(
+                            test_img, "./test/fourier/test_4.png", nrow = 16
+                        )
+                if args.scheme in ['c_half_ga']:
+                    index = np.random.choice(images.shape[0],images.shape[0]//2)
+                    images[index] = images[index] + torch.randn_like(images[index], device='cuda') * args.noise_sd
+                    
+                logits = model(images)
+                loss = F.cross_entropy(logits, targets)
 
-            loss.backward()
-            optimizer.step()
-            scheduler.step(epoch)
+                loss.backward()
+                optimizer.step()
+                scheduler.step(epoch)
 
             losses.append(loss.item())
+
             if (i+1) % 10 == 0 or i+1 == len(train_loader):
                 print("[%d/%d][%d/%d] Train Loss: %.4f | time : %.2fs"
                         %(epoch + 1, epochs, i + 1, len(train_loader), loss.item(), time.time() - t))

@@ -14,7 +14,7 @@ import transformation
 IMAGENET_LOC_ENV = "IMAGENET_DIR"
 
 # list of all datasets
-DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f"]
+DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100"]
 
 
 def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None,scheme = None) -> Dataset:
@@ -23,6 +23,8 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
         return _imagenet(split)
     elif dataset == "cifar10":
         return _cifar10(split, scheme, severity)
+    elif dataset == "cifar100":
+        return _cifar100(split, scheme, severity)
     elif dataset == "cifar10-c":
         return _cifar10_c(data_dir,corruption,severity)
     elif dataset == "cifar10-c-bar":
@@ -42,6 +44,8 @@ def get_num_classes(dataset: str):
         return 10
     elif dataset == "cifar10-f":
         return 10
+    elif dataset == "cifar100":
+        return 100
 
 
 def get_normalize_layer(dataset: str) -> torch.nn.Module:
@@ -55,6 +59,8 @@ def get_normalize_layer(dataset: str) -> torch.nn.Module:
     elif dataset == "cifar10-c-bar":
         return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
     elif dataset == "cifar10-f":
+        return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
+    elif dataset == "cifar100":
         return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
 
 _IMAGENET_MEAN = [0.485, 0.456, 0.406]
@@ -123,6 +129,23 @@ def _cifar10(split: str, scheme, severity: int) -> Dataset:
             return datasets.CIFAR10("./dataset_cache", train=False, download=True, transform=None)
         else:
             return datasets.CIFAR10("./dataset_cache", train=False, download=True, transform=transforms.ToTensor())
+
+def _cifar100(split: str, scheme, severity: int) -> Dataset:
+    if split == "train":
+        if scheme in ["fourier_half_ga"]:
+            return datasets.CIFAR100("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.ToTensor()
+            ]))
+        elif scheme in ["auto_half_ga"]:
+            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=None)
+        else:
+            return datasets.CIFAR100("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor()
+            ]))
+    elif split == "test":
+        return datasets.CIFAR100("./dataset_cache", train=False, download=True, transform=transforms.ToTensor())
 
 def _cifar10_c(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_c.generate_examples(data_dir,corruption,severity)
