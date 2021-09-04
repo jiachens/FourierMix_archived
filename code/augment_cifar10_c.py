@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-01 21:19:03
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-03 01:23:49
+LastEditTime: 2021-09-03 22:01:13
 '''
 import random
 
@@ -31,7 +31,7 @@ class CorruptionDataset(torch.utils.data.Dataset):
         if self.no_jsd:
             return final_img(augment(x, self.corruption, self.preprocess)).float(), y
         else:
-            return (final_img(augment(x, self.corruption, self.preprocess)).float(),
+            return (final_img(x).float(),
             final_img(augment(x, self.corruption, self.preprocess)).float(),
             final_img(augment(x, self.corruption, self.preprocess)).float()), y
 
