@@ -102,13 +102,13 @@ class Smooth(object):
                 batch = x.repeat((this_batch_size, 1, 1, 1))
                 noise = torch.randn_like(batch, device='cuda') * self.sigma
                 predictions = self.base_classifier(batch + noise).argmax(1)
-                print(predictions.shape)
                 counts += self._count_arr(predictions.cpu().numpy(), self.num_classes)
             return counts
 
     def _count_arr(self, arr: np.ndarray, length: int) -> np.ndarray:
         counts = np.zeros(length, dtype=int)
         for idx in arr:
+            print(idx)
             counts[idx] += 1
         return counts
 
