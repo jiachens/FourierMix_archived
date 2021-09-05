@@ -6,15 +6,17 @@ from torch.utils.data import Dataset
 import cifar10_c
 import cifar10_c_bar
 import cifar10_f
+import cifar100_c
 import transformation
 
 # set this environment variable to the location of your imagenet directory if you want to read ImageNet data.
 # make sure your val directory is preprocessed to look like the train directory, e.g. by running this script
 # https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh
+os.environ["IMAGENET_DIR"] = '/usr/workspace/safeml/data/james-imagenet'
 IMAGENET_LOC_ENV = "IMAGENET_DIR"
 
 # list of all datasets
-DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100"]
+DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100","cifar100-c"]
 
 
 def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None,scheme = None) -> Dataset:
@@ -25,6 +27,8 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
         return _cifar10(split, scheme, severity)
     elif dataset == "cifar100":
         return _cifar100(split, scheme, severity)
+    elif dataset == "cifar100-c":
+        return _cifar100_c(split, scheme, severity)
     elif dataset == "cifar10-c":
         return _cifar10_c(data_dir,corruption,severity)
     elif dataset == "cifar10-c-bar":
@@ -149,6 +153,9 @@ def _cifar100(split: str, scheme, severity: int) -> Dataset:
 
 def _cifar10_c(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_c.generate_examples(data_dir,corruption,severity)
+
+def _cifar100_c(data_dir: str, corruption: str, severity: int) -> Dataset:
+    return cifar100_c.generate_examples(data_dir,corruption,severity)
 
 def _cifar10_c_bar(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_c_bar.generate_examples(data_dir,corruption,severity)
