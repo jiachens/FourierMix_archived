@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-18 01:26:54
+LastEditTime: 2021-09-04 22:41:00
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -84,8 +84,11 @@ if __name__ == "__main__":
         dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
     elif args.dataset == "cifar10-f":
         dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
+    elif args.dataset == "cifar100-c":
+        dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
     else:
         dataset = get_dataset(args.dataset, args.split)
+
     
     total = 0
     total_correct = 0
