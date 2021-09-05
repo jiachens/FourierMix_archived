@@ -28,7 +28,7 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
     elif dataset == "cifar100":
         return _cifar100(split, scheme, severity)
     elif dataset == "cifar100-c":
-        return _cifar100_c(split, scheme, severity)
+        return _cifar100_c(data_dir,corruption, severity)
     elif dataset == "cifar10-c":
         return _cifar10_c(data_dir,corruption,severity)
     elif dataset == "cifar10-c-bar":
