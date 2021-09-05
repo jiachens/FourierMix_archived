@@ -108,6 +108,7 @@ class Smooth(object):
     def _count_arr(self, arr: np.ndarray, length: int) -> np.ndarray:
         counts = np.zeros(length, dtype=int)
         for idx in arr:
+            print(counts)
             print(idx)
             counts[idx] += 1
         return counts
