@@ -48,7 +48,7 @@ def get_num_classes(dataset: str):
         return 10
     elif dataset == "cifar10-f":
         return 10
-    elif dataset == "cifar100":
+    elif dataset in ["cifar100","cifar100-c"]:
         return 100
 
 
