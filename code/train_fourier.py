@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-24 17:02:00
+LastEditTime: 2021-09-05 21:13:22
 '''
 import time
 import matplotlib.pyplot as plt
@@ -19,6 +19,7 @@ from torchvision import transforms
 import torchvision
 import cifar10_c
 import cifar10_c_bar
+import cifar100_c
 from architectures import ARCHITECTURES, get_architecture
 from datasets import get_dataset, DATASETS
 from fourier_augment import FourierDataset
@@ -199,7 +200,10 @@ def main():
 
                 # evaluate on cifar10-c
                 for corruption in CORRUPTIONS:
-                    test_data_c = cifar10_c.generate_all_examples(args.path,corruption)
+                    if args.dataset == 'cifar10':
+                        test_data_c = cifar10_c.generate_all_examples(args.path,corruption)
+                    elif args.dataset == 'cifar100':
+                        test_data_c = cifar100_c.generate_all_examples(args.path,corruption)
                     print("Test on " + corruption)
                     print("Test on " + corruption,file=f,flush=True)
                     test_loader_c = torch.utils.data.DataLoader(test_data_c, shuffle=False, batch_size=args.batch,
