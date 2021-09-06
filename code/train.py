@@ -5,7 +5,7 @@
 import argparse
 import os
 import torch
-import setGPU
+# import setGPU
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from datasets import get_dataset, DATASETS
