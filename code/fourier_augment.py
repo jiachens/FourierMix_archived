@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-07 18:26:30
+LastEditTime: 2021-09-07 19:22:55
 '''
 import torch
 import fourier_basis
@@ -60,8 +60,6 @@ def augment(x_orig, k, p, basis,chain = 3):
 def augment_single(x_orig):
 
     ######### Fourier #########
-    p = np.random.choice(p)
-    k = np.random.choice(k) 
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
     # severity_3 = random.choice(range(1,6))
