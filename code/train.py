@@ -6,6 +6,7 @@ import argparse
 import os
 import torch
 # import setGPU
+
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from datasets import get_dataset, DATASETS
@@ -57,6 +58,20 @@ args = parser.parse_args()
 
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
+if args.dataset == 'imagenet':
+    torch.distributed.init_process_group("nccl", init_method="env://",
+        world_size=int(os.environ['OMPI_COMM_WORLD_SIZE']),
+        rank=int(os.environ['OMPI_COMM_WORLD_RANK']))
+    # lookup number of ranks in the job, and our rank
+    world_size = torch.distributed.get_world_size()
+    rank = torch.distributed.get_rank()
+    # compute our local rank on the node and select a corresponding gpu,
+    # this assumes we started exactly one rank per gpu on the node
+    ngpus_per_node = torch.cuda.device_count()
+    local_rank = rank % ngpus_per_node
+    device = torch.device('cuda')
+    torch.cuda.set_device(local_rank)
+
 def main():
 
     if not os.path.exists(args.outdir):
@@ -65,12 +80,19 @@ def main():
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme, severity=args.severity)
     test_dataset = get_dataset(args.dataset, 'test')
     pin_memory = (args.dataset == "imagenet")
+
+    if args.dataset == 'imagenet':
+        train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
+    else:
+        train_sampler = None
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=args.batch,
-                              num_workers=args.workers, pin_memory=pin_memory)
+                              num_workers=args.workers, pin_memory=pin_memory,sampler=train_sampler)
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=args.batch,
                              num_workers=args.workers, pin_memory=pin_memory)
-
-    model = get_architecture(args.arch, args.dataset,args.no_normalize)
+    if args.dataset == 'imagenet':
+        model = get_architecture(args.arch, args.dataset,args.no_normalize,local_rank,device)
+    else:
+        model = get_architecture(args.arch, args.dataset,args.no_normalize)
 
     logfilename = os.path.join(args.outdir, 'log.txt')
     init_logfile(logfilename, "epoch\ttime\tlr\ttrain loss\ttrain acc\ttestloss\ttest acc")
@@ -90,6 +112,8 @@ def main():
             param_group['lr'] = args.lr*0.1
 
     for epoch in range(args.epochs):
+        if args.dataset == 'imagenet':
+            train_sampler.set_epoch(epoch)
         before = time.time()
         train_loss, train_acc = train(train_loader, model, criterion, optimizer, epoch, args.noise_sd)
         test_loss, test_acc = test(test_loader, model, criterion, args.noise_sd)

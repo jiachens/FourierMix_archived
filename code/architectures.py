@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-05 17:30:52
+LastEditTime: 2021-09-06 16:07:29
 '''
 import torch
 from torchvision.models.resnet import resnet50
@@ -23,7 +23,7 @@ DENOISERS_ARCHITECTURES = ["cifar_dncnn", "cifar_dncnn_wide"
 
 IMAGENET_CLASSIFIERS = ["resnet50"]
 
-def get_architecture(arch: str, dataset: str, normalize :bool = True) -> torch.nn.Module:
+def get_architecture(arch: str, dataset: str, normalize :bool = True,local_rank=None, device=None) -> torch.nn.Module:
     """ Return a neural network (with random weights)
 
     :param arch: the architecture - should be in the ARCHITECTURES list above
@@ -31,7 +31,9 @@ def get_architecture(arch: str, dataset: str, normalize :bool = True) -> torch.n
     :return: a Pytorch module
     """
     if arch == "resnet50" and dataset == "imagenet":
-        model = torch.nn.DataParallel(resnet50(pretrained=False)).cuda()
+        # model = torch.nn.DataParallel(resnet50(pretrained=False)).cuda(}
+        model = torch.nn.parallel.DistributedDataParallel(resnet50(pretrained=False), device_ids=[local_rank])
+        model.to(device)
         cudnn.benchmark = True
     elif arch == "cifar_resnet20":
         model = resnet_cifar(depth=20, num_classes=10).cuda()
