@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-29 17:39:00
+LastEditTime: 2021-09-07 18:26:30
 '''
 import torch
 import fourier_basis
@@ -60,25 +60,25 @@ def augment(x_orig, k, p, basis,chain = 3):
 def augment_single(x_orig):
 
     ######### Fourier #########
-    # p = np.random.choice(p)
-    # k = np.random.choice(k) 
-    # severity_1 = random.choice(range(1,6))
-    # severity_2 = random.choice(range(1,6))
-    # # severity_3 = random.choice(range(1,6))
-    # c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
-    # d = [6,5,4,3,2][severity_2-1]
-    # #e = [22,20,18,16,14][severity_3-1]
-    # x_orig_1 = x_orig.clone().numpy()
-    # x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
-    # x_orig_f_abs = np.abs(x_orig_f) 
-    # x_orig_f_ang = np.angle(x_orig_f) 
-    # flag = np.sign(np.random.uniform() - 0.5)
-    # x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c
-    # x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d
-    # x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
-    # x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
-    # x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
-    # x_restored_1 = torch.FloatTensor(x_restored_1) 
+    p = np.random.choice(p)
+    k = np.random.choice(k) 
+    severity_1 = random.choice(range(1,6))
+    severity_2 = random.choice(range(1,6))
+    # severity_3 = random.choice(range(1,6))
+    c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
+    d = [6,5,4,3,2][severity_2-1]
+    #e = [22,20,18,16,14][severity_3-1]
+    x_orig_1 = x_orig.clone().numpy()
+    x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
+    x_orig_f_abs = np.abs(x_orig_f) 
+    x_orig_f_ang = np.angle(x_orig_f) 
+    flag = np.sign(np.random.uniform() - 0.5)
+    x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c
+    x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d
+    x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
+    x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
+    x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
+    x_restored_1 = torch.FloatTensor(x_restored_1) 
 
     ######### Spatial #########
     severity_3 = random.choice(range(1,9))
@@ -93,11 +93,11 @@ def augment_single(x_orig):
     x_restored_2 = space(x_orig)
     ##############################
 
-    # b = np.random.uniform()
-    # # b = 0
-    # x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
+    b = np.random.uniform()
+    # b = 0
+    x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
 
     # # a = np.random.uniform()
     # # x_restored = x_restored * a + x_orig * (1-a)
 
-    return x_restored_2
+    return x_restored
