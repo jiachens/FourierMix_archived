@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-18 21:31:18
+LastEditTime: 2021-09-07 15:27:35
 '''
 import random
 
@@ -16,7 +16,7 @@ from torchvision import transforms
 from augmentations import augmentations, augmentations_x
 
 transform=transforms.Compose([
-                transforms.AutoAugment(policy=transforms.autoaugment.AutoAugmentPolicy.CIFAR10),
+                # transforms.AutoAugment(policy=transforms.autoaugment.AutoAugmentPolicy.CIFAR10),
                 transforms.ToTensor()
             ])
 
