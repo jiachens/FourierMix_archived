@@ -140,6 +140,11 @@ def _cifar100(split: str, scheme, severity: int) -> Dataset:
             return datasets.CIFAR100("./dataset_cache", train=True, download=True, transform=transforms.Compose([
                 transforms.ToTensor()
             ]))
+        elif scheme in ["augmix","augmix_half_ga","augmix_ga","expert_half_ga","expert_ga"]:
+            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip()
+            ]))
         elif scheme in ["auto_half_ga"]:
             return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=None)
         else:
