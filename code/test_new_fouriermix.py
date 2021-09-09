@@ -1,9 +1,9 @@
 '''
 Description: 
 Autor: Jiachen Sun
-Date: 2021-06-15 18:55:35
+Date: 2021-09-08 22:05:50
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-08 19:04:43
+LastEditTime: 2021-09-09 10:44:49
 '''
 import numpy as np
 import os
@@ -77,11 +77,11 @@ def azimuthalAverage(image, center=None):
 
 if __name__ == "__main__":
     pass
-    if args.dataset == "cifar10-c":
-        # print(args.path)
-        dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
-    elif args.dataset == "cifar10-c-bar":
-        dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
+    # if args.dataset == "cifar10-c":
+    #     # print(args.path)
+    #     dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
+    # elif args.dataset == "cifar10-c-bar":
+    #     dataset = get_dataset(args.dataset, None, args.path, args.corruption, args.severity)
     
     dataset_orig = get_dataset("cifar10", "test")
     
@@ -96,14 +96,17 @@ if __name__ == "__main__":
     res = []
 
     for i in range(100):
-        (x, label) = dataset[i]
+        # (x, label) = dataset[i]
         (x_orig, label) = dataset_orig[i]
+        (x, label) = dataset_orig[i+2]
 
         orig.append(x_orig)
-        corrupt.append(x.permute(2,0,1))
+        # corrupt.append(x.permute(2,0,1))
 
         if x_orig.shape[0] != 32:
             x_orig = x_orig.permute(1,2,0)
+        if x.shape[0] != 32:
+            x = x.permute(1,2,0)
 
         x = x.numpy()
         x_orig = x_orig.numpy()
@@ -126,90 +129,33 @@ if __name__ == "__main__":
         angle_corr = np.angle(img_grey_F_corr)
         angle_orig = np.angle(img_grey_F_orig)
 
-        size = 8
+        size = 32
         start = (angle_corr.shape[0] - size) // 2
         end = start + size
         # print(abs_corr.shape)
-        abs_corr[start:end,start:end,:] = abs_orig[start:end,start:end,:]
+        abs_orig[start:end,start:end,:] = abs_corr[start:end,start:end,:] * 0.8 + abs_orig[start:end,start:end,:] * 0.5
 
-        img_grey_F_corr.real = abs_corr * np.cos(angle_corr)
-        img_grey_F_corr.imag = abs_corr * np.sin(angle_corr)
-        restored = np.abs(np.fft.ifft2(np.fft.ifftshift(img_grey_F_corr)))
+        img_grey_F_orig.real = abs_orig * np.cos(angle_orig)
+        img_grey_F_orig.imag = abs_orig * np.sin(angle_orig)
+        restored = np.abs(np.fft.ifft2(np.fft.ifftshift(img_grey_F_orig)))
         restored = torch.FloatTensor(restored) 
 
         res.append(restored.permute(2,0,1))
 
     orig = torch.stack(orig)
-    corrupt = torch.stack(corrupt)
+    # corrupt = torch.stack(corrupt)
     res = torch.stack(res)
 
     test_img = torchvision.utils.make_grid(orig, nrow = 10)
     torchvision.utils.save_image(
-            test_img, "./test/test_0908/orig.png", nrow = 10
+            test_img, "./test/test_0908/orig_new.png", nrow = 10
         )
-    test_img = torchvision.utils.make_grid(corrupt, nrow = 10)
-    torchvision.utils.save_image(
-            test_img, "./test/test_0908/corrupt_" + args.corruption +  '_' + str(args.severity) + ".png", nrow = 10
-        )
+    # test_img = torchvision.utils.make_grid(corrupt, nrow = 10)
+    # torchvision.utils.save_image(
+    #         test_img, "./test/test_0908/corrupt_" + args.corruption +  '_' + str(args.severity) + ".png", nrow = 10
+    #     )
 
     test_img = torchvision.utils.make_grid(res, nrow = 10)
     torchvision.utils.save_image(
-            test_img, "./test/test_0908/restore_" + args.corruption +  '_' + str(args.severity) + '_' + str(size) + ".png", nrow = 10
+            test_img, "./test/test_0908/restore_new.png", nrow = 10
         )
-
-        # ps1D_corr = azimuthalAverage(ps2D_corr)
-        # ps1D_orig = azimuthalAverage(ps2D_orig)
-
-        # sum_ps1D_corr += ps1D_corr
-        # sum_ps1D_orig += ps1D_orig
-
-        # relative = np.divide(ps2D,ps2D_orig)
-
-        # sum_ps2D += ps2D
-        # sum_ps2D_orig += ps2D_orig
-        # sum_relative += relative
-        # ax = sns.heatmap(ps2D_orig,
-        #         cmap="jet",
-        #         cbar=True,
-        #         vmin = 0., 
-        #         vmax = 40.,
-        #         # cbar_kws={"ticks":[]},
-        #         xticklabels=False,
-        #         yticklabels=False,)
-        # plt.savefig('./test/fourier_test/'+ str(i) +'.png',dpi=250,bbox_inches='tight')
-        # plt.close()
-        
-    # avg_ps2D = sum_ps2D / len(dataset)
-    # avg_ps2D_orig = sum_ps2D_orig / len(dataset)
-    # avg_relative = sum_relative / len(dataset)
-    # avg_relative = np.divide(avg_ps2D,avg_ps2D_orig)
-    # avg_ps1D_corr = sum_ps1D_corr / len(dataset)
-    # avg_ps1D_orig = sum_ps1D_orig / len(dataset)
-
-    # avg_ps2D[16,16] = 0.
-    # avg_relative[16,16] = 0.
-
-    # plt.plot(np.divide(np.abs(avg_ps1D_corr-avg_ps1D_orig),avg_ps1D_orig), 'r')
-    # plt.plot(avg_ps1D_orig, 'b')
-    # plt.savefig('./test/new_fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '_1d_relative_2.png',dpi=250,bbox_inches='tight')
-    # ax = sns.heatmap(avg_relative,
-    #             cmap="jet",
-    #             cbar=True,
-    #             vmin = 0., 
-    #             vmax = 5.,
-    #             # cbar_kws={"ticks":[]},
-    #             xticklabels=False,
-    #             yticklabels=False,)
-    # plt.savefig('./test/new_fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '_no_center_relative.png',dpi=250,bbox_inches='tight')
-
-    # ax = sns.heatmap(avg_ps2D,
-    #             cmap="jet",
-    #             cbar=True,
-    #             vmin = 0., 
-    #             vmax = 40.,
-    #             # cbar_kws={"ticks":[]},
-    #             xticklabels=False,
-    #             yticklabels=False,)
-    # plt.savefig('./test/fourier_analysis/' + args.dataset + '_' + args.corruption +  '_' + str(args.severity) + '_no_center_unified.png',dpi=250,bbox_inches='tight')
-    # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
-    # plt.close()
