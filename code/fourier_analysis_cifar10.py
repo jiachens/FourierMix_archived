@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-09 13:11:26
+LastEditTime: 2021-09-09 17:20:30
 '''
 import numpy as np
 import os
@@ -22,6 +22,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from augment_and_mix import AugMixDataset, AutoDataset
 from fourier_augment import FourierDataset
+from fourier_augment2 import FourierDataset2
 import torchvision
 from torchvision import transforms
 
@@ -90,7 +91,7 @@ if __name__ == "__main__":
         transforms.ToTensor()
     ])
     dataset_orig = get_dataset("cifar10", "train",scheme="fourier_half_ga")
-    dataset_augmix = FourierDataset(dataset_orig, 3, 1., True)
+    dataset_augmix = FourierDataset2(dataset_orig, 2, True)
     
     sum_ps2D = 0
     sum_ps2D_orig = 0
@@ -102,12 +103,12 @@ if __name__ == "__main__":
     corrupt = []
     res = []
 
-    for i in range(1000):
+    for i in range(100):
         (x, label) = dataset_augmix[i]
         (x_orig, label) = dataset_orig[i]
 
         orig.append(x_orig)
-        corrupt.append(x.permute(2,0,1))
+        corrupt.append(x)
         # x_orig = preprocess(x_orig)
         
         if x_orig.shape[0] != 32:
@@ -189,7 +190,7 @@ if __name__ == "__main__":
         # plt.savefig('./test/fourier_test/'+ str(i) +'.png',dpi=250,bbox_inches='tight')
         # plt.close()
         
-    avg_ps2D = sum_ps2D / 1000
+    avg_ps2D = sum_ps2D / 100
     # avg_ps2D_orig = sum_ps2D_orig / len(dataset)
     # avg_relative = sum_relative / len(dataset)
     # avg_relative = np.divide(avg_ps2D,avg_ps2D_orig)
@@ -220,6 +221,18 @@ if __name__ == "__main__":
                 # cbar_kws={"ticks":[]},
                 xticklabels=False,
                 yticklabels=False,)
-    plt.savefig('./test/test_0908/spatial_only.png',dpi=250,bbox_inches='tight')
+    plt.savefig('./test/test_0908/fouriermix2.png',dpi=250,bbox_inches='tight')
     # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
     plt.close()
+
+    corrupt = torch.stack(corrupt)
+    test_img = torchvision.utils.make_grid(corrupt, nrow = 10)
+    torchvision.utils.save_image(
+            test_img, "./test/test_0908/corrupt_new_fourier.png", nrow = 10
+        )
+
+    orig = torch.stack(orig)
+    test_img = torchvision.utils.make_grid(orig, nrow = 10)
+    torchvision.utils.save_image(
+            test_img, "./test/test_0908/orig.png", nrow = 10
+        )

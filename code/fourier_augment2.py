@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-09 11:37:34
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-09 16:21:00
+LastEditTime: 2021-09-09 17:21:26
 '''
 import torch
 import fourier_basis
@@ -30,7 +30,7 @@ class FourierDataset2(torch.utils.data.Dataset):
 
     def __getitem__(self, i):
         x, y = self.dataset[i]
-        idxs = np.random.choice(range(self.__len__),self.m,replace=False)
+        idxs = np.random.choice(len(self),self.m,replace=False)
         pool = []
         for idx in idxs:
             pool.append(self.dataset[idx][0])
@@ -65,15 +65,20 @@ def augment_single(x_orig,pool):
 
     ######### Fourier #########
     mixing_weight_dist = Dirichlet(torch.empty(len(pool)).fill_(1.))
+    mixing_weights = mixing_weight_dist.sample()
     skip_conn_weight_dist = Beta(torch.tensor([1.]), torch.tensor([1.]))
     skip_conn_weight = skip_conn_weight_dist.sample()
-
-    x_aug = torch.zeros_like(x_orig)
-    for img in pool:
+    x_orig = x_orig.clone().numpy()
+    x_f = np.fft.fftshift(np.fft.fft2(x_orig))
+    x_aug = np.zeros_like(x_orig)
+    for i,img in enumerate(pool):
         img = img.clone().numpy()
         img_f = np.fft.fftshift(np.fft.fft2(img))
         img_f_abs = np.abs(img_f) 
+        x_aug += float(mixing_weights[i]) * img_f_abs
 
-
+    x_f.real = skip_conn_weight * x_f.real + (1-skip_conn_weight) * x_aug
+    x_restored = np.abs(np.fft.ifft2(np.fft.ifftshift(x_f)))
+    x_restored = torch.FloatTensor(x_restored) 
 
     return x_restored
