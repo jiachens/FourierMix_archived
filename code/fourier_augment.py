@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-07 19:22:55
+LastEditTime: 2021-09-09 16:25:53
 '''
 import torch
 import fourier_basis
@@ -55,7 +55,7 @@ def augment(x_orig, k, p, basis,chain = 3):
     skip_conn_weight = skip_conn_weight_dist.sample()
 
     x_fourier = skip_conn_weight * x_aug + (1 - skip_conn_weight) * x_orig
-    return x_aug
+    return x_fourier
 
 def augment_single(x_orig):
 

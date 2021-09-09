@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-08 22:05:50
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-09 10:44:49
+LastEditTime: 2021-09-09 11:56:58
 '''
 import numpy as np
 import os
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         start = (angle_corr.shape[0] - size) // 2
         end = start + size
         # print(abs_corr.shape)
-        abs_orig[start:end,start:end,:] = abs_corr[start:end,start:end,:] * 0.8 + abs_orig[start:end,start:end,:] * 0.5
+        abs_orig[start:end,start:end,:] = abs_corr[start:end,start:end,:] * 0.5 + abs_orig[start:end,start:end,:] * 0.5
 
         img_grey_F_orig.real = abs_orig * np.cos(angle_orig)
         img_grey_F_orig.imag = abs_orig * np.sin(angle_orig)
