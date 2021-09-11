@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-10 15:23:50
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-11 01:44:23
+LastEditTime: 2021-09-11 13:43:37
 '''
 import torch
 import fourier_basis
@@ -75,7 +75,7 @@ OP = [amplitude,phase,mixup,drop,mask]
 
 class FourierDataset(torch.utils.data.Dataset):
 
-    def __init__(self, dataset, k, p, no_jsd=False):
+    def __init__(self, dataset, no_jsd=False):
         self.dataset = dataset
         self.no_jsd = no_jsd
         self.basis = None#fourier_basis.generate_basis(1).cpu()
