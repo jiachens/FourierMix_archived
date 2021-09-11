@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-09 17:26:47
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-09 17:28:39
+LastEditTime: 2021-09-11 01:55:34
 '''
 import time
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ import cifar10_c_bar
 import cifar100_c
 from architectures import ARCHITECTURES, get_architecture
 from datasets import get_dataset, DATASETS
-from fourier_augment2 import FourierDataset2
+from fourier_augment3 import FourierDataset
 
 parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
@@ -89,7 +89,7 @@ def main():
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme)
     test_data = get_dataset(args.dataset, 'test')
 
-    train_data = FourierDataset2(train_dataset, 2, not(js_loss))
+    train_data = FourierDataset(train_dataset, not(js_loss))
 
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)

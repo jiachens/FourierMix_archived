@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-09 17:20:30
+LastEditTime: 2021-09-11 01:31:54
 '''
 import numpy as np
 import os
@@ -21,8 +21,8 @@ from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
 import seaborn as sns
 from augment_and_mix import AugMixDataset, AutoDataset
-from fourier_augment import FourierDataset
-from fourier_augment2 import FourierDataset2
+# from fourier_augment import FourierDataset
+from fourier_augment3 import FourierDataset
 import torchvision
 from torchvision import transforms
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         transforms.ToTensor()
     ])
     dataset_orig = get_dataset("cifar10", "train",scheme="fourier_half_ga")
-    dataset_augmix = FourierDataset2(dataset_orig, 2, True)
+    dataset_augmix = FourierDataset(dataset_orig, 1,1,True)
     
     sum_ps2D = 0
     sum_ps2D_orig = 0
@@ -221,14 +221,14 @@ if __name__ == "__main__":
                 # cbar_kws={"ticks":[]},
                 xticklabels=False,
                 yticklabels=False,)
-    plt.savefig('./test/test_0908/fouriermix2.png',dpi=250,bbox_inches='tight')
+    plt.savefig('./test/test_0908/fouriermix_0911.png',dpi=250,bbox_inches='tight')
     # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
     plt.close()
 
     corrupt = torch.stack(corrupt)
     test_img = torchvision.utils.make_grid(corrupt, nrow = 10)
     torchvision.utils.save_image(
-            test_img, "./test/test_0908/corrupt_new_fourier.png", nrow = 10
+            test_img, "./test/test_0908/corrupt_fourier_0911.png", nrow = 10
         )
 
     orig = torch.stack(orig)
