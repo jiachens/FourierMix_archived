@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-10 15:23:50
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-13 01:38:18
+LastEditTime: 2021-09-13 15:13:59
 '''
 import torch
 import fourier_basis
@@ -130,7 +130,7 @@ class FourierDataset(torch.utils.data.Dataset):
 def augment(x_orig,x_1,chain = 3):
 
     x_aug = torch.zeros_like(x_orig)
-    mixing_weight_dist = Dirichlet(torch.empty(chain).fill_(1.))
+    mixing_weight_dist = Dirichlet(torch.empty(3).fill_(1.))
     mixing_weights = mixing_weight_dist.sample()
     for i in range(chain):
         # chain2 = []

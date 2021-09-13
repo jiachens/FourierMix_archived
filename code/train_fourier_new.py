@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-09 17:26:47
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-13 14:27:29
+LastEditTime: 2021-09-13 15:28:15
 '''
 import time
 import matplotlib.pyplot as plt
@@ -212,7 +212,7 @@ def main():
                 print("[%d/%d][%d/%d] Train Loss: %.4f | time : %.2fs"
                         %(epoch + 1, epochs, i + 1, len(train_loader), loss.item(), time.time() - t), file=f, flush=True)
                 t = time.time()
-
+        epoch += 1
         if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
             torch.save({
                 "epoch": epoch,
