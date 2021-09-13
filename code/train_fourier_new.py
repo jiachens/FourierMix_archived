@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-09 17:26:47
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-11 01:55:34
+LastEditTime: 2021-09-13 00:20:23
 '''
 import time
 import matplotlib.pyplot as plt
@@ -23,6 +23,7 @@ import cifar100_c
 from architectures import ARCHITECTURES, get_architecture
 from datasets import get_dataset, DATASETS
 from fourier_augment3 import FourierDataset
+import setGPU
 
 parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
