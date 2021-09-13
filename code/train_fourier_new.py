@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-09 17:26:47
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-13 13:56:05
+LastEditTime: 2021-09-13 14:27:29
 '''
 import time
 import matplotlib.pyplot as plt
@@ -136,10 +136,10 @@ def main():
 
         # 3. Optimizer & Scheduler
         optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-        if args.arch in ['cifar_resnet110']:
-            scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
-        else:
-            scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+    if args.arch in ['cifar_resnet110']:
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
+    else:
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
 
     model = nn.DataParallel(model).to(device)
     cudnn.benchmark = True
@@ -154,6 +154,8 @@ def main():
 
     while epoch < epochs:
         model.train()
+        for param_group in optimizer.param_groups:
+            print(param_group['lr'])
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
             if js_loss:
