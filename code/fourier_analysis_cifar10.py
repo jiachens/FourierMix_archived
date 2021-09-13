@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-11 01:31:54
+LastEditTime: 2021-09-12 18:03:07
 '''
 import numpy as np
 import os
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         transforms.ToTensor()
     ])
     dataset_orig = get_dataset("cifar10", "train",scheme="fourier_half_ga")
-    dataset_augmix = FourierDataset(dataset_orig, 1,1,True)
+    dataset_augmix = FourierDataset(dataset_orig,True)
     
     sum_ps2D = 0
     sum_ps2D_orig = 0
@@ -221,14 +221,14 @@ if __name__ == "__main__":
                 # cbar_kws={"ticks":[]},
                 xticklabels=False,
                 yticklabels=False,)
-    plt.savefig('./test/test_0908/fouriermix_0911.png',dpi=250,bbox_inches='tight')
+    plt.savefig('./test/test_0908/fouriermix_0912.png',dpi=250,bbox_inches='tight')
     # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
     plt.close()
 
     corrupt = torch.stack(corrupt)
     test_img = torchvision.utils.make_grid(corrupt, nrow = 10)
     torchvision.utils.save_image(
-            test_img, "./test/test_0908/corrupt_fourier_0911.png", nrow = 10
+            test_img, "./test/test_0908/corrupt_fourier_0912.png", nrow = 10
         )
 
     orig = torch.stack(orig)

@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-10 15:23:50
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-11 13:43:37
+LastEditTime: 2021-09-12 23:49:33
 '''
 import torch
 import fourier_basis
@@ -18,14 +18,34 @@ pre = torchvision.transforms.Compose([
                 torchvision.transforms.RandomHorizontalFlip()
             ])
 
+BAISIS = fourier_basis.generate_basis(1).cpu().numpy()
 
+
+def generate_mask():
+    mask = np.ones((32,32))
+    for i in range(32):
+        for j in range(32):
+            mask[i,j] = 1/(np.sqrt((i-15.5) ** 2 + (j-15.5) ** 2)**0.8)
+    return mask
+    
+MASK = generate_mask()
 
 def amplitude(x,y,sev):
     c = [0.2,0.3,0.4,0.5,0.6][sev-1]
-    flag = np.sign(np.random.uniform() - 0.5)
     x_abs = np.abs(x)
     x_angle = np.angle(x)
-    x_abs *= 1. + flag * np.random.rand(*x_abs.shape) * c
+    flag = np.sign(np.random.uniform(*x_abs.shape) - 0.5)
+    x_abs *= 1. + flag * np.random.rand(*x_abs.shape) * c * MASK 
+    x.real = x_abs * np.cos(x_angle)
+    x.imag = x_abs * np.sin(x_angle)
+    return x
+
+def amplitude2(x,y,sev):
+    c = [1.,1.25,1.5,1.75,2][sev-1] 
+    x_abs = np.abs(x)
+    x_angle = np.angle(x)
+    # flag = np.random.uniform(*x_abs.shape) - 0.5)
+    x_abs += (np.random.uniform(*x_abs.shape) - 0.5) * c * MASK 
     x.real = x_abs * np.cos(x_angle)
     x.imag = x_abs * np.sin(x_angle)
     return x
@@ -34,7 +54,7 @@ def phase(x,y,sev):
     c = [6,5,4,3,2][sev-1]
     x_ang = np.angle(x)
     x_abs = np.abs(x)
-    x_ang += (np.random.rand(*x_ang.shape) - 0.5) * np.pi / c
+    x_ang += (np.random.rand(*x_ang.shape) - 0.5) * np.pi / c * MASK 
     x.real = x_abs * np.cos(x_ang)
     x.imag = x_abs * np.sin(x_ang)
     return x
@@ -50,26 +70,37 @@ def mixup(x,y,sev):
     x.imag = x_abs * np.sin(x_ang)
     return x
 
-def drop(x,y,sev):
-    c = [10,20,30,40,50][sev-1]
+def mask(x,y,sev):
+    c = [20,40,60,80,100][sev-1]
     row = np.random.choice(32,c,replace=True)
     col = np.random.choice(32,c,replace=True)
-    for i in range(c):
-        x[:,row[i],col[i]] = 0
+    x[:,row,col] = 0
     return x
 
+# def add(x,y,sev):
+#     c = [10,20,30,40,50][sev-1]
+#     row = np.random.choice(32,c,replace=True) 
+#     col = np.random.choice(32,c,replace=True)
+#     # x_restored = np.fft.ifft2(np.fft.ifftshift(x))
+#     for i in range(c):
+#         x[:,row[i],col[i]] *= 2
+#     # x = np.fft.fft2(np.fft.fftshift(x_restored))
+#     # x.imag = -x.imag
+#     return x
 
-def mask(x,y,sev):
-    c = [28,25,22,19,16][sev-1]
-    start = (32 - c) // 2
-    end = start + c
-    x_temp = np.zeros_like(x)
-    x_temp[:,start:end,start:end] = x[:,start:end,start:end]
-    return x_temp
+
+# def mask(x,y,sev):
+#     c = [28,25,22,19,16][sev-1]
+#     start = (32 - c) // 2
+#     end = start + c
+#     x_temp = np.zeros_like(x)
+#     x_temp[:,start:end,start:end] = x[:,start:end,start:end]
+#     return x_temp
     
 
 
-OP = [amplitude,phase,mixup,drop,mask]
+OP = [amplitude2,phase,mask]
+# OP = [add,add,add,add]
 
 
 
@@ -102,11 +133,12 @@ def augment(x_orig,x_1,chain = 3):
     mixing_weight_dist = Dirichlet(torch.empty(chain).fill_(1.))
     mixing_weights = mixing_weight_dist.sample()
     for i in range(chain):
-        chain2 = []
-        aug_chain_length = random.choice(range(1,6))
-        idxs = np.random.choice(5,aug_chain_length,replace=False)
-        for idx in idxs:
-            chain2.append(OP[idx])
+        # chain2 = []
+        # aug_chain_length = random.choice(range(1,5))
+        # idxs = np.random.choice(4,aug_chain_length,replace=False)
+        # for idx in idxs:
+        #     chain2.append(OP[idx])
+        chain2 = OP
         x_temp = augment_single(x_orig,x_1,chain2)
         x_aug += mixing_weights[i] * x_temp
 
@@ -127,7 +159,7 @@ def augment_single(x_orig,x_1,chain):
     d = [0,0,0,0,5,10,15,20][severity_3-1]
     t = [None,None,None,None,(1/24.,1/24.),(1/12.,1/12.),(1/8.,1/8.),(1/6.,1/6.)][severity_4-1]
     s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
-    s2 = [None,None,None,None,(0.95,1.05),(0.9,1.1),(0.85,1.15),(0.8,1.2)][severity_6-1]
+    s2 = [None,None,None,None,(0.975,1.025),(0.95,1.05),(0.925,1.075),(0.9,1.1)][severity_6-1]
     
     space = torchvision.transforms.RandomAffine(degrees=d, translate=t, scale=s2, shear=s)
     x_restored = space(x_orig)
