@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-10 15:23:50
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-12 23:49:33
+LastEditTime: 2021-09-13 01:38:18
 '''
 import torch
 import fourier_basis
@@ -35,7 +35,7 @@ def amplitude(x,y,sev):
     x_abs = np.abs(x)
     x_angle = np.angle(x)
     flag = np.sign(np.random.uniform(*x_abs.shape) - 0.5)
-    x_abs *= 1. + flag * np.random.rand(*x_abs.shape) * c * MASK 
+    x_abs *= 1. + flag * np.random.rand(*x_abs.shape) * c
     x.real = x_abs * np.cos(x_angle)
     x.imag = x_abs * np.sin(x_angle)
     return x
@@ -54,7 +54,7 @@ def phase(x,y,sev):
     c = [6,5,4,3,2][sev-1]
     x_ang = np.angle(x)
     x_abs = np.abs(x)
-    x_ang += (np.random.rand(*x_ang.shape) - 0.5) * np.pi / c * MASK 
+    x_ang += (np.random.rand(*x_ang.shape) - 0.5) * np.pi / c 
     x.real = x_abs * np.cos(x_ang)
     x.imag = x_abs * np.sin(x_ang)
     return x
@@ -99,7 +99,7 @@ def mask(x,y,sev):
     
 
 
-OP = [amplitude2,phase,mask]
+OP = [amplitude,amplitude2,phase,mask]
 # OP = [add,add,add,add]
 
 
@@ -114,8 +114,8 @@ class FourierDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, i):
         x, y = self.dataset[i]
-        idx = random.randint(0,len(self)-1)
-        x_1 = self.dataset[idx][0]
+        # idx = random.randint(0,len(self)-1)
+        x_1 = x
         if self.no_jsd:
             return pre(augment(x,x_1)), y
         else:
@@ -156,7 +156,7 @@ def augment_single(x_orig,x_1,chain):
     severity_5 = random.choice(range(1,9))
     severity_6 = random.choice(range(1,9))
 
-    d = [0,0,0,0,5,10,15,20][severity_3-1]
+    d = [0,0,0,0,5,10,15,20][severity_3-1] * 0.8
     t = [None,None,None,None,(1/24.,1/24.),(1/12.,1/12.),(1/8.,1/8.),(1/6.,1/6.)][severity_4-1]
     s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
     s2 = [None,None,None,None,(0.975,1.025),(0.95,1.05),(0.925,1.075),(0.9,1.1)][severity_6-1]
@@ -165,11 +165,11 @@ def augment_single(x_orig,x_1,chain):
     x_restored = space(x_orig)
     ##############################
     x_restored = x_restored.numpy()
-    x_1 = x_1.numpy()
+    # x_1 = x_1.numpy()
 
 
     x_f = np.fft.fftshift(np.fft.fft2(x_restored))
-    x_1 = np.fft.fftshift(np.fft.fft2(x_1))
+    # x_1 = np.fft.fftshift(np.fft.fft2(x_1))
 
     for op in chain:
         severity = random.choice(range(1,6))

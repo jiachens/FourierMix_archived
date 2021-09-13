@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-12 18:03:07
+LastEditTime: 2021-09-13 01:24:08
 '''
 import numpy as np
 import os
@@ -216,8 +216,8 @@ if __name__ == "__main__":
     ax = sns.heatmap(avg_ps2D,
                 cmap="jet",
                 cbar=True,
-                # vmin = 0., 
-                # vmax = 40.,
+                vmin = 0., 
+                vmax = 50.,
                 # cbar_kws={"ticks":[]},
                 xticklabels=False,
                 yticklabels=False,)
