@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-09 17:26:47
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-13 00:20:23
+LastEditTime: 2021-09-13 13:56:05
 '''
 import time
 import matplotlib.pyplot as plt
@@ -53,6 +53,10 @@ parser.add_argument('--scheme', default='ga', type=str,
                     help='training schemes like gaussian augmentation')
 parser.add_argument("--no_normalize", default=True, action='store_false')
 parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
+parser.add_argument("--resume", default=False, action='store_true')
+parser.add_argument("--base_classifier", type=str, help="path to pre-trained model")
+
+
 
 parser.add_argument("--k", type=int,default=10)
 parser.add_argument("--p", type=int,default=50)
@@ -95,15 +99,47 @@ def main():
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)
 
-    # 2. model
-    model = get_architecture(args.arch, args.dataset, args.no_normalize)
-
-    # 3. Optimizer & Scheduler
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    if args.arch in ['cifar_resnet110']:
-        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
+    if args.resume:
+        checkpoint = torch.load(args.base_classifier)
+        try:
+            base_classifier = get_architecture(checkpoint["arch"], args.dataset, args.no_normalize)
+            base_classifier.load_state_dict(checkpoint['state_dict'])
+        except:
+            base_classifier = get_architecture("cifar_resnet110", args.dataset, args.no_normalize)
+            # print(checkpoint['model_state_dict'].keys())
+            from collections import OrderedDict
+            new_state_dict = OrderedDict()
+            if 'model_state_dict' in checkpoint.keys():
+                for key, val in checkpoint['model_state_dict'].items():
+                    # print(key)
+                    if key[:6] == 'module':
+                        name = key[7:]  # remove 'module.'
+                    else:
+                        name = key
+                    new_state_dict[name] = val
+            else:
+                for key, val in checkpoint['state_dict'].items():
+                    # print(key)
+                    if key[:6] == 'module':
+                        name = key[7:]  # remove 'module.'
+                    else:
+                        name = key
+                    new_state_dict[name] = val
+            base_classifier.load_state_dict(new_state_dict)
+            model = base_classifier
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            epoch = checkpoint['epoch']
     else:
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
+        # 2. model
+        model = get_architecture(args.arch, args.dataset, args.no_normalize)
+
+        # 3. Optimizer & Scheduler
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+        if args.arch in ['cifar_resnet110']:
+            scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
+        else:
+            scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
 
     model = nn.DataParallel(model).to(device)
     cudnn.benchmark = True
@@ -113,7 +149,10 @@ def main():
     losses = []
     t = time.time()
 
-    for epoch in range(epochs):
+    if not args.resume:
+        epoch = 0
+
+    while epoch < epochs:
         model.train()
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
