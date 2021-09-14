@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-08-18 23:24:47
+LastEditTime: 2021-09-14 15:16:02
 '''
 import numpy as np
 import os
@@ -43,8 +43,8 @@ if __name__ == "__main__":
         
         plot = []
         labels = []
-        c = [0.2,0.3,0.4,0.5,0.6][sev-1]
-        d = [3.5,3,2.5,2,1.5][sev-1]
+        c = [0.6,0.65,0.7,0.75,0.8][sev-1]
+        d = [1.5,1.45,1.4,1.35,1.3][sev-1]
         e = [2,3,4,5,6][sev-1]
         basis = fourier_basis.generate_basis(e).cpu().numpy()
         for i in range(len(dataset_orig)):
@@ -61,6 +61,8 @@ if __name__ == "__main__":
                 x_orig_f_abs *=  1 + np.random.rand(*x_orig_f_abs.shape) * c
             elif args.type == 'angle':
                 x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / d
+            elif args.type == 'abs_2':
+                x_orig_f_abs += (np.random.rand(*x_orig_f_abs.shape) - 0.5) 
             elif args.type == 'basis':
                 x_restored = x_orig
                 row = 1
@@ -100,7 +102,7 @@ if __name__ == "__main__":
 
     plot = torch.FloatTensor(plot).permute(0,3,1,2)
     
-    test_img = torchvision.utils.make_grid(plot[:100]/255, nrow = 10)
+    test_img = torchvision.utils.make_grid(plot[-100:]/255, nrow = 10)
     torchvision.utils.save_image(
         test_img, "./test/filter/test_fft.png", nrow = 10
     )

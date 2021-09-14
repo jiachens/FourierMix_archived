@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-10 15:23:50
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-13 22:57:16
+LastEditTime: 2021-09-14 17:08:30
 '''
 import torch
 import fourier_basis
@@ -99,7 +99,7 @@ def mask(x,y,sev):
     
 
 
-OP = [amplitude,amplitude2,phase,mask]
+OP = [amplitude,phase,mask]
 # OP = [add,add,add,add]
 
 

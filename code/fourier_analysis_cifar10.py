@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-15 18:55:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-13 01:24:08
+LastEditTime: 2021-09-14 16:49:04
 '''
 import numpy as np
 import os
@@ -21,8 +21,8 @@ from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
 import seaborn as sns
 from augment_and_mix import AugMixDataset, AutoDataset
-# from fourier_augment import FourierDataset
-from fourier_augment3 import FourierDataset
+from fourier_augment import FourierDataset
+#from fourier_augment3 import FourierDataset
 import torchvision
 from torchvision import transforms
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         transforms.ToTensor()
     ])
     dataset_orig = get_dataset("cifar10", "train",scheme="fourier_half_ga")
-    dataset_augmix = FourierDataset(dataset_orig,True)
+    dataset_augmix = FourierDataset(dataset_orig,3,1,True)
     
     sum_ps2D = 0
     sum_ps2D_orig = 0
@@ -221,7 +221,7 @@ if __name__ == "__main__":
                 # cbar_kws={"ticks":[]},
                 xticklabels=False,
                 yticklabels=False,)
-    plt.savefig('./test/test_0908/fouriermix_0912.png',dpi=250,bbox_inches='tight')
+    plt.savefig('./test/test_0908/fouriermix.png',dpi=250,bbox_inches='tight')
     # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
     plt.close()
 
