@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-10 15:23:50
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-13 15:13:59
+LastEditTime: 2021-09-13 22:57:16
 '''
 import torch
 import fourier_basis
@@ -34,7 +34,7 @@ def amplitude(x,y,sev):
     c = [0.2,0.3,0.4,0.5,0.6][sev-1]
     x_abs = np.abs(x)
     x_angle = np.angle(x)
-    flag = np.sign(np.random.uniform(*x_abs.shape) - 0.5)
+    flag = np.sign(np.random.uniform() - 0.5)
     x_abs *= 1. + flag * np.random.rand(*x_abs.shape) * c
     x.real = x_abs * np.cos(x_angle)
     x.imag = x_abs * np.sin(x_angle)
@@ -162,13 +162,13 @@ def augment_single(x_orig,x_1,chain):
     s2 = [None,None,None,None,(0.975,1.025),(0.95,1.05),(0.925,1.075),(0.9,1.1)][severity_6-1]
     
     space = torchvision.transforms.RandomAffine(degrees=d, translate=t, scale=s2, shear=s)
-    x_restored = space(x_orig)
+    x_restored_1 = space(x_orig)
     ##############################
-    x_restored = x_restored.numpy()
+    # x_restored_1 = x_restored.numpy()
     # x_1 = x_1.numpy()
 
 
-    x_f = np.fft.fftshift(np.fft.fft2(x_restored))
+    x_f = np.fft.fftshift(np.fft.fft2(x_orig.clone().numpy()))
     # x_1 = np.fft.fftshift(np.fft.fft2(x_1))
 
     for op in chain:
@@ -176,7 +176,11 @@ def augment_single(x_orig,x_1,chain):
         x_f = op(x_f,x_1,severity)
 
     # # a = np.random.uniform()
-    x_restored = np.fft.ifft2(np.fft.ifftshift(x_f))
-    x_restored = torch.FloatTensor(x_restored)
+    x_restored_2 = np.fft.ifft2(np.fft.ifftshift(x_f))
+    x_restored_2 = torch.FloatTensor(x_restored_2)
+
+    b = np.random.uniform()
+    # b = 0
+    x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
 
     return x_restored
