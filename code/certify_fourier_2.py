@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-14 15:18:56
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-15 13:49:05
+LastEditTime: 2021-09-15 14:32:04
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -123,6 +123,7 @@ if __name__ == "__main__":
             noise_new = np.zeros_like(noise_f)
             noise_new[:,start:end,start:end] = noise_f[:,start:end,start:end] 
         else:
+            noise_new = noise_f
             noise_new[:,start:end,start:end] = 0
         noise_res = np.fft.ifft2(np.fft.ifftshift(noise_new))
         # print(np.linalg.norm(noise_res))
