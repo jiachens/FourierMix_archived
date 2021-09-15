@@ -120,7 +120,7 @@ if __name__ == "__main__":
         end = start + args.mask
         noise_f[:,start:end,start:end] = 0
         noise_res = np.fft.ifft2(np.fft.ifftshift(noise_f))
-        print(np.linalg.norm(noise_res))
+        # print(np.linalg.norm(noise_res))
         noise_res = noise_res / np.linalg.norm(noise_res) * 8
         noise_res = torch.FloatTensor(noise_res).cuda()
         x += noise_res
