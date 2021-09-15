@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-14 15:18:56
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-14 20:58:50
+LastEditTime: 2021-09-14 21:03:31
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -115,11 +115,12 @@ if __name__ == "__main__":
         if x.shape[0] != 3:
             x = x.permute(2,0,1)
         noise = torch.randn_like(x).cpu().numpy()
-        noise_f = np.fft.fft2(noise)
+        noise_f = np.fft.fftshift(np.fft.fft2(noise))
         start = (32 - args.mask) // 2
         end = start + args.mask
-        noise_f[:,start:end,start:end] = 0
-        noise_res = np.fft.ifft2(noise_f)
+        noise_new = np.zeros_like(noise_f)
+        noise_new[:,start:end,start:end] = noise_f[:,start:end,start:end] 
+        noise_res = np.fft.ifft2(np.fft.ifftshift(noise_f))
         # print(np.linalg.norm(noise_res))
         noise_res = noise_res / np.linalg.norm(noise_res) * 8
         noise_res = torch.FloatTensor(noise_res).cuda()
