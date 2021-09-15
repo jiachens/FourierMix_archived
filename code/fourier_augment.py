@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-14 22:25:34
+LastEditTime: 2021-09-15 00:56:41
 '''
 import torch
 import fourier_basis
@@ -102,14 +102,14 @@ def augment_single(x_orig):
     s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
     
     space = torchvision.transforms.RandomAffine(degrees=d, translate=t, scale=None, shear=s)
-    x_restored_2 = space(x_orig)
+    x_restored_2 = space(x_restored_1)
     ##############################
 
-    b = np.random.uniform()
-    # b = 0
-    x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
+    # b = np.random.uniform()
+    # # b = 0
+    # x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
 
     # # a = np.random.uniform()
     # # x_restored = x_restored * a + x_orig * (1-a)
 
-    return x_restored
+    return x_restored_2
