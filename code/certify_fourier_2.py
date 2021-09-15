@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-14 15:18:56
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-14 21:04:37
+LastEditTime: 2021-09-15 13:49:05
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -31,6 +31,7 @@ parser.add_argument("--max", type=int, default=-1, help="stop after this many ex
 parser.add_argument("--split", choices=["train", "test"], default="test", help="train or test set")
 parser.add_argument("--N0", type=int, default=100)
 parser.add_argument("--mask", type=int, default=0)
+parser.add_argument("--high", default=False, action='store_true')
 parser.add_argument("--N", type=int, default=100000, help="number of samples to use")
 parser.add_argument("--alpha", type=float, default=0.001, help="failure probability")
 parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
@@ -118,8 +119,11 @@ if __name__ == "__main__":
         noise_f = np.fft.fftshift(np.fft.fft2(noise))
         start = (32 - args.mask) // 2
         end = start + args.mask
-        noise_new = np.zeros_like(noise_f)
-        noise_new[:,start:end,start:end] = noise_f[:,start:end,start:end] 
+        if not args.high:
+            noise_new = np.zeros_like(noise_f)
+            noise_new[:,start:end,start:end] = noise_f[:,start:end,start:end] 
+        else:
+            noise_new[:,start:end,start:end] = 0
         noise_res = np.fft.ifft2(np.fft.ifftshift(noise_new))
         # print(np.linalg.norm(noise_res))
         noise_res = noise_res / np.linalg.norm(noise_res) * 8
