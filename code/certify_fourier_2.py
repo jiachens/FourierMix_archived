@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-14 15:18:56
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-14 15:19:57
+LastEditTime: 2021-09-14 20:28:14
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -15,6 +15,7 @@ from time import time
 import torch
 import datetime
 from architectures import get_architecture
+import numpy as np
 
 parser = argparse.ArgumentParser(description='Certify many examples')
 parser.add_argument("dataset", choices=DATASETS, help="which dataset")
@@ -29,6 +30,7 @@ parser.add_argument("--skip", type=int, default=1, help="how many examples to sk
 parser.add_argument("--max", type=int, default=-1, help="stop after this many examples")
 parser.add_argument("--split", choices=["train", "test"], default="test", help="train or test set")
 parser.add_argument("--N0", type=int, default=100)
+parser.add_argument("--mask", type=int, default=0)
 parser.add_argument("--N", type=int, default=100000, help="number of samples to use")
 parser.add_argument("--alpha", type=float, default=0.001, help="failure probability")
 parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
@@ -106,11 +108,22 @@ if __name__ == "__main__":
 
         (x, label) = dataset[i]
 
+
         before_time = time()
         # certify the prediction of g around x
         x = x.cuda()
         if x.shape[0] != 3:
             x = x.permute(2,0,1)
+        noise = torch.randn_like(x).numpy()
+        noise_f = np.fft.fftshift(np.fft.fft2(noise))
+        start = (32 - args.mask) // 2
+        end = start + args.mask
+        noise_f[:,start:end,start:end] = 0
+        noise_res = np.fft.ifft2(np.fft.ifftshift(noise_f))
+        noise_res = noise_res / np.linalg.norm(noise_res,ord=2) * 8
+        noise_res = torch.FloatTensor(noise_res).cuda()
+        x += noise_res
+        
         base_prediction = smoothed_classifier.base_predict(x)
         prediction, radius = smoothed_classifier.certify(x, args.N0, args.N, args.alpha, args.batch)
         after_time = time()

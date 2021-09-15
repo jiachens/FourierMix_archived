@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-14 17:17:51
+LastEditTime: 2021-09-14 17:22:27
 '''
 import torch
 import fourier_basis
@@ -65,7 +65,7 @@ def augment_single(x_orig):
     severity_3 = random.choice(range(1,6))
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
-    e = [10,20,30,40,50][severity_3-1]
+    e = [10,20,30,40,50][severity_3-1] * 2
     x_orig_1 = x_orig.clone().numpy()
     x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
     x_orig_f_abs = np.abs(x_orig_f) 
