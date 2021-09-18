@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-18 17:53:18
+LastEditTime: 2021-09-18 17:59:36
 '''
 import time
 import matplotlib.pyplot as plt
@@ -130,7 +130,7 @@ def main():
                 images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
                 targets = targets.to(device)
 
-                if args.scheme in ['augmix_half_ga','auto_half_ga']:
+                if args.scheme in ['augmix_half_ga','auto_half_ga','pg_half_ga']:
                     index = np.random.choice(images_cat.shape[0],images_cat.shape[0]//2)
                     images_cat[index] = images_cat[index] + torch.randn_like(images_cat[index], device='cuda') * args.noise_sd
                 elif args.scheme in ['augmix_ga','auto_ga']:
@@ -151,7 +151,7 @@ def main():
 
             else:
                 images, targets = images.to(device), targets.to(device)
-                if args.scheme in ['augmix_half_ga','auto_half_ga']:
+                if args.scheme in ['augmix_half_ga','auto_half_ga','pg_half_ga']:
                     index = np.random.choice(images.shape[0],images.shape[0]//2)
                     images[index] = images[index] + torch.randn_like(images[index], device='cuda') * args.noise_sd
                 elif args.scheme in ['augmix_ga','auto_ga']:
