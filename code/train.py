@@ -64,6 +64,7 @@ if args.dataset == 'imagenet':
         rank=int(os.environ['OMPI_COMM_WORLD_RANK']))
     # lookup number of ranks in the job, and our rank
     world_size = torch.distributed.get_world_size()
+    print(world_size)
     rank = torch.distributed.get_rank()
     # compute our local rank on the node and select a corresponding gpu,
     # this assumes we started exactly one rank per gpu on the node
