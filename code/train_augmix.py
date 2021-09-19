@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-19 17:50:02
+LastEditTime: 2021-09-19 18:00:56
 '''
 import time
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ import cifar100_c
 import cifar10_c_bar
 from architectures import ARCHITECTURES, get_architecture
 from datasets import get_dataset, DATASETS
-from augment_and_mix import AugMixDataset, AutoDataset,PGDataset
+from augment_and_mix import AugMixDataset, AutoDataset,PGDataset,GADataset
 
 parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
@@ -99,6 +99,8 @@ def main():
         train_data = AutoDataset(train_dataset, not(js_loss))
     elif args.scheme in ['pg_half_ga']:
         train_data = PGDataset(train_dataset, not(js_loss))
+    elif args.scheme in ['half_ga_jsd']:
+        train_data = GADataset(train_dataset, not(js_loss))
     
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory)
