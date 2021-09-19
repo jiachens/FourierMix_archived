@@ -163,12 +163,12 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         if args.adv:
             inputs = LinfPGD(inputs,targets,model,criterion)
             model.train()
-
-        if i == 0:
-            test_img = torchvision.utils.make_grid(inputs, nrow = 16)
-            torchvision.utils.save_image(
-                test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.severity)+".png", nrow = 16
-            )
+        print(inputs.shape)
+        # if i == 0:
+        #     test_img = torchvision.utils.make_grid(inputs, nrow = 16)
+        #     torchvision.utils.save_image(
+        #         test_img, "./test/test_"+args.scheme+"_"+str(noise_sd)+"_"+str(args.severity)+".png", nrow = 16
+        #     )
 
         outputs = model(inputs)
         loss = criterion(outputs, targets)
