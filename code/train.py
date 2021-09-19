@@ -85,7 +85,7 @@ def main():
         train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
     else:
         train_sampler = None
-    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=args.batch,
+    train_loader = DataLoader(train_dataset, shuffle=not(args.dataset == 'imagenet'), batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory,sampler=train_sampler)
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=args.batch,
                              num_workers=args.workers, pin_memory=pin_memory)
