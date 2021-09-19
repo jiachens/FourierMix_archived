@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-18 18:07:53
+LastEditTime: 2021-09-19 17:48:47
 '''
 import random
 
@@ -44,6 +44,23 @@ class AutoDataset(torch.utils.data.Dataset):
         return len(self.dataset)
 
 class PGDataset(torch.utils.data.Dataset):
+    def __init__(self, dataset, no_jsd=False):
+        self.dataset = dataset
+        self.no_jsd = no_jsd
+
+    def __getitem__(self, i):
+        x, y = self.dataset[i]
+        if self.no_jsd:
+            return transform2(transforms.ToTensor()(x)), y
+        else:
+            return (transform2(transforms.ToTensor()(x)), 
+                    transform2(transforms.ToTensor()(x)),
+                    transform2(transforms.ToTensor()(x))), y
+
+    def __len__(self):
+        return len(self.dataset)
+
+class GADataset(torch.utils.data.Dataset):
     def __init__(self, dataset, no_jsd=False):
         self.dataset = dataset
         self.no_jsd = no_jsd
