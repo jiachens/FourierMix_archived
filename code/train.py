@@ -75,7 +75,7 @@ if args.dataset == 'imagenet':
 def main():
 
     if not os.path.exists(args.outdir):
-        os.mkdir(args.outdir)
+        os.makedirs(args.outdir,exist_ok=True)
 
     train_dataset = get_dataset(args.dataset, 'train', scheme = args.scheme, severity=args.severity)
     test_dataset = get_dataset(args.dataset, 'test')
