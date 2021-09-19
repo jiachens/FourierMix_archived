@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-18 17:12:35
+LastEditTime: 2021-09-18 18:07:53
 '''
 import random
 
@@ -21,6 +21,11 @@ transform=transforms.Compose([
                 transforms.ToTensor()
             ])
 
+transform2=transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip()
+            ])
+
 class AutoDataset(torch.utils.data.Dataset):
     def __init__(self, dataset, no_jsd=False):
         self.dataset = dataset
@@ -32,8 +37,8 @@ class AutoDataset(torch.utils.data.Dataset):
             return transform(x), y
         else:
             return (transforms.ToTensor()(x), 
-                    transform(x,transform),
-                    transform(x,transform)), y
+                    transform(x),
+                    transform(x)), y
 
     def __len__(self):
         return len(self.dataset)
@@ -48,9 +53,9 @@ class PGDataset(torch.utils.data.Dataset):
         if self.no_jsd:
             return transform(x), y
         else:
-            return (transforms.ToTensor()(x), 
-                    patchGaussian(x),
-                    patchGaussian(x)), y
+            return (transform2(transforms.ToTensor()(x)), 
+                    transform2(patchGaussian(x,transform)),
+                    transform2(patchGaussian(x,transform))), y
 
     def __len__(self):
         return len(self.dataset)
@@ -64,7 +69,7 @@ def patchGaussian(x,preprocess):
     end_row = min(32,row+13)
     start_col = max(0,col-13)
     end_col = min(32,col+13)
-    x[:,start_row:end_row,start_col:end_col] += torch.randn_like(x[:,start_row:end_row,start_col:end_col], device='cuda') * 0.5
+    x[:,start_row:end_row,start_col:end_col] += torch.randn_like(x[:,start_row:end_row,start_col:end_col]) * 0.25
     x = torch.clamp(x,0.,1.)
     return x
 

@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-18 17:59:36
+LastEditTime: 2021-09-18 18:05:29
 '''
 import time
 import matplotlib.pyplot as plt
@@ -126,6 +126,11 @@ def main():
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
             if js_loss:
+                if i == 0:
+                    test_img = torchvision.utils.make_grid(images[1], nrow = 16)
+                    torchvision.utils.save_image(
+                            test_img, "./test/fourier/test_4.png", nrow = 16
+                        )
                 bs = images[0].size(0)
                 images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
                 targets = targets.to(device)
