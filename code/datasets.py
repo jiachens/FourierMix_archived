@@ -7,6 +7,7 @@ import cifar10_c
 import cifar10_c_bar
 import cifar10_f
 import cifar100_c
+import cifar100_c_bar
 import transformation
 
 # set this environment variable to the location of your imagenet directory if you want to read ImageNet data.
@@ -29,6 +30,8 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
         return _cifar100(split, scheme, severity)
     elif dataset == "cifar100-c":
         return _cifar100_c(data_dir,corruption, severity)
+    elif dataset == "cifar100-c-bar":
+        return _cifar100_c_bar(data_dir,corruption, severity)
     elif dataset == "cifar10-c":
         return _cifar10_c(data_dir,corruption,severity)
     elif dataset == "cifar10-c-bar":
@@ -48,7 +51,7 @@ def get_num_classes(dataset: str):
         return 10
     elif dataset == "cifar10-f":
         return 10
-    elif dataset in ["cifar100","cifar100-c"]:
+    elif dataset in ["cifar100","cifar100-c","cifar100-c-bar"]:
         return 100
 
 
@@ -164,6 +167,9 @@ def _cifar100_c(data_dir: str, corruption: str, severity: int) -> Dataset:
 
 def _cifar10_c_bar(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_c_bar.generate_examples(data_dir,corruption,severity)
+
+def _cifar100_c_bar(data_dir: str, corruption: str, severity: int) -> Dataset:
+    return cifar100_c_bar.generate_examples(data_dir,corruption,severity)
 
 def _cifar10_f(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_f.generate_examples(data_dir,corruption,severity)

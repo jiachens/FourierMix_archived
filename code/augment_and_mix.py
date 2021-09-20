@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-19 17:48:47
+LastEditTime: 2021-09-20 16:32:28
 '''
 import random
 
@@ -17,7 +17,8 @@ import numpy as np
 from augmentations import augmentations, augmentations_x
 
 transform=transforms.Compose([
-                # transforms.AutoAugment(policy=transforms.autoaugment.AutoAugmentPolicy.CIFAR10),
+                transforms.RandomHorizontalFlip(),
+                transforms.AutoAugment(policy=transforms.autoaugment.AutoAugmentPolicy.CIFAR10),
                 transforms.ToTensor()
             ])
 
@@ -25,6 +26,12 @@ transform2=transforms.Compose([
                 transforms.RandomCrop(32, padding=4),
                 transforms.RandomHorizontalFlip()
             ])
+
+# transform3=transforms.Compose([
+#                 transforms.RandomHorizontalFlip(),
+#                 transforms.RandAugment(),
+#                 transforms.ToTensor()
+#             ])
 
 class AutoDataset(torch.utils.data.Dataset):
     def __init__(self, dataset, no_jsd=False):
@@ -36,12 +43,29 @@ class AutoDataset(torch.utils.data.Dataset):
         if self.no_jsd:
             return transform(x), y
         else:
-            return (transforms.ToTensor()(x), 
+            return (transforms.RandomHorizontalFlip()(transforms.ToTensor()(x)), 
                     transform(x),
                     transform(x)), y
 
     def __len__(self):
         return len(self.dataset)
+
+# class RandDataset(torch.utils.data.Dataset):
+#     def __init__(self, dataset, no_jsd=False):
+#         self.dataset = dataset
+#         self.no_jsd = no_jsd
+
+#     def __getitem__(self, i):
+#         x, y = self.dataset[i]
+#         if self.no_jsd:
+#             return transform3(x), y
+#         else:
+#             return (transforms.RandomHorizontalFlip()(transforms.ToTensor()(x)), 
+#                     transform3(x),
+#                     transform3(x)), y
+
+#     def __len__(self):
+#         return len(self.dataset)
 
 class PGDataset(torch.utils.data.Dataset):
     def __init__(self, dataset, no_jsd=False):
