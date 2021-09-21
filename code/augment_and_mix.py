@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-20 16:32:28
+LastEditTime: 2021-09-20 22:04:43
 '''
 import random
 
@@ -18,7 +18,7 @@ from augmentations import augmentations, augmentations_x
 
 transform=transforms.Compose([
                 transforms.RandomHorizontalFlip(),
-                transforms.AutoAugment(policy=transforms.autoaugment.AutoAugmentPolicy.CIFAR10),
+                # transforms.AutoAugment(policy=transforms.autoaugment.AutoAugmentPolicy.CIFAR10),
                 transforms.ToTensor()
             ])
 
@@ -30,6 +30,12 @@ transform2=transforms.Compose([
 # transform3=transforms.Compose([
 #                 transforms.RandomHorizontalFlip(),
 #                 transforms.RandAugment(),
+#                 transforms.ToTensor()
+#             ])
+
+# transform4=transforms.Compose([
+#                 transforms.RandomHorizontalFlip(),
+#                 transforms.TrivialAugmentWide(),
 #                 transforms.ToTensor()
 #             ])
 
