@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-21 22:02:03
+LastEditTime: 2021-09-21 22:11:32
 '''
 import time
 import matplotlib.pyplot as plt
@@ -133,6 +133,7 @@ def main():
             optimizer.zero_grad()
             if new_loss:
                 bs = images[0].size(0)
+                images[0],images[1],images[2] = images[0].to(device),images[1].to(device),images[2].to(device)
                 images_0_0 = images[0] + torch.randn_like(images[0], device='cuda') * args.noise_sd
                 images_0_1 = images[0] + torch.randn_like(images[0], device='cuda') * args.noise_sd
                 images_1_0 = images[1] + torch.randn_like(images[1], device='cuda') * args.noise_sd
@@ -154,7 +155,7 @@ def main():
                 logits = model(images_cat)
                 logits_orig_0, logits_orig_1,logits_aug1_0, logits_aug1_1,logits_aug2_0, logits_aug2_1 = logits[:bs], logits[bs:2*bs], logits[2*bs:3*bs],logits[3*bs:4*bs], logits[4*bs:5*bs], logits[5*bs:]
                 
-                loss = F.cross_entropy(logits_orig, targets)
+                loss = F.cross_entropy(logits_orig_0+logits_orig_1, targets)
 
                 loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],10,loss='default')
                 loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='default')
@@ -200,7 +201,7 @@ def main():
                                 F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
 
-            else:
+            elif not(js_loss):
                 images, targets = images.to(device), targets.to(device)
                 if args.scheme in ['augmix_half_ga','auto_half_ga',"half_ga_jsd"]:
                     index = np.random.choice(images.shape[0],images.shape[0]//2)
