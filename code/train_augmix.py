@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 02:03:25
+LastEditTime: 2021-09-22 11:48:12
 '''
 import time
 import matplotlib.pyplot as plt
@@ -216,7 +216,7 @@ def main():
                         %(epoch + 1, epochs, i + 1, len(train_loader), loss.item(), time.time() - t))
                 t = time.time()
 
-        if (epoch + 20) % 1 == 0 or (epoch + 1) == epochs:
+        if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
             torch.save({
                 "epoch": epoch,
                 'model_state_dict': model.state_dict(),
