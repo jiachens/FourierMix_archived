@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 01:09:39
+LastEditTime: 2021-09-22 02:12:14
 '''
 import time
 import setGPU
@@ -138,23 +138,22 @@ def main():
                 logits_orig_0, logits_orig_1,logits_aug1_0, logits_aug1_1,logits_aug2_0, logits_aug2_1 = logits[:bs], logits[bs:2*bs], logits[2*bs:3*bs],logits[3*bs:4*bs], logits[4*bs:5*bs], logits[5*bs:]
                 
                 loss = (F.cross_entropy(logits_orig_0, targets) + F.cross_entropy(logits_orig_1, targets)) / 2.
-                print(loss)
+                # print(loss)
 
                 loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],10,loss='kl')
                 loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='kl')
                 loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],10,loss='kl')
 
                 loss += (loss1 + loss2 + loss3) / 3
-                print(loss)
+                # print(loss)
 
                 p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig_0, dim = -1)+F.softmax(logits_orig_1, dim = -1), F.softmax(logits_aug1_0, dim = -1)+F.softmax(logits_aug1_1, dim = -1), F.softmax(logits_aug2_0, dim = -1)+F.softmax(logits_aug2_1, dim = -1)
 
                 # Clamp mixture distribution to avoid exploding KL divergence
-                p_mixture = torch.clamp((p_orig + p_augmix1 + p_augmix2) / 3., 1e-7, 1).log()
-                loss += 10 * (F.kl_div(p_mixture, p_orig, reduction='batchmean') +
-                                F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
-                                F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
-                print(loss)
+                p_mixture = torch.clamp((p_orig/2 + p_augmix1/2 + p_augmix2/2) / 3., 1e-7, 1).log()
+                loss += 10 * (F.kl_div(p_mixture, p_orig/2, reduction='batchmean') +
+                                F.kl_div(p_mixture, p_augmix1/2, reduction='batchmean') +
+                                F.kl_div(p_mixture, p_augmix2/2, reduction='batchmean')) / 3.
 
             if js_loss and not new_loss:
                 if i == 0:
