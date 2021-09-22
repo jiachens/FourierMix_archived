@@ -1,9 +1,9 @@
 '''
 Description: 
 Autor: Jiachen Sun
-Date: 2021-07-07 15:20:41
+Date: 2021-09-22 16:50:40
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 12:14:58
+LastEditTime: 2021-09-22 16:51:48
 '''
 import time
 import matplotlib.pyplot as plt
@@ -136,36 +136,36 @@ def main():
                 images[0],images[1],images[2] = images[0].to(device),images[1].to(device),images[2].to(device)
                 images_0_0 = images[0] + torch.randn_like(images[0], device='cuda') * args.noise_sd
                 images_0_1 = images[0] + torch.randn_like(images[0], device='cuda') * args.noise_sd
-                images_1_0 = images[1] + torch.randn_like(images[1], device='cuda') * args.noise_sd
-                images_1_1 = images[1] + torch.randn_like(images[1], device='cuda') * args.noise_sd
-                images_2_0 = images[2] + torch.randn_like(images[2], device='cuda') * args.noise_sd
-                images_2_1 = images[2] + torch.randn_like(images[2], device='cuda') * args.noise_sd
+                # images_1_0 = images[1] + torch.randn_like(images[1], device='cuda') * args.noise_sd
+                # images_1_1 = images[1] + torch.randn_like(images[1], device='cuda') * args.noise_sd
+                # images_2_0 = images[2] + torch.randn_like(images[2], device='cuda') * args.noise_sd
+                # images_2_1 = images[2] + torch.randn_like(images[2], device='cuda') * args.noise_sd
 
-                images_cat = torch.cat([images_0_0,images_0_1,images_1_0,images_1_1,images_2_0,images_2_1], dim = 0).to(device)
+                images_cat = torch.cat([images_0_0,images_0_1], dim = 0).to(device)
                 
                 targets = targets.to(device)
 
                 logits = model(images_cat)
-                logits_orig_0, logits_orig_1,logits_aug1_0, logits_aug1_1,logits_aug2_0, logits_aug2_1 = logits[:bs], logits[bs:2*bs], logits[2*bs:3*bs],logits[3*bs:4*bs], logits[4*bs:5*bs], logits[5*bs:]
+                logits_orig_0, logits_orig_1 = logits[:bs], logits[bs:2*bs]
                 
                 loss = (F.cross_entropy(logits_orig_0, targets) + F.cross_entropy(logits_orig_1, targets)) / 2.
                 print(loss)
 
                 loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],10,loss='kl')
-                loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='kl')
-                loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],10,loss='kl')
+                # loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='kl')
+                # loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],10,loss='kl')
 
-                loss += (loss1 + loss2 + loss3) / 3
+                loss += loss1
                 print(loss)
 
-                p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig_0, dim = -1)+F.softmax(logits_orig_1, dim = -1), F.softmax(logits_aug1_0, dim = -1)+F.softmax(logits_aug1_1, dim = -1), F.softmax(logits_aug2_0, dim = -1)+F.softmax(logits_aug2_1, dim = -1)
+                # p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig_0, dim = -1)+F.softmax(logits_orig_1, dim = -1), F.softmax(logits_aug1_0, dim = -1)+F.softmax(logits_aug1_1, dim = -1), F.softmax(logits_aug2_0, dim = -1)+F.softmax(logits_aug2_1, dim = -1)
 
-                # Clamp mixture distribution to avoid exploding KL divergence
-                p_mixture = torch.clamp((p_orig/2 + p_augmix1/2 + p_augmix2/2) / 3., 1e-7, 1).log()
-                loss += 10 * (F.kl_div(p_mixture, p_orig/2, reduction='batchmean') +
-                                F.kl_div(p_mixture, p_augmix1/2, reduction='batchmean') +
-                                F.kl_div(p_mixture, p_augmix2/2, reduction='batchmean')) / 3.
-                print(loss)
+                # # Clamp mixture distribution to avoid exploding KL divergence
+                # p_mixture = torch.clamp((p_orig/2 + p_augmix1/2 + p_augmix2/2) / 3., 1e-7, 1).log()
+                # loss += 10 * (F.kl_div(p_mixture, p_orig/2, reduction='batchmean') +
+                #                 F.kl_div(p_mixture, p_augmix1/2, reduction='batchmean') +
+                #                 F.kl_div(p_mixture, p_augmix2/2, reduction='batchmean')) / 3.
+                # print(loss)
 
             if js_loss and not new_loss:
                 if i == 0:

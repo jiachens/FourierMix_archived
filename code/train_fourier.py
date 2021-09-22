@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 02:12:14
+LastEditTime: 2021-09-22 19:24:36
 '''
 import time
 import setGPU
@@ -55,8 +55,8 @@ parser.add_argument('--scheme', default='ga', type=str,
 parser.add_argument("--no_normalize", default=True, action='store_false')
 parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
 
-parser.add_argument("--k", type=int,default=10)
-parser.add_argument("--p", type=int,default=50)
+parser.add_argument("--lbd1", type=int,default=10)
+parser.add_argument("--lbd2", type=int,default=10)
 
 args = parser.parse_args()
 
@@ -140,9 +140,9 @@ def main():
                 loss = (F.cross_entropy(logits_orig_0, targets) + F.cross_entropy(logits_orig_1, targets)) / 2.
                 # print(loss)
 
-                loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],10,loss='kl')
-                loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='kl')
-                loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],10,loss='kl')
+                loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],args.lbd1,loss='kl')
+                loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],args.lbd1,loss='kl')
+                loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],args.lbd1,loss='kl')
 
                 loss += (loss1 + loss2 + loss3) / 3
                 # print(loss)
@@ -151,7 +151,7 @@ def main():
 
                 # Clamp mixture distribution to avoid exploding KL divergence
                 p_mixture = torch.clamp((p_orig/2 + p_augmix1/2 + p_augmix2/2) / 3., 1e-7, 1).log()
-                loss += 10 * (F.kl_div(p_mixture, p_orig/2, reduction='batchmean') +
+                loss += args.lbd2 * (F.kl_div(p_mixture, p_orig/2, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix1/2, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix2/2, reduction='batchmean')) / 3.
 
