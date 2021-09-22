@@ -149,7 +149,7 @@ def _cifar100(split: str, scheme, severity: int) -> Dataset:
                 transforms.RandomHorizontalFlip()
             ]))
         elif scheme in ["auto_half_ga"]:
-            return datasets.CIFAR10("./dataset_cache", train=True, download=True, transform=None)
+            return datasets.CIFAR100("./dataset_cache", train=True, download=True, transform=None)
         else:
             return datasets.CIFAR100("./dataset_cache", train=True, download=True, transform=transforms.Compose([
                 transforms.RandomCrop(32, padding=4),
