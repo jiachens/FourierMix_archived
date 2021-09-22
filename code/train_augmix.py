@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-21 22:11:32
+LastEditTime: 2021-09-22 02:03:25
 '''
 import time
 import matplotlib.pyplot as plt
@@ -143,34 +143,29 @@ def main():
 
                 images_cat = torch.cat([images_0_0,images_0_1,images_1_0,images_1_1,images_2_0,images_2_1], dim = 0).to(device)
                 
-
-                # images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
                 targets = targets.to(device)
-                # if args.scheme in ['augmix_half_ga','auto_half_ga',"half_ga_jsd"]:
-                #     index = np.random.choice(images_cat.shape[0],images_cat.shape[0]//2)
-                #     images_cat[index] = images_cat[index] + torch.randn_like(images_cat[index], device='cuda') * args.noise_sd
-                # elif args.scheme in ['augmix_ga','auto_ga']:
-                #     images_cat = images_cat + torch.randn_like(images_cat, device='cuda') * args.noise_sd
 
                 logits = model(images_cat)
                 logits_orig_0, logits_orig_1,logits_aug1_0, logits_aug1_1,logits_aug2_0, logits_aug2_1 = logits[:bs], logits[bs:2*bs], logits[2*bs:3*bs],logits[3*bs:4*bs], logits[4*bs:5*bs], logits[5*bs:]
                 
-                loss = F.cross_entropy(logits_orig_0+logits_orig_1, targets)
+                loss = (F.cross_entropy(logits_orig_0, targets) + F.cross_entropy(logits_orig_1, targets)) / 2.
+                # print(loss)
 
-                loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],10,loss='default')
-                loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='default')
-                loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],10,loss='default')
+                loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],10,loss='kl')
+                loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='kl')
+                loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],10,loss='kl')
 
                 loss += (loss1 + loss2 + loss3) / 3
+                # print(loss)
 
-                p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig_0+logits_orig_1, dim = -1), F.softmax(logits_aug1_0+logits_aug1_1, dim = -1), F.softmax(logits_aug2_0+logits_aug2_1, dim = -1)
+                p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig_0, dim = -1)+F.softmax(logits_orig_1, dim = -1), F.softmax(logits_aug1_0, dim = -1)+F.softmax(logits_aug1_1, dim = -1), F.softmax(logits_aug2_0, dim = -1)+F.softmax(logits_aug2_1, dim = -1)
 
                 # Clamp mixture distribution to avoid exploding KL divergence
-                p_mixture = torch.clamp((p_orig + p_augmix1 + p_augmix2) / 3., 1e-7, 1).log()
-                loss += 10 * (F.kl_div(p_mixture, p_orig, reduction='batchmean') +
-                                F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
-                                F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
-                
+                p_mixture = torch.clamp((p_orig/2 + p_augmix1/2 + p_augmix2/2) / 3., 1e-7, 1).log()
+                loss += 10 * (F.kl_div(p_mixture, p_orig/2, reduction='batchmean') +
+                                F.kl_div(p_mixture, p_augmix1/2, reduction='batchmean') +
+                                F.kl_div(p_mixture, p_augmix2/2, reduction='batchmean')) / 3.
+                # print(loss)
 
             if js_loss and not new_loss:
                 if i == 0:
@@ -221,7 +216,7 @@ def main():
                         %(epoch + 1, epochs, i + 1, len(train_loader), loss.item(), time.time() - t))
                 t = time.time()
 
-        if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
+        if (epoch + 20) % 1 == 0 or (epoch + 1) == epochs:
             torch.save({
                 "epoch": epoch,
                 'model_state_dict': model.state_dict(),
@@ -241,6 +236,7 @@ def main():
                 for i, (images, targets) in enumerate(test_loader):
                     images, targets = images.to(device), targets.to(device)
                     preds = torch.argmax(model(images), dim = -1)
+                    print(preds)
                     error += (preds != targets).sum().item()
                     total += targets.size(0)
 
