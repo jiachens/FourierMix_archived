@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 21:55:44
+LastEditTime: 2021-09-23 00:53:53
 '''
 import random
 import numpy as np
@@ -102,7 +102,7 @@ if __name__ == "__main__":
                     x_f_abs = np.abs(x_f)
                     x_orig_f_abs = x_orig_f_abs * (1-g) + g * x_f_abs
 
-                if args.type in ['abs_2','abs_3']:
+                if args.type in ['abs_2','fourier']:
                     x_restored = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
                 else:  
                     x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
