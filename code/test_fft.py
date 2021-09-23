@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 21:10:11
+LastEditTime: 2021-09-22 21:11:51
 '''
 import random
 import numpy as np
@@ -50,8 +50,8 @@ def generate_mask2():
             mask[i,j] = 1/(np.abs(np.sqrt((i-15.5) ** 2 + (j-15.5) ** 2))**1.5)
     return mask
     
-MASK = generate_mask()
-MASK2 = generate_mask2()
+# MASK = generate_mask()
+# MASK2 = generate_mask2()
 
 
 if __name__ == "__main__":
