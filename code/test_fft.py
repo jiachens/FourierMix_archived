@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 21:18:08
+LastEditTime: 2021-09-22 21:42:52
 '''
 import random
 import numpy as np
@@ -133,9 +133,9 @@ if __name__ == "__main__":
         np.save('./data/CIFAR-10-F/label.npy',all_label)
         print(all_label[:10])
 
-        plot = torch.FloatTensor(all_data[10000:10100]).permute(0,3,1,2)
+        plot = torch.FloatTensor(all_data[10000:10100])
         
-        test_img = torchvision.utils.make_grid(plot/255, nrow = 10)
+        test_img = torchvision.utils.make_grid(plot/255., nrow = 10)
         torchvision.utils.save_image(
             test_img, "./test/filter/fourier_"+str(f_c)+".png", nrow = 10
         )
