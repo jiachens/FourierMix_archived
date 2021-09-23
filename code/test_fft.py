@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-23 19:24:22
+LastEditTime: 2021-09-23 19:58:01
 '''
 import random
 import numpy as np
@@ -38,7 +38,7 @@ def generate_mask(f_c):
     for i in range(32):
         for j in range(32):
             mask[i,j] = 1/(np.abs(np.sqrt((i-16) ** 2 + (j-16) ** 2)-f_c)+0.5)**1.5
-    print(np.max(mask))
+    # print(np.max(mask))
     return mask
 
 def generate_mask2():
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     for f_c in [2,4,6,8,10,12,14,16]:
         all_data = []
         all_label = []
-        for sev in [2]:
+        for sev in [1,2,3]:
             
             plot = []
             labels = []
