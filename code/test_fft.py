@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-16 10:21:23
+LastEditTime: 2021-09-22 21:00:10
 '''
 import random
 import numpy as np
@@ -36,18 +36,20 @@ os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 all_data = []
 all_label = []
 
+f_c = 8
+
 def generate_mask():
     mask = np.ones((32,32))
     for i in range(32):
         for j in range(32):
-            mask[i,j] = 1/(np.abs(np.sqrt((i-15.5) ** 2 + (j-15.5) ** 2)-4)**1.1)
+            mask[i,j] = 1/(np.abs(np.sqrt((i-15.5) ** 2 + (j-15.5) ** 2)-f_c)**1.75)
     return mask
 
 def generate_mask2():
     mask = np.ones((32,32))
     for i in range(32):
         for j in range(32):
-            mask[i,j] = 1/(np.abs(np.sqrt((i-15.5) ** 2 + (j-15.5) ** 2))**0.8)
+            mask[i,j] = 1/(np.abs(np.sqrt((i-15.5) ** 2 + (j-15.5) ** 2))**1.5)
     return mask
     
 MASK = generate_mask()
@@ -58,14 +60,14 @@ if __name__ == "__main__":
     
     dataset_orig = get_dataset("cifar10", "test")
     
-    for sev in [1,2,3,4,5]:
+    for sev in [3]:
         
         plot = []
         labels = []
         c = [0.6,0.65,0.7,0.75,0.8][sev-1]
         d = [1.5,1.45,1.4,1.35,1.3][sev-1]
         e = [2,3,4,5,6][sev-1]
-        f = [1.,1.25,1.5,1.75,5.][sev-1] 
+        f = [0.15,0.2,0.25][sev-1] 
         g = [0.4,0.5,0.6,0.7,0.8][sev-1] 
         basis = fourier_basis.generate_basis(e).cpu().numpy()
         for i in range(len(dataset_orig)):
@@ -83,7 +85,14 @@ if __name__ == "__main__":
             elif args.type == 'angle':
                 x_orig_f_ang += (np.random.rand(*x_orig_f_abs.shape) - 0.5) * np.pi / d
             elif args.type == 'abs_2':
-                n_abs = (np.random.rand(*x_orig_f_abs.shape)) * 0.5 + f * MASK * MASK2
+                n_abs = (np.random.rand(*x_orig_f_abs.shape)) + f * MASK * MASK2
+                n_pha = np.random.uniform(*x_orig_f_ang.shape) * 2 * np.pi
+                n = np.zeros_like(x_orig_f)
+                n.real = n_abs * np.cos(n_pha)
+                n.imag = n_abs * np.sin(n_pha)
+                x_orig_f += n
+            elif args.type == 'abs_3':
+                n_abs = (np.random.rand(*x_orig_f_abs.shape)) + f * MASK * x_orig_f_abs #/np.linalg.norm(x_orig_f_abs)
                 n_pha = np.random.uniform(*x_orig_f_ang.shape) * 2 * np.pi
                 n = np.zeros_like(x_orig_f)
                 n.real = n_abs * np.cos(n_pha)
@@ -95,16 +104,8 @@ if __name__ == "__main__":
                 x_f = np.fft.fftshift(np.fft.fft2(x.detach().numpy()))
                 x_f_abs = np.abs(x_f)
                 x_orig_f_abs = x_orig_f_abs * (1-g) + g * x_f_abs
-            elif args.type == 'basis':
-                x_restored = x_orig
-                row = np.random.choice(32,e,replace=True)
-                col = np.random.choice(32,e,replace=True)
-                perturbation = basis[:,2+row*34:(row+1)*34,2+col*34:(col+1)*34]
-                x_restored += perturbation
-                
-            if args.type == 'basis':
-                x_restored = x_restored
-            elif args.type == 'abs_2':
+
+            if args.type in ['abs_2','abs_3']:
                 x_restored = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
             else:  
                 x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     
     test_img = torchvision.utils.make_grid(plot[-100:]/255, nrow = 10)
     torchvision.utils.save_image(
-        test_img, "./test/filter/test_fft.png", nrow = 10
+        test_img, "./test/filter/test_fft_"+str(f_c)+".png", nrow = 10
     )
    
     # plt.close()

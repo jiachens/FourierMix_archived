@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 19:24:36
+LastEditTime: 2021-09-22 21:02:09
 '''
 import time
 import setGPU
@@ -71,8 +71,8 @@ CORRUPTIONS = [
 
 def main():
     epochs = args.epochs
-    k = args.k
-    p = args.p
+    k = 0
+    p = 0
     js_loss = True
     batch_size = args.batch
     new_loss = True
