@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 21:42:52
+LastEditTime: 2021-09-22 21:55:44
 '''
 import random
 import numpy as np
@@ -33,9 +33,6 @@ parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
 args = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
-all_data = []
-all_label = []
-
 def generate_mask(f_c):
     mask = np.ones((32,32))
     for i in range(32):
@@ -58,6 +55,8 @@ if __name__ == "__main__":
     
     dataset_orig = get_dataset("cifar10", "test")
     for f_c in [1, 3, 5, 7, 9, 11, 13, 15]:
+        all_data = []
+        all_label = []
         for sev in [1,2,3]:
             
             plot = []
