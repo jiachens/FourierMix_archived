@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-29 14:10:37
+LastEditTime: 2021-09-29 14:19:11
 '''
 import torch
 from torchvision.models.resnet import resnet50
@@ -32,13 +32,13 @@ def get_architecture(arch: str, dataset: str, normalize :bool = True,local_rank=
     """
     if arch == "resnet50" and dataset == "imagenet":
         # model = torch.nn.DataParallel(resnet50(pretrained=False)).cuda(}
-        if local_rank:
+        if local_rank != None:
             model = torch.nn.parallel.DistributedDataParallel(resnet50(pretrained=False).to(device), device_ids=[local_rank])
             model.to(device)
-            print("I AM HERE")
+            # print("I AM HERE")
         else:
             model = torch.nn.DataParallel(resnet50(pretrained=False)).cuda()
-            print("BUG HERE")
+            # print("BUG HERE")
         cudnn.benchmark = True
     elif arch == "cifar_resnet20":
         model = resnet_cifar(depth=20, num_classes=10).cuda()
