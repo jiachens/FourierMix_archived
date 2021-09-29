@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-20 22:04:43
+LastEditTime: 2021-09-29 16:08:09
 '''
 import random
 
@@ -73,22 +73,22 @@ class AutoDataset(torch.utils.data.Dataset):
 #     def __len__(self):
 #         return len(self.dataset)
 
-class PGDataset(torch.utils.data.Dataset):
-    def __init__(self, dataset, no_jsd=False):
-        self.dataset = dataset
-        self.no_jsd = no_jsd
+# class PGDataset(torch.utils.data.Dataset):
+#     def __init__(self, dataset, no_jsd=False):
+#         self.dataset = dataset
+#         self.no_jsd = no_jsd
 
-    def __getitem__(self, i):
-        x, y = self.dataset[i]
-        if self.no_jsd:
-            return transform2(transforms.ToTensor()(x)), y
-        else:
-            return (transform2(transforms.ToTensor()(x)), 
-                    transform2(transforms.ToTensor()(x)),
-                    transform2(transforms.ToTensor()(x))), y
+#     def __getitem__(self, i):
+#         x, y = self.dataset[i]
+#         if self.no_jsd:
+#             return transform2(transforms.ToTensor()(x)), y
+#         else:
+#             return (transform2(transforms.ToTensor()(x)), 
+#                     transform2(transforms.ToTensor()(x)),
+#                     transform2(transforms.ToTensor()(x))), y
 
-    def __len__(self):
-        return len(self.dataset)
+#     def __len__(self):
+#         return len(self.dataset)
 
 class GADataset(torch.utils.data.Dataset):
     def __init__(self, dataset, no_jsd=False):
@@ -107,46 +107,49 @@ class GADataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.dataset)
 
-def patchGaussian(x,preprocess):
-    # W = 25
-    x = preprocess(x)
-    row = np.random.randint(32)
-    col = np.random.randint(32)
-    start_row = max(0,row-13)
-    end_row = min(32,row+13)
-    start_col = max(0,col-13)
-    end_col = min(32,col+13)
-    x[:,start_row:end_row,start_col:end_col] += torch.randn_like(x[:,start_row:end_row,start_col:end_col]) * 0.25
-    x = torch.clamp(x,0.,1.)
-    return x
+# def patchGaussian(x,preprocess):
+#     # W = 25
+#     x = preprocess(x)
+#     row = np.random.randint(32)
+#     col = np.random.randint(32)
+#     start_row = max(0,row-13)
+#     end_row = min(32,row+13)
+#     start_col = max(0,col-13)
+#     end_col = min(32,col+13)
+#     x[:,start_row:end_row,start_col:end_col] += torch.randn_like(x[:,start_row:end_row,start_col:end_col]) * 0.25
+#     x = torch.clamp(x,0.,1.)
+#     return x
 
 
 class AugMixDataset(torch.utils.data.Dataset):
     """Dataset wrapper to perform AugMix augmentation.
        referenced from https://github.com/google-research/augmix/blob/master/cifar.py
     """
-    def __init__(self, dataset, preprocess, k, alpha, no_jsd=False):
+    def __init__(self, dataset, preprocess, k, alpha, no_jsd=False, dataset_name=None):
         self.dataset = dataset
         self.preprocess = preprocess
         self.k = k
         self.alpha = alpha
         self.no_jsd = no_jsd
+        self.dataset_name = dataset_name
 
     def __getitem__(self, i):
         x, y = self.dataset[i]
         if self.no_jsd:
-            return augmentAndMix(x, self.k, self.alpha, self.preprocess), y
+            return augmentAndMix(x, self.k, self.alpha, self.preprocess, self.dataset_name), y
         else:
             return (self.preprocess(x), 
-                    augmentAndMix(x, self.k, self.alpha, self.preprocess),
-                    augmentAndMix(x, self.k, self.alpha, self.preprocess)), y
+                    augmentAndMix(x, self.k, self.alpha, self.preprocess, self.dataset_name),
+                    augmentAndMix(x, self.k, self.alpha, self.preprocess, self.dataset_name)), y
 
     def __len__(self):
         return len(self.dataset)
 
-def augmentAndMix(x_orig, k, alpha, preprocess):
+def augmentAndMix(x_orig, k, alpha, preprocess, dataset_name):
     # k : number of chains
     # alpha : sampling constant
+    if dataset_name == "imagenet":
+        augmentations.IMAGE_SIZE = 224 
 
     x_temp = x_orig # back up for skip connection
 

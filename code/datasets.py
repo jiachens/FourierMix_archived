@@ -23,7 +23,9 @@ DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cif
 def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None,scheme = None) -> Dataset:
     """Return the dataset as a PyTorch Dataset object"""
     if dataset == "imagenet":
-        return _imagenet(split)
+        return _imagenet(split, scheme)
+    if dataset == "imagenet-c":
+        return _imagenet_c(corruption, severity)
     elif dataset == "cifar10":
         return _cifar10(split, scheme, severity)
     elif dataset == "cifar100":
@@ -41,7 +43,7 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
 
 def get_num_classes(dataset: str):
     """Return the number of classes in the dataset. """
-    if dataset == "imagenet":
+    if dataset in ["imagenet","imagenet-c"]:
         return 1000
     elif dataset == "cifar10":
         return 10
@@ -175,18 +177,24 @@ def _cifar10_f(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar10_f.generate_examples(data_dir,corruption,severity)
 
 
-def _imagenet(split: str) -> Dataset:
+def _imagenet(split: str, scheme: str) -> Dataset:
     if not IMAGENET_LOC_ENV in os.environ:
         raise RuntimeError("environment variable for ImageNet directory not set")
 
     dir = os.environ[IMAGENET_LOC_ENV]
     if split == "train":
         subdir = os.path.join(dir, "train")
-        transform = transforms.Compose([
-            transforms.RandomSizedCrop(224),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor()
-        ])
+        if scheme in ['augmix_half_ga']:
+            transform = transforms.Compose([
+                transforms.RandomSizedCrop(224),
+                transforms.RandomHorizontalFlip()
+            ])
+        else:
+            transform = transforms.Compose([
+                transforms.RandomSizedCrop(224),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor()
+            ])
     elif split == "test":
         subdir = os.path.join(dir, "val")
         transform = transforms.Compose([
@@ -195,6 +203,20 @@ def _imagenet(split: str) -> Dataset:
             transforms.ToTensor()
         ])
     return datasets.ImageFolder(subdir, transform)
+
+
+def _imagenet_c(corruption: str, severity: str) -> Dataset:
+    if not IMAGENET_LOC_ENV in os.environ:
+        raise RuntimeError("environment variable for ImageNet directory not set")
+
+    dir = "/usr/workspace/safeml/data/imagenet-c/" + corruption + '/' + severity
+    # subdir = os.path.join(dir, "val")
+    transform = transforms.Compose([
+        transforms.Scale(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor()
+    ])
+    return datasets.ImageFolder(dir, transform)
 
 
 class NormalizeLayer(torch.nn.Module):

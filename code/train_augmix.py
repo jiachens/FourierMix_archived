@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-28 17:39:28
+LastEditTime: 2021-09-29 16:48:53
 '''
 import time
 import matplotlib.pyplot as plt
@@ -86,7 +86,7 @@ def main():
     alpha = 1.
     js_loss = True
     batch_size = args.batch
-    new_loss = True
+    new_loss = False
 
     if args.gpu:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
@@ -109,17 +109,15 @@ def main():
     test_data = get_dataset(args.dataset, 'test')
 
     if args.scheme in ['augmix_half_ga']:
-        train_data = AugMixDataset(train_dataset, preprocess, k, alpha, not(js_loss))
+        train_data = AugMixDataset(train_dataset, preprocess, k, alpha, not(js_loss), args.dataset)
     elif args.scheme in ['auto_half_ga']:
         train_data = AutoDataset(train_dataset, not(js_loss))
     elif args.scheme in ['pg_half_ga']:
         train_data = PGDataset(train_dataset, not(js_loss))
     elif args.scheme in ['half_ga_jsd']:
         train_data = GADataset(train_dataset, not(js_loss))
-    # elif args.scheme in ['half_rand_jsd']:
-    #     train_data = RandDataset(train_dataset, not(js_loss))
     if args.dataset == 'imagenet':
-        train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
+        train_sampler = torch.utils.data.distributed.DistributedSampler(train_data)
     else:
         train_sampler = None
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
@@ -137,12 +135,7 @@ def main():
         scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
     else:
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
-
-    # model = nn.DataParallel(model).to(device)
-    # cudnn.benchmark = True
-
-    # training model with cifar100
-    # model.train()
+        
     losses = []
     t = time.time()
 
