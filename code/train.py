@@ -91,6 +91,7 @@ def main():
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=args.batch,
                              num_workers=args.workers, pin_memory=pin_memory)
     if args.dataset == 'imagenet':
+        print(local_rank)
         model = get_architecture(args.arch, args.dataset,args.no_normalize,local_rank,device)
     else:
         model = get_architecture(args.arch, args.dataset,args.no_normalize)
