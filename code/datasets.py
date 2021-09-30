@@ -209,7 +209,7 @@ def _imagenet_c(corruption: str, severity: str) -> Dataset:
     if not IMAGENET_LOC_ENV in os.environ:
         raise RuntimeError("environment variable for ImageNet directory not set")
 
-    dir = "/usr/workspace/safeml/data/imagenet-c/" + corruption + '/' + severity
+    dir = "/usr/workspace/safeml/data/imagenet-c/" + corruption + '/' + str(severity)
     # subdir = os.path.join(dir, "val")
     transform = transforms.Compose([
         transforms.Scale(256),
