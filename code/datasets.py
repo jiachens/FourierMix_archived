@@ -17,7 +17,7 @@ os.environ["IMAGENET_DIR"] = '/usr/workspace/safeml/data/james-imagenet'
 IMAGENET_LOC_ENV = "IMAGENET_DIR"
 
 # list of all datasets
-DATASETS = ["imagenet", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100","cifar100-c","cifar100-c-bar"]
+DATASETS = ["imagenet", "imagenet-c", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100","cifar100-c","cifar100-c-bar"]
 
 
 def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None,scheme = None) -> Dataset:
