@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-29 16:08:09
+LastEditTime: 2021-09-29 21:22:38
 '''
 import random
 
@@ -14,7 +14,7 @@ from torch.distributions.beta import Beta
 from torchvision import transforms
 import numpy as np
 
-from augmentations import augmentations, augmentations_x
+import augmentations
 
 transform=transforms.Compose([
                 transforms.RandomHorizontalFlip(),
@@ -158,7 +158,7 @@ def augmentAndMix(x_orig, k, alpha, preprocess, dataset_name):
     mixing_weights = mixing_weight_dist.sample()
 
     for i in range(k):
-        sampled_augs = random.sample(augmentations, k)
+        sampled_augs = random.sample(augmentations.augmentations, k)
         aug_chain_length = random.choice(range(1,k+1))
         aug_chain = sampled_augs[:aug_chain_length]
 
@@ -230,7 +230,7 @@ def augment(x_orig, exp, preprocess):
     #     x_aug += mixing_weights[i] * preprocess(x_temp)
 
     aug_chain_length = random.choice(range(1,6))
-    aug_chain = augmentations_x[:aug_chain_length]
+    aug_chain = augmentations.augmentations_x[:aug_chain_length]
     for aug in aug_chain:
         severity = random.choice(range(1,6))
         x_orig = aug(x_orig, severity)
