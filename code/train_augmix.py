@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-30 14:22:17
+LastEditTime: 2021-10-05 22:55:59
 '''
 import time
 import matplotlib.pyplot as plt
@@ -249,7 +249,7 @@ def main():
                 for i, (images, targets) in enumerate(test_loader):
                     images, targets = images.to(device), targets.to(device)
                     preds = torch.argmax(model(images), dim = -1)
-                    print(preds)
+                    # print(preds)
                     error += (preds != targets).sum().item()
                     total += targets.size(0)
 
