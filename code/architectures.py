@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-30 15:57:00
+LastEditTime: 2021-10-05 21:57:24
 '''
 import torch
 from torchvision.models.resnet import resnet50
@@ -37,7 +37,7 @@ def get_architecture(arch: str, dataset: str, normalize :bool = True,local_rank=
             model.to(device)
             # print("I AM HERE")
         else:
-            model = torch.nn.DataParallel(resnet50(pretrained=False)).cuda()
+            model = resnet50(pretrained=False).cuda()
             # print("BUG HERE")
         cudnn.benchmark = True
     elif arch == "cifar_resnet20":
