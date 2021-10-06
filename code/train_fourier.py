@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-05 22:46:40
+LastEditTime: 2021-10-05 23:14:34
 '''
 import time
 import setGPU
@@ -90,7 +90,7 @@ def main():
     p = 0
     js_loss = True
     batch_size = args.batch
-    new_loss = True
+    new_loss = False
 
 
     if args.gpu:
