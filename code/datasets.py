@@ -208,6 +208,9 @@ def _imagenet(split: str, scheme: str) -> Dataset:
 def _imagenet_c(corruption: str, severity: str) -> Dataset:
     if not IMAGENET_LOC_ENV in os.environ:
         raise RuntimeError("environment variable for ImageNet directory not set")
+    
+    if corruption == 'frosted_glass_blur':
+        corruption = 'glass_blur'
 
     dir = "/usr/workspace/safeml/data/imagenet-c/" + corruption + '/' + str(severity)
     # subdir = os.path.join(dir, "val")
