@@ -3,10 +3,10 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-05 23:14:34
+LastEditTime: 2021-10-09 17:38:40
 '''
 import time
-import setGPU
+# import setGPU
 import matplotlib.pyplot as plt
 import argparse
 import os
