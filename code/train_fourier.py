@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-09 17:38:40
+LastEditTime: 2021-10-10 14:52:57
 '''
 import time
 # import setGPU
@@ -130,8 +130,8 @@ def main():
     else:
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
 
-    model = nn.DataParallel(model).to(device)
-    cudnn.benchmark = True
+    # model = nn.DataParallel(model).to(device)
+    # cudnn.benchmark = True
 
     # training model with cifar100
     # model.train()
