@@ -173,7 +173,7 @@ def _cifar10_c_bar(data_dir: str, corruption: str, severity: int) -> Dataset:
 def _cifar100_c_bar(data_dir: str, corruption: str, severity: int) -> Dataset:
     return cifar100_c_bar.generate_examples(data_dir,corruption,severity)
 
-def _cifar10_f(data_dir: str, corruption: str, severity: int) -> Dataset:
+def _cifar10_f(data_dir: str, corruption, severity: int) -> Dataset:
     return cifar10_f.generate_examples(data_dir,corruption,severity)
 
 
