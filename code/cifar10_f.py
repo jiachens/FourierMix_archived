@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-08-18 01:28:17
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-10 15:01:20
+LastEditTime: 2021-10-10 15:13:05
 '''
 import os
 import numpy as np
@@ -21,10 +21,10 @@ _LABELS_FILENAME = 'label.npy'
 
 def generate_examples(data_dir,corruption,severity):
     # corruption = corruption # _CORRUPTIONS
-    f_c,alpha = corruption
+    # f_c,alpha = corruption
     severity = severity # (1,2,3,4,5)
     data_dir = os.path.join(data_dir,_DIRNAME)
-    images_file = os.path.join(data_dir, 'fourier_' + str(f_c) + '_' + str(alpha) + '.npy')
+    images_file = os.path.join(data_dir, 'fourier_' + corruption + '.npy')
     labels_file = os.path.join(data_dir, _LABELS_FILENAME)
     labels = np.load(labels_file)
     num_images = labels.shape[0] // 3
