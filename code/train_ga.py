@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-22 16:50:40
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-10 21:29:06
+LastEditTime: 2021-10-11 10:19:13
 '''
 import time
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ import cifar100_c
 import cifar10_c_bar
 from architectures import ARCHITECTURES, get_architecture
 from datasets import get_dataset, DATASETS
-from augment_and_mix import AugMixDataset, AutoDataset,PGDataset,GADataset#,RandDataset
+from augment_and_mix import AugMixDataset, AutoDataset,GADataset#PGDataset,GADataset#,RandDataset
 import consistency
 
 parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
