@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-10 21:59:29
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-10 22:34:09
+LastEditTime: 2021-10-10 22:36:43
 '''
 import os
 import numpy as np
@@ -35,5 +35,5 @@ for j in range(100):
     imag = torch.stack(imag)
     test_img = torchvision.utils.make_grid(imag, nrow = 16)
     torchvision.utils.save_image(
-            test_img, "../test/cifar10-f/" + str(j) + "", nrow = 16
+            test_img, "../test/cifar10-f/" + str(j) + ".png", nrow = 16
         )
