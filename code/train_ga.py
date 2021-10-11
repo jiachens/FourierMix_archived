@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-22 16:50:40
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-22 16:51:48
+LastEditTime: 2021-10-10 21:29:06
 '''
 import time
 import matplotlib.pyplot as plt
@@ -56,7 +56,20 @@ parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
 
 args = parser.parse_args()
 
-
+if args.dataset == 'imagenet':
+    torch.distributed.init_process_group("nccl", init_method="env://",
+        world_size=int(os.environ['OMPI_COMM_WORLD_SIZE']),
+        rank=int(os.environ['OMPI_COMM_WORLD_RANK']))
+    # lookup number of ranks in the job, and our rank
+    world_size = torch.distributed.get_world_size()
+    print(world_size)
+    rank = torch.distributed.get_rank()
+    # compute our local rank on the node and select a corresponding gpu,
+    # this assumes we started exactly one rank per gpu on the node
+    ngpus_per_node = torch.cuda.device_count()
+    local_rank = rank % ngpus_per_node
+    device = torch.device('cuda')
+    torch.cuda.set_device(local_rank)
 # PATH = "./ckpt/AugMix_epoch_"
 
 CORRUPTIONS = [
@@ -106,11 +119,19 @@ def main():
     # elif args.scheme in ['half_rand_jsd']:
     #     train_data = RandDataset(train_dataset, not(js_loss))
     
-    train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=args.batch,
-                              num_workers=args.workers, pin_memory=pin_memory)
+    if args.dataset == 'imagenet':
+        train_sampler = torch.utils.data.distributed.DistributedSampler(train_data)
+    else:
+        train_sampler = None
+    train_loader = torch.utils.data.DataLoader(train_data, shuffle=not(args.dataset == 'imagenet'), batch_size=args.batch,
+                              num_workers=args.workers, pin_memory=pin_memory,sampler=train_sampler)
 
     # 2. model
-    model = get_architecture(args.arch, args.dataset,args.no_normalize)
+    if args.dataset == 'imagenet':
+        model = get_architecture(args.arch, args.dataset,args.no_normalize,local_rank,device)
+    else:
+        model = get_architecture(args.arch, args.dataset,args.no_normalize)
+
 
     # 3. Optimizer & Scheduler
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
@@ -119,8 +140,8 @@ def main():
     else:
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
 
-    model = nn.DataParallel(model).to(device)
-    cudnn.benchmark = True
+    # model = nn.DataParallel(model).to(device)
+    # cudnn.benchmark = True
 
     # training model with cifar100
     # model.train()
@@ -243,26 +264,27 @@ def main():
                 print("Test error rate on CIFAR-10 : %.4f | time : %.2fs"%((error/total), time.time() - t))
 
                 # evaluate on cifar10-c
-                for corruption in CORRUPTIONS:
-                    if args.dataset == 'cifar10':
-                        test_data_c = cifar10_c.generate_all_examples(args.path,corruption)
-                    elif args.dataset == 'cifar100':
-                        test_data_c = cifar100_c.generate_all_examples(args.path,corruption)
-                    print("Test on " + corruption)
-                    test_loader_c = torch.utils.data.DataLoader(test_data_c, shuffle=False, batch_size=args.batch,
-                                    num_workers=args.workers, pin_memory=pin_memory)
-                    error, total = 0, 0
+                if args.dataset != 'imagenet':
+                    for corruption in CORRUPTIONS:
+                        if args.dataset == 'cifar10':
+                            test_data_c = cifar10_c.generate_all_examples(args.path,corruption)
+                        elif args.dataset == 'cifar100':
+                            test_data_c = cifar100_c.generate_all_examples(args.path,corruption)
+                        print("Test on " + corruption)
+                        test_loader_c = torch.utils.data.DataLoader(test_data_c, shuffle=False, batch_size=args.batch,
+                                        num_workers=args.workers, pin_memory=pin_memory)
+                        error, total = 0, 0
 
-                    t = time.time()
-                    for i, (images, targets) in enumerate(test_loader_c):
-                        images, targets = images.to(device), targets.to(device)
-                        if images.shape[1] != 3:
-                            images = images.permute(0,3,1,2)
-                        preds = torch.argmax(model(images), dim = -1)
-                        error += (preds != targets).sum().item()
-                        total += targets.size(0)
+                        t = time.time()
+                        for i, (images, targets) in enumerate(test_loader_c):
+                            images, targets = images.to(device), targets.to(device)
+                            if images.shape[1] != 3:
+                                images = images.permute(0,3,1,2)
+                            preds = torch.argmax(model(images), dim = -1)
+                            error += (preds != targets).sum().item()
+                            total += targets.size(0)
 
-                    print("Test error rate on CIFAR-10-C with " + corruption + " : %.4f | time : %.2fs"%(error/total, time.time() - t))
+                        print("Test error rate on CIFAR-10-C with " + corruption + " : %.4f | time : %.2fs"%(error/total, time.time() - t))
 
 if __name__=="__main__":
     main()
