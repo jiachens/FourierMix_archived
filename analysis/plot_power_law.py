@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-07 22:19:25
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-07 22:55:34
+LastEditTime: 2021-10-10 23:30:15
 '''
 import os
 import re
@@ -19,10 +19,11 @@ def power_law(x,alpha):
     return y
 
 x = np.linspace(0,16,num=128)
-y1 = power_law(x,3)
-y2 = power_law(x,4)
-y3 = power_law(x,5)
-y4 = power_law(x,6)
+y0 = power_law(x,0.1)
+y1 = power_law(x,0.5)
+y2 = power_law(x,1)
+y3 = power_law(x,2)
+y4 = power_law(x,3)
 
 plt.figure(figsize=(12,3))
 
@@ -41,10 +42,11 @@ ax.yaxis.set_major_locator(MultipleLocator(15))
 
 plt.grid( color = 'black',linestyle='-.',linewidth = 0.5)
 
-l1=plt.plot(x,y1, label='$alpha$=3',markersize=9,lw=2)
-l2=plt.plot(x,y2, label='$alpha$=4',markersize=9,lw=2)
-l3=plt.plot(x,y3, label='$alpha$=5',markersize=9,lw=2)
-l4=plt.plot(x,y4, label='$alpha$=6',markersize=9,lw=2)
+l0=plt.plot(x,y0, label='$alpha$=0.1',markersize=9,lw=2)
+l1=plt.plot(x,y1, label='$alpha$=0.5',markersize=9,lw=2)
+l2=plt.plot(x,y2, label='$alpha$=1',markersize=9,lw=2)
+l3=plt.plot(x,y3, label='$alpha$=2',markersize=9,lw=2)
+l4=plt.plot(x,y4, label='$alpha$=3',markersize=9,lw=2)
 
 
 plt.xlabel('x')
@@ -60,6 +62,6 @@ plt.ylim(0, 1)
 # plt.yticks(my_y_ticks)
 # plt.xticks(x,my_x_ticks)
 # plt.legend(fontsize=27.5, bbox_to_anchor=(1.1,1.0),borderaxespad = 0.)
-plt.xticks(range(0, 16))#, color="red", rotation=45)
+plt.xticks(range(0, 16, 2),['$f_c$','$f_c ± 2$','$f_c ± 4$','$f_c ± 6$','$f_c ± 8$','$f_c ± 10$','$f_c ± 12$','$f_c ± 14$'])#, color="red", rotation=45)
 plt.yticks(range(0, 2))#, color="red", rotation=45)
 plt.savefig('./test_power_law.png',dpi=300,bbox_inches='tight')
