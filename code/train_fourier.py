@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-11 17:53:38
+LastEditTime: 2021-10-11 18:20:38
 '''
 import time
 # import setGPU
@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
 parser.add_argument('arch', type=str, choices=ARCHITECTURES)
 parser.add_argument('outdir', type=str, help='folder to save model and training log)')
-parser.add_argument('--workers', default=4, type=int, metavar='N',
+parser.add_argument('--workers', default=8, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
@@ -178,15 +178,15 @@ def main():
                                 F.kl_div(p_mixture, p_augmix2/2, reduction='batchmean')) / 3.
 
             if js_loss and not new_loss:
-                # if i == 0:
-                    # test_img = torchvision.utils.make_grid(images[1], nrow = 16)
-                    # torchvision.utils.save_image(
-                    #         test_img, "./test/fourier/test_3.png", nrow = 16
-                    #     )
-                    # test_img = torchvision.utils.make_grid(images[0], nrow = 16)
-                    # torchvision.utils.save_image(
-                    #         test_img, "./test/fourier/orig_3.png", nrow = 16
-                    #     )
+                if i == 0:
+                    test_img = torchvision.utils.make_grid(images[1], nrow = 8)
+                    torchvision.utils.save_image(
+                            test_img, "./test/fourier/test_3.png", nrow = 8
+                        )
+                    test_img = torchvision.utils.make_grid(images[0], nrow = 8)
+                    torchvision.utils.save_image(
+                            test_img, "./test/fourier/orig_3.png", nrow = 8
+                        )
                 bs = images[0].size(0)
                 images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
                 targets = targets.to(device)
