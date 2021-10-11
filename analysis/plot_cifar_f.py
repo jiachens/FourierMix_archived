@@ -23,7 +23,7 @@ def generate_examples(data_dir='../data', corruption=None, severity=2):
     labels = labels[:num_images]
     images = np.load(images_file)
     images = images[(severity - 1) * num_images:severity * num_images]
-    return images
+    return images[:200]
 
 imag = []
 for alpha in [0.1, 0.5, 1, 2, 3]:
