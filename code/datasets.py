@@ -189,6 +189,11 @@ def _imagenet(split: str, scheme: str) -> Dataset:
                 transforms.RandomSizedCrop(224),
                 transforms.RandomHorizontalFlip()
             ])
+        elif scheme in ['fourier_half_ga']:
+            transform = transforms.Compose([
+                transforms.RandomSizedCrop(224),
+                 transforms.ToTensor()
+            ])
         else:
             transform = transforms.Compose([
                 transforms.RandomSizedCrop(224),
