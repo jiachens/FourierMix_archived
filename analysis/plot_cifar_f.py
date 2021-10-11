@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-10 21:59:29
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-10 22:47:21
+LastEditTime: 2021-10-10 22:50:27
 '''
 import os
 import numpy as np
@@ -23,7 +23,7 @@ def generate_examples(data_dir='../data', corruption=None, severity=2):
     labels = labels[:num_images]
     images = np.load(images_file)
     images = images[(severity - 1) * num_images:severity * num_images]
-    return images[:200]
+    return images[:200] / 255.
 
 imag = []
 for alpha in [0.1, 0.5, 1, 2, 3]:
