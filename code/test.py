@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-11 17:54:22
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-11 18:16:16
+LastEditTime: 2021-10-11 18:19:36
 '''
 import time
 # import setGPU
@@ -34,7 +34,7 @@ train_dataset = [(images[i],y[i]) for i in range(1000)]
 train_data = FourierDataset(train_dataset, 0, 0, False)
 
 train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=32,
-                              num_workers=8, pin_memory=True,sampler=None)
+                              num_workers=4, pin_memory=True,sampler=None)
 
 t = time.time()
 
