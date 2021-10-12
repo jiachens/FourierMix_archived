@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-11 18:07:07
+LastEditTime: 2021-10-11 23:54:28
 '''
 import torch
 import fourier_basis
@@ -70,20 +70,20 @@ def augment_single(x_orig):
     ######### Fourier #########
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
-    severity_3 = random.choice(range(1,6))
-    severity_4 = random.choice(range(1,6))
+    # severity_3 = random.choice(range(1,6))
+    # severity_4 = random.choice(range(1,6))
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
-    e = [10,20,30,40,50][severity_3-1] 
-    f = [1.,1.25,1.5,1.75,2][severity_4-1] 
+    # e = [10,20,30,40,50][severity_3-1] 
+    # f = [1.,1.25,1.5,1.75,2][severity_4-1] 
     x_orig_1 = x_orig.clone().numpy()
     x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
     x_orig_f_abs = np.abs(x_orig_f) 
     x_orig_f_ang = np.angle(x_orig_f) 
     flag = np.sign(np.random.uniform() - 0.5)
-    x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c
+    x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c * 3
     # x_orig_f_abs += (np.random.uniform(*x_orig_f_abs.shape) - 0.5) * f * MASK 
-    x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d
+    x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d * 3
     x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
     # row = np.random.choice(32,e,replace=True)
@@ -97,7 +97,7 @@ def augment_single(x_orig):
     severity_4 = random.choice(range(1,9))
     severity_5 = random.choice(range(1,9))
 
-    d = [0,0,0,0,5,10,15,20][severity_3-1]
+    d = [0,0,0,0,2.5,5,7.5,10][severity_3-1]
     t = [None,None,None,None,(1/24.,1/24.),(1/12.,1/12.),(1/8.,1/8.),(1/6.,1/6.)][severity_4-1]
     s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
     
