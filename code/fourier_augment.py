@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-11 23:54:28
+LastEditTime: 2021-10-12 11:42:24
 '''
 import torch
 import fourier_basis
@@ -12,6 +12,7 @@ import random
 import torchvision
 from torch.distributions.dirichlet import Dirichlet
 from torch.distributions.beta import Beta
+import time
 
 pre = torchvision.transforms.Compose([
                 # torchvision.transforms.RandomCrop(32, padding=4),
@@ -66,16 +67,12 @@ def augment(x_orig, k, p, basis,chain = 3):
     return x_fourier
 
 def augment_single(x_orig):
-
+    t = time.time()
     ######### Fourier #########
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
-    # severity_3 = random.choice(range(1,6))
-    # severity_4 = random.choice(range(1,6))
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
-    # e = [10,20,30,40,50][severity_3-1] 
-    # f = [1.,1.25,1.5,1.75,2][severity_4-1] 
     x_orig_1 = x_orig.clone().numpy()
     x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
     x_orig_f_abs = np.abs(x_orig_f) 
@@ -108,7 +105,7 @@ def augment_single(x_orig):
     b = np.random.uniform()
     # b = 0
     x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
-
+    print('each aug',time.time() - t)
     # # a = np.random.uniform()
     # # x_restored = x_restored * a + x_orig * (1-a)
 
