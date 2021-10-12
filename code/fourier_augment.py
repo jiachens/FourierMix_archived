@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 13:13:03
+LastEditTime: 2021-10-12 13:15:41
 '''
 import torch
 import fourier_basis
@@ -69,7 +69,7 @@ def augment(x_orig, k, p, basis,chain = 3):
     return x_fourier
 
 def augment_single(x_orig):
-
+    x_orig = x_orig.cuda()
     ######### Fourier #########
     #######NUMPY###########
     # severity_1 = random.choice(range(1,6))
