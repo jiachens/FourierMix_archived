@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 13:26:16
+LastEditTime: 2021-10-12 14:32:51
 '''
 import torch
 import fourier_basis
@@ -69,53 +69,53 @@ def augment(x_orig, k, p, basis,chain = 3):
     return x_fourier
 
 def augment_single(x_orig):
-    x_orig = x_orig.cuda()
     ######### Fourier #########
     #######NUMPY###########
-    # severity_1 = random.choice(range(1,6))
-    # severity_2 = random.choice(range(1,6))
-    # c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
-    # d = [6,5,4,3,2][severity_2-1]
-    # x_orig_1 = x_orig.clone().numpy()
-    # x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
-    # x_orig_f_abs = np.abs(x_orig_f) 
-    # x_orig_f_ang = np.angle(x_orig_f) 
-    # flag = np.sign(np.random.uniform() - 0.5)
-    # x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c * 3
-    # # x_orig_f_abs += (np.random.uniform(*x_orig_f_abs.shape) - 0.5) * f * MASK 
-    # x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d * 3
-    # x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
-    # x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
-    # # row = np.random.choice(32,e,replace=True)
-    # # col = np.random.choice(32,e,replace=True)
-    # # x_orig_f[:,row,col] = 0
-    # x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
-    # x_restored_1 = torch.FloatTensor(x_restored_1) 
-    ###################################
-
-    ####### TORCH #######
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
-    x_orig_1 = x_orig.clone()
-    
-    t = time.time()
-    x_orig_f = torch.fft.fftn(x_orig_1, s=None, dim=(-2,-1), norm=None) 
-    x_orig_f_abs = torch.abs(x_orig_f) 
-    x_orig_f_ang = torch.angle(x_orig_f) 
-    flag = torch.sign(torch.rand() - 0.5)
-    x_orig_f_abs *= 1. + flag * torch.rand(*x_orig_f_abs.shape) * c * 3
+    x_orig_1 = x_orig.clone().numpy()
+    x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
+    x_orig_f_abs = np.abs(x_orig_f) 
+    x_orig_f_ang = np.angle(x_orig_f) 
+    flag = np.sign(np.random.uniform() - 0.5)
+    x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c * 3
     # x_orig_f_abs += (np.random.uniform(*x_orig_f_abs.shape) - 0.5) * f * MASK 
-    x_orig_f_ang += (torch.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d * 3
-    x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
-    x_orig_f.imag = x_orig_f_abs * torch.sin(x_orig_f_ang)
+    x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d * 3
+    x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
+    x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
     # row = np.random.choice(32,e,replace=True)
     # col = np.random.choice(32,e,replace=True)
     # x_orig_f[:,row,col] = 0
-    x_restored_1 = torch.abs(torch.fft.ifftn(x_orig_f, s=None, dim=(-2,-1), norm=None))
-    # x_restored_1 = torch.FloatTensor(x_restored_1) 
-    print('each aug',time.time() - t)
+    x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
+    x_restored_1 = torch.FloatTensor(x_restored_1) 
+    ###################################
+
+    ####### TORCH #######
+    # x_orig = x_orig.cuda()
+    # severity_1 = random.choice(range(1,6))
+    # severity_2 = random.choice(range(1,6))
+    # c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
+    # d = [6,5,4,3,2][severity_2-1]
+    # x_orig_1 = x_orig.clone()
+    
+    # t = time.time()
+    # x_orig_f = torch.fft.fftn(x_orig_1, s=None, dim=(-2,-1), norm=None) 
+    # x_orig_f_abs = torch.abs(x_orig_f) 
+    # x_orig_f_ang = torch.angle(x_orig_f) 
+    # flag = torch.sign(torch.rand() - 0.5)
+    # x_orig_f_abs *= 1. + flag * torch.rand(*x_orig_f_abs.shape) * c * 3
+    # # x_orig_f_abs += (np.random.uniform(*x_orig_f_abs.shape) - 0.5) * f * MASK 
+    # x_orig_f_ang += (torch.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d * 3
+    # x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
+    # x_orig_f.imag = x_orig_f_abs * torch.sin(x_orig_f_ang)
+    # # row = np.random.choice(32,e,replace=True)
+    # # col = np.random.choice(32,e,replace=True)
+    # # x_orig_f[:,row,col] = 0
+    # x_restored_1 = torch.abs(torch.fft.ifftn(x_orig_f, s=None, dim=(-2,-1), norm=None))
+    # # x_restored_1 = torch.FloatTensor(x_restored_1) 
+    # print('each aug',time.time() - t)
     #####################
 
     ######### Spatial #########
