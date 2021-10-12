@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 11:23:01
+LastEditTime: 2021-10-12 13:25:44
 '''
 import time
 # import setGPU
@@ -85,6 +85,7 @@ CORRUPTIONS = [
 
 
 def main():
+    torch.multiprocessing.set_start_method('spawn')
     epochs = args.epochs
     k = 0
     p = 0

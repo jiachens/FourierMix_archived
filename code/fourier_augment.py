@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 13:16:42
+LastEditTime: 2021-10-12 13:26:16
 '''
 import torch
 import fourier_basis
@@ -41,11 +41,11 @@ class FourierDataset(torch.utils.data.Dataset):
     def __getitem__(self, i):
         x, y = self.dataset[i]
         if self.no_jsd:
-            return pre(augment(x.cuda(), self.k, self.p, self.basis)), y
+            return pre(augment(x, self.k, self.p, self.basis)), y
         else:
-            return (pre(x.cuda()), 
-                    pre(augment(x.cuda(), self.k, self.p, self.basis)),
-                    pre(augment(x.cuda(), self.k, self.p, self.basis))), y
+            return (pre(x), 
+                    pre(augment(x, self.k, self.p, self.basis)),
+                    pre(augment(x, self.k, self.p, self.basis))), y
 
     def __len__(self):
         return len(self.dataset)
@@ -69,6 +69,7 @@ def augment(x_orig, k, p, basis,chain = 3):
     return x_fourier
 
 def augment_single(x_orig):
+    x_orig = x_orig.cuda()
     ######### Fourier #########
     #######NUMPY###########
     # severity_1 = random.choice(range(1,6))
