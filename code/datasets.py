@@ -194,6 +194,10 @@ def _imagenet(split: str, scheme: str) -> Dataset:
                 transforms.RandomSizedCrop(224),
                  transforms.ToTensor()
             ])
+        elif scheme in ['half_ga_jsd']:
+            transform = transforms.Compose([
+                transforms.RandomSizedCrop(224)
+            ])
         else:
             transform = transforms.Compose([
                 transforms.RandomSizedCrop(224),
