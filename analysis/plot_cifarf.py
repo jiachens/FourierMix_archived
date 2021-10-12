@@ -22,7 +22,7 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
         for i in range(1,17):
             c_r = 0
             for sev in ['1','2','3']:
-                f = open(os.path.join('../test/cifar10-f-new', str(i) + '_' + str(alpha) + '_' + sev + '.out'))
+                f = open(os.path.join('../test/cifar10-f-new', name[j] ,str(i) + '_' + str(alpha) + '_' + sev + '.out'))
                 lines = f.readlines()
                 c_r += float(lines[-2].split(':')[-1].strip())
                 f.close()
