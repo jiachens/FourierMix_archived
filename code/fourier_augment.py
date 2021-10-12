@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 12:51:11
+LastEditTime: 2021-10-12 12:52:49
 '''
 import torch
 import fourier_basis
@@ -82,6 +82,7 @@ def augment_single(x_orig):
     print('each aug 1', time.time() - t)
     x_orig_f_abs = np.abs(x_orig_f) 
     x_orig_f_ang = np.angle(x_orig_f) 
+    print('each aug 1.5', time.time() - t)
     flag = np.sign(np.random.uniform() - 0.5)
     x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c * 3
     # x_orig_f_abs += (np.random.uniform(*x_orig_f_abs.shape) - 0.5) * f * MASK 
@@ -92,8 +93,9 @@ def augment_single(x_orig):
     # row = np.random.choice(32,e,replace=True)
     # col = np.random.choice(32,e,replace=True)
     # x_orig_f[:,row,col] = 0
-    x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
     print('each aug 3', time.time() - t)
+    x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
+    print('each aug 4', time.time() - t)
     x_restored_1 = torch.FloatTensor(x_restored_1) 
     ######### Spatial #########
     severity_3 = random.choice(range(1,9))
