@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 11:51:01
+LastEditTime: 2021-10-12 12:16:46
 '''
 import torch
 import fourier_basis
@@ -52,7 +52,7 @@ class FourierDataset(torch.utils.data.Dataset):
 
 
 def augment(x_orig, k, p, basis,chain = 3):
-
+    t = time.time()
     x_aug = torch.zeros_like(x_orig)
     mixing_weight_dist = Dirichlet(torch.empty(chain).fill_(1.))
     mixing_weights = mixing_weight_dist.sample()
@@ -64,10 +64,11 @@ def augment(x_orig, k, p, basis,chain = 3):
     skip_conn_weight = skip_conn_weight_dist.sample()
 
     x_fourier = skip_conn_weight * x_aug + (1 - skip_conn_weight) * x_orig
+    print('each aug', time.time() - t)
     return x_fourier
 
 def augment_single(x_orig):
-    t = time.time()
+
     ######### Fourier #########
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
@@ -105,7 +106,6 @@ def augment_single(x_orig):
     b = np.random.uniform()
     # b = 0
     x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
-    print('each aug', time.time() - t)
     # # a = np.random.uniform()
     # # x_restored = x_restored * a + x_orig * (1-a)
 
