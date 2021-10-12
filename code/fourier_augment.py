@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 12:46:23
+LastEditTime: 2021-10-12 12:49:04
 '''
 import torch
 import fourier_basis
@@ -71,13 +71,15 @@ def augment(x_orig, k, p, basis,chain = 3):
 def augment_single(x_orig):
 
     ######### Fourier #########
-    t = time.time()
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
     x_orig_1 = x_orig.clone().numpy()
+    
+    t = time.time()
     x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
+    print('each aug 1', time.time() - t)
     x_orig_f_abs = np.abs(x_orig_f) 
     x_orig_f_ang = np.angle(x_orig_f) 
     flag = np.sign(np.random.uniform() - 0.5)
@@ -90,8 +92,8 @@ def augment_single(x_orig):
     # col = np.random.choice(32,e,replace=True)
     # x_orig_f[:,row,col] = 0
     x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
+    print('each aug 2', time.time() - t)
     x_restored_1 = torch.FloatTensor(x_restored_1) 
-    print('each aug', time.time() - t)
     ######### Spatial #########
     severity_3 = random.choice(range(1,9))
     severity_4 = random.choice(range(1,9))
