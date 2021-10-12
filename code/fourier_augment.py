@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 12:16:46
+LastEditTime: 2021-10-12 12:38:40
 '''
 import torch
 import fourier_basis
@@ -57,14 +57,15 @@ def augment(x_orig, k, p, basis,chain = 3):
     mixing_weight_dist = Dirichlet(torch.empty(chain).fill_(1.))
     mixing_weights = mixing_weight_dist.sample()
     for i in range(chain):
+        t = time.time()
         x_temp = augment_single(x_orig)
+        print('each aug', time.time() - t)
         x_aug += mixing_weights[i] * x_temp
 
     skip_conn_weight_dist = Beta(torch.tensor([1.]), torch.tensor([1.]))
     skip_conn_weight = skip_conn_weight_dist.sample()
 
     x_fourier = skip_conn_weight * x_aug + (1 - skip_conn_weight) * x_orig
-    print('each aug', time.time() - t)
     return x_fourier
 
 def augment_single(x_orig):
