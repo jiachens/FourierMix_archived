@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 19:51:24
+LastEditTime: 2021-10-12 19:52:45
 '''
 import time
 # import setGPU
@@ -144,7 +144,6 @@ def main():
         model.train()
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
-            print('1',time.time() - t)
             if new_loss:
                 bs = images[0].size(0)
                 images[0],images[1],images[2] = images[0].to(device),images[1].to(device),images[2].to(device)
@@ -203,10 +202,8 @@ def main():
                     images_cat[index] = images_cat[index] + torch.randn_like(images_cat[index], device='cuda') * args.noise_sd
                 elif args.scheme in ['ga','fourier_ga']:
                     images_cat = images_cat + torch.randn_like(images_cat, device='cuda') * args.noise_sd
-                print('2',time.time() - t)
                 logits = model(images_cat)
                 logits_orig, logits_augmix1, logits_augmix2 = logits[:bs], logits[bs:2*bs], logits[2*bs:]
-                print('3',time.time() - t)
                 loss = F.cross_entropy(logits_orig, targets)
 
                 p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig, dim = -1), F.softmax(logits_augmix1, dim = -1), F.softmax(logits_augmix2, dim = -1)
@@ -216,6 +213,7 @@ def main():
                 loss += 12 * (F.kl_div(p_mixture, p_orig, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
+                print(time.time() - t)
 
             elif not(js_loss):
                 images, targets = images.to(device), targets.to(device)
