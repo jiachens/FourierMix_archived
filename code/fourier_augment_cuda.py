@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 19:38:06
+LastEditTime: 2021-10-12 19:43:32
 '''
 import torch
 import fourier_basis
@@ -53,7 +53,7 @@ class FourierDataset(torch.utils.data.Dataset):
 
 def augment(x_orig,device=None, k=0, p=0, basis=None,chain = 3):
     # t = time.time()
-    x_orig = x_orig.to(device)
+    # x_orig = x_orig.to(device)
     x_aug = torch.zeros_like(x_orig).to(device)
     mixing_weight_dist = Dirichlet(torch.empty(chain).fill_(1.))
     mixing_weights = mixing_weight_dist.sample()
@@ -64,7 +64,7 @@ def augment(x_orig,device=None, k=0, p=0, basis=None,chain = 3):
         x_aug += mixing_weights[i] * x_temp
 
     skip_conn_weight_dist = Beta(torch.tensor([1.]), torch.tensor([1.]))
-    skip_conn_weight = skip_conn_weight_dist.sample()
+    skip_conn_weight = skip_conn_weight_dist.sample().cuda()
 
     x_fourier = skip_conn_weight * x_aug + (1 - skip_conn_weight) * x_orig
     return x_fourier
