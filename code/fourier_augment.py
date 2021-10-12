@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 13:11:28
+LastEditTime: 2021-10-12 13:13:03
 '''
 import torch
 import fourier_basis
@@ -115,7 +115,7 @@ def augment_single(x_orig):
     # x_orig_f[:,row,col] = 0
     x_restored_1 = torch.abs(torch.fft.ifftn(x_orig_f, s=None, dim=(-2,-1), norm=None))
     # x_restored_1 = torch.FloatTensor(x_restored_1) 
-    print(time.time() - t)
+    print('each aug',time.time() - t)
     #####################
 
     ######### Spatial #########
