@@ -53,6 +53,7 @@ class FourierDataset(torch.utils.data.Dataset):
 
 def augment(x_orig,device=None, k=0, p=0, basis=None,chain = 3):
     # t = time.time()
+    x_orig = x_orig.to(device)
     x_aug = torch.zeros_like(x_orig).to(device)
     mixing_weight_dist = Dirichlet(torch.empty(chain).fill_(1.))
     mixing_weights = mixing_weight_dist.sample()
