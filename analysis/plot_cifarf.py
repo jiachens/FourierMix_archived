@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 15:00:50
+LastEditTime: 2021-10-12 15:09:13
 '''
 import os
 import re
@@ -58,10 +58,10 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
     plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
     plt.legend(fontsize=15)
 
-    plt.ylim(0.2, 0.55)
+    plt.ylim(0.1, 0.55)
 
     plt.xticks(np.linspace(1,16,num=16),fontsize=15)#, color="red", rotation=45)
-    plt.yticks(np.linspace(0.2,0.55,num=6),fontsize=15)#, color="red", rotation=45)
+    plt.yticks(np.linspace(0.1,0.55,num=8),fontsize=15)#, color="red", rotation=45)
     plt.savefig('./analysis_'+str(alpha)+'.png',dpi=300,bbox_inches='tight')
 
     plt.close()
