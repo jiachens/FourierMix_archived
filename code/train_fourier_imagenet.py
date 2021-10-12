@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 17:56:21
+LastEditTime: 2021-10-12 19:51:24
 '''
 import time
 # import setGPU
@@ -181,20 +181,20 @@ def main():
                                 F.kl_div(p_mixture, p_augmix2/2, reduction='batchmean')) / 3.
 
             if js_loss and not new_loss:
-                if i == 0:
-                    test_img = torchvision.utils.make_grid(images[1], nrow = 8)
-                    torchvision.utils.save_image(
-                            test_img, "./test/fourier/test_3.png", nrow = 8
-                        )
-                    test_img = torchvision.utils.make_grid(images[0], nrow = 8)
-                    torchvision.utils.save_image(
-                            test_img, "./test/fourier/orig_3.png", nrow = 8
-                        )
                 bs = images[0].size(0)
                 images_new = []
                 for image in images:
                     image = fourier_augment_cuda.augment(image.to(device),device=device)
                     images_new.append(image)
+                if i == 0:
+                    test_img = torchvision.utils.make_grid(images_new[1], nrow = 8)
+                    torchvision.utils.save_image(
+                            test_img, "./test/fourier/test_3.png", nrow = 8
+                        )
+                    test_img = torchvision.utils.make_grid(images_new[0], nrow = 8)
+                    torchvision.utils.save_image(
+                            test_img, "./test/fourier/orig_3.png", nrow = 8
+                        )
                 images_cat = torch.cat(images_new, dim = 0)#.to(device) # [3 * batch, 3, 32, 32]
                 targets = targets.to(device)
 

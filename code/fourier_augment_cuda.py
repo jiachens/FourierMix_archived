@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 19:43:32
+LastEditTime: 2021-10-12 19:50:54
 '''
 import torch
 import fourier_basis
@@ -80,7 +80,6 @@ def augment_single(x_orig,device=None):
     d = [6,5,4,3,2][severity_2-1]
     x_orig_1 = x_orig.clone()
     
-    t = time.time()
     x_orig_f = torch.fft.fftn(x_orig_1, s=None, dim=(-2,-1), norm=None) 
     x_orig_f_abs = torch.abs(x_orig_f) 
     x_orig_f_ang = torch.angle(x_orig_f) 
@@ -90,7 +89,6 @@ def augment_single(x_orig,device=None):
     x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * torch.sin(x_orig_f_ang)
     x_restored_1 = torch.abs(torch.fft.ifftn(x_orig_f, s=None, dim=(-2,-1), norm=None))
-    print('each aug',time.time() - t)
     #####################
 
     ######### Spatial #########
