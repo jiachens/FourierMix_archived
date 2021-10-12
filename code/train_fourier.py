@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-11 18:20:38
+LastEditTime: 2021-10-12 11:16:54
 '''
 import time
 # import setGPU
@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
 parser.add_argument('arch', type=str, choices=ARCHITECTURES)
 parser.add_argument('outdir', type=str, help='folder to save model and training log)')
-parser.add_argument('--workers', default=8, type=int, metavar='N',
+parser.add_argument('--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
@@ -142,6 +142,7 @@ def main():
         model.train()
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
+            print(time.time() - t)
             if new_loss:
                 bs = images[0].size(0)
                 images[0],images[1],images[2] = images[0].to(device),images[1].to(device),images[2].to(device)

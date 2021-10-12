@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-05 22:55:59
+LastEditTime: 2021-10-12 11:17:05
 '''
 import time
 import matplotlib.pyplot as plt
@@ -143,6 +143,7 @@ def main():
         model.train()
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
+            print(time.time() - t)
             if new_loss:
                 bs = images[0].size(0)
                 images[0],images[1],images[2] = images[0].to(device),images[1].to(device),images[2].to(device)
