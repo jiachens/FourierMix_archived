@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-07 22:19:25
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-11 22:43:01
+LastEditTime: 2021-10-12 00:11:20
 '''
 import os
 import re
@@ -20,6 +20,7 @@ def power_law(x,alpha):
 
 x = np.linspace(0,16,num=128)
 y0 = power_law(x,0.1)
+y03 = power_law(x,0.3)
 y1 = power_law(x,0.5)
 y2 = power_law(x,1)
 y3 = power_law(x,2)
@@ -32,10 +33,10 @@ ax = plt.gca()#获取边框
 # ax.spines['right'].set_color('none')  
 # ax.set_xticks = [0,20,50,100,200,500,1000,2000]
 # ax.set_xticklabels = [0,20,50,100,200,500,1000,2000]
-ax.spines['bottom'].set_linewidth(1.5)
-ax.spines['left'].set_linewidth(1.5)
-ax.spines['top'].set_linewidth(1.5)
-ax.spines['right'].set_linewidth(1.5)
+ax.spines['bottom'].set_linewidth(2)
+ax.spines['left'].set_linewidth(2)
+ax.spines['top'].set_linewidth(2)
+ax.spines['right'].set_linewidth(2)
 # ax.set_xscale("log")
 ax.xaxis.set_major_locator(MultipleLocator(500))
 ax.yaxis.set_major_locator(MultipleLocator(15))
@@ -43,10 +44,11 @@ ax.yaxis.set_major_locator(MultipleLocator(15))
 plt.grid( color = 'black',linestyle='-.',linewidth = 0.5)
 
 l0=plt.plot(x,y0, label=r'$\alpha$=0.1',markersize=9,lw=3)
+l03=plt.plot(x,y03, label=r'$\alpha$=0.3',markersize=9,lw=3)
 l1=plt.plot(x,y1, label=r'$\alpha$=0.5',markersize=9,lw=3)
-l2=plt.plot(x,y2, label=r'$\alpha$=1',markersize=9,lw=3)
-l3=plt.plot(x,y3, label=r'$\alpha$=2',markersize=9,lw=3)
-l4=plt.plot(x,y4, label=r'$\alpha$=3',markersize=9,lw=3)
+l2=plt.plot(x,y2, label=r'$\alpha$=1.0',markersize=9,lw=3)
+l3=plt.plot(x,y3, label=r'$\alpha$=2.0',markersize=9,lw=3)
+l4=plt.plot(x,y4, label=r'$\alpha$=3.0',markersize=9,lw=3)
 
 
 plt.xlabel('center frequency f',fontsize=25)
