@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-09-29 21:22:38
+LastEditTime: 2021-10-11 23:59:00
 '''
 import random
 
@@ -23,7 +23,7 @@ transform=transforms.Compose([
             ])
 
 transform2=transforms.Compose([
-                transforms.RandomCrop(32, padding=4),
+                # transforms.RandomCrop(32, padding=4),
                 transforms.RandomHorizontalFlip()
             ])
 
@@ -73,23 +73,6 @@ class AutoDataset(torch.utils.data.Dataset):
 #     def __len__(self):
 #         return len(self.dataset)
 
-# class PGDataset(torch.utils.data.Dataset):
-#     def __init__(self, dataset, no_jsd=False):
-#         self.dataset = dataset
-#         self.no_jsd = no_jsd
-
-#     def __getitem__(self, i):
-#         x, y = self.dataset[i]
-#         if self.no_jsd:
-#             return transform2(transforms.ToTensor()(x)), y
-#         else:
-#             return (transform2(transforms.ToTensor()(x)), 
-#                     transform2(transforms.ToTensor()(x)),
-#                     transform2(transforms.ToTensor()(x))), y
-
-#     def __len__(self):
-#         return len(self.dataset)
-
 class GADataset(torch.utils.data.Dataset):
     def __init__(self, dataset, no_jsd=False):
         self.dataset = dataset
@@ -98,14 +81,31 @@ class GADataset(torch.utils.data.Dataset):
     def __getitem__(self, i):
         x, y = self.dataset[i]
         if self.no_jsd:
-            return transform(x), y
+            return transform2(transforms.ToTensor()(x)), y
         else:
             return (transform2(transforms.ToTensor()(x)), 
-                    transform2(patchGaussian(x,transform)),
-                    transform2(patchGaussian(x,transform))), y
+                    transform2(transforms.ToTensor()(x)),
+                    transform2(transforms.ToTensor()(x))), y
 
     def __len__(self):
         return len(self.dataset)
+
+# class GADataset(torch.utils.data.Dataset):
+#     def __init__(self, dataset, no_jsd=False):
+#         self.dataset = dataset
+#         self.no_jsd = no_jsd
+
+#     def __getitem__(self, i):
+#         x, y = self.dataset[i]
+#         if self.no_jsd:
+#             return transform(x), y
+#         else:
+#             return (transform2(transforms.ToTensor()(x)), 
+#                     transform2(patchGaussian(x,transform)),
+#                     transform2(patchGaussian(x,transform))), y
+
+#     def __len__(self):
+#         return len(self.dataset)
 
 # def patchGaussian(x,preprocess):
 #     # W = 25
