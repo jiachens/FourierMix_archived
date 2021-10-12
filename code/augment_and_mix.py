@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:15:28
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-11 23:59:00
+LastEditTime: 2021-10-12 12:25:18
 '''
 import random
 
@@ -150,7 +150,7 @@ def augmentAndMix(x_orig, k, alpha, preprocess, dataset_name):
     # alpha : sampling constant
     if dataset_name == "imagenet":
         augmentations.IMAGE_SIZE = 224 
-
+    t = time.time()
     x_temp = x_orig # back up for skip connection
 
     x_aug = torch.zeros_like(preprocess(x_orig))
@@ -172,7 +172,7 @@ def augmentAndMix(x_orig, k, alpha, preprocess, dataset_name):
     skip_conn_weight = skip_conn_weight_dist.sample()
 
     x_augmix = skip_conn_weight * x_aug + (1 - skip_conn_weight) * preprocess(x_orig)
-
+    print('each aug', time.time() - t)
     return x_augmix
 
 
