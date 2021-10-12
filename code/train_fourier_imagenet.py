@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 14:28:45
+LastEditTime: 2021-10-12 17:56:21
 '''
 import time
 # import setGPU
@@ -24,7 +24,8 @@ import cifar100_c
 from architectures import ARCHITECTURES, get_architecture
 from datasets import get_dataset, DATASETS
 import consistency
-from fourier_augment import FourierDataset
+from fourier_augment_cuda import FourierDataset
+import fourier_augment_cuda
 
 parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
@@ -190,7 +191,11 @@ def main():
                             test_img, "./test/fourier/orig_3.png", nrow = 8
                         )
                 bs = images[0].size(0)
-                images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
+                images_new = []
+                for image in images:
+                    image = fourier_augment_cuda.augment(image.to(device),device=device)
+                    images_new.append(image)
+                images_cat = torch.cat(images_new, dim = 0)#.to(device) # [3 * batch, 3, 32, 32]
                 targets = targets.to(device)
 
                 if args.scheme in ['half_ga','fourier_half_ga']:

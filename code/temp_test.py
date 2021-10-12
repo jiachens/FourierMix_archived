@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-11 17:54:22
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 13:47:13
+LastEditTime: 2021-10-12 17:34:04
 '''
 import time
 # import setGPU
@@ -97,7 +97,6 @@ print(time.time() - t)
 x_orig_f = torch.fft.fftn(x_orig_1, s=None, dim=(-2,-1), norm=None) 
 x_orig_f_abs = torch.abs(x_orig_f) 
 x_orig_f_ang = torch.angle(x_orig_f) 
-# flag = torch.sign(torch.rand() - 0.5)
 x_orig_f_abs *= 1. + flag * torch.rand(*x_orig_f_abs.shape).cuda() * c * 3
 x_orig_f_ang += (torch.rand(*x_orig_f_ang.shape).cuda() - 0.5) * np.pi / d * 3
 x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
