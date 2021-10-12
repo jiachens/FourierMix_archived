@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 17:55:43
+LastEditTime: 2021-10-12 19:38:06
 '''
 import torch
 import fourier_basis
@@ -45,7 +45,7 @@ class FourierDataset(torch.utils.data.Dataset):
         else:
             return (pre(x), 
                     pre(x),
-                    pre(x), y
+                    pre(x)), y
 
     def __len__(self):
         return len(self.dataset)
