@@ -1,9 +1,9 @@
 '''
 Description: 
 Autor: Jiachen Sun
-Date: 2021-10-12 22:45:00
+Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-13 00:16:36
+LastEditTime: 2021-10-13 00:26:55
 '''
 import random
 import numpy as np
@@ -39,7 +39,7 @@ def generate_mask(f_c,alpha):
         for j in range(32):
             mask[i,j] = 1/(np.abs(np.sqrt((i-15) ** 2 + (j-15) ** 2)-f_c)+1.0)**alpha
     # mask /= np.linalg.norm(mask)
-    print(np.mean(mask))
+    # print(np.max(mask))
     return mask
 
 def generate_mask2():
@@ -56,7 +56,7 @@ MASK2 = generate_mask2()
 if __name__ == "__main__":
     
     dataset_orig = get_dataset("cifar10", "test")
-    for alpha in [3]:
+    for alpha in [0.1,0.5,1,2,3]:
         for f_c in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]:
             all_data = []
             all_label = []
@@ -118,8 +118,8 @@ if __name__ == "__main__":
 
                     plot.append(x_restored)
                     labels.append(label)
-                    if i == 99:
-                        break
+                    # if i == 100:
+                    #     break
                     
                 plot = np.clip((np.stack(plot) * 255).astype(int), 0,255)
 
@@ -135,12 +135,16 @@ if __name__ == "__main__":
 
             print(all_data.shape, all_label.shape)
             os.makedirs('./data/CIFAR-10-F',exist_ok = True)
-
-            plot = torch.FloatTensor(all_data[200:300])
             
-            test_img = torchvision.utils.make_grid(plot/255., nrow = 10)
-            torchvision.utils.save_image(
-                test_img, "./test/vis3/" + args.type + '_' + str(f_c) + '_' + str(alpha) + '_' + str(sev) + ".png", nrow = 10
-            )
+            np.save('./data/CIFAR-10-F/' + args.type + '_' + str(f_c) + '_' + str(alpha) + '_' + str(sev) + '.npy',all_data)
+            np.save('./data/CIFAR-10-F/label.npy',all_label)
+            # print(all_label[10000:10])
+
+            # plot = torch.FloatTensor(all_data[200:300])
+            
+            # test_img = torchvision.utils.make_grid(plot/255., nrow = 10)
+            # torchvision.utils.save_image(
+            #     test_img, "./test/vis2/" + args.type + '_' + str(f_c) + '_' + str(alpha) + '_' + str(sev) + ".png", nrow = 10
+            # )
    
     # plt.close()
