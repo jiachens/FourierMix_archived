@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-22 16:50:40
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-11 10:19:13
+LastEditTime: 2021-10-12 21:38:54
 '''
 import time
 import matplotlib.pyplot as plt
@@ -238,12 +238,13 @@ def main():
                 t = time.time()
 
         if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
-            torch.save({
-                "epoch": epoch,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'losses': losses
-            }, args.outdir+"/%d.pt"%(epoch + 1))
+            if rank == 0:
+                torch.save({
+                    "epoch": epoch,
+                    'model_state_dict': model.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'losses': losses
+                }, args.outdir+"/%d.pt"%(epoch + 1))
 
             model.eval()
             with torch.no_grad():
