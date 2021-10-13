@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 20:44:08
+LastEditTime: 2021-10-12 20:46:38
 '''
 import time
 # import setGPU
@@ -183,9 +183,8 @@ def main():
                 bs = images[0].size(0)
                 images_new = []
                 for image in images:
-                    for i in range(image.shape[0]):
-                        print(i)
-                        image[i] = fourier_augment_cuda.augment(image[i].to(device),device=device)
+                    for j in range(image.shape[0]):
+                        image[j] = fourier_augment_cuda.augment(image[j].to(device),device=device)
                     images_new.append(image.to(device))
                 if i == 0 and rank == 0:
                     test_img = torchvision.utils.make_grid(images_new[1], nrow = 8)
