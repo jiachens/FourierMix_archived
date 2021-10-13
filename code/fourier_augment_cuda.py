@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 20:18:14
+LastEditTime: 2021-10-12 20:24:59
 '''
 import torch
 import fourier_basis
@@ -97,7 +97,7 @@ def augment_single(x_orig,device=None):
     severity_5 = random.choice(range(1,9))
 
     d = [0,0,0,0,2.5,5,7.5,10][severity_3-1] 
-    t = [None,None,None,None,(1/48.,1/48.),(1/24.,1/24.),(1/16.,1/16.),(1/12.,1/12.)][severity_4-1] 
+    t = [None,None,None,None,(1/24.,1/24.),(1/12.,1/12.),(1/8.,1/8.),(1/6.,1/6.)][severity_4-1] 
     s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
     
     space = torchvision.transforms.RandomAffine(degrees=d, translate=t, scale=None, shear=s)
