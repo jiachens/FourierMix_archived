@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 19:52:45
+LastEditTime: 2021-10-12 20:21:47
 '''
 import time
 # import setGPU
@@ -185,7 +185,7 @@ def main():
                 for image in images:
                     image = fourier_augment_cuda.augment(image.to(device),device=device)
                     images_new.append(image)
-                if i == 0:
+                if i == 0 and rank == 0:
                     test_img = torchvision.utils.make_grid(images_new[1], nrow = 8)
                     torchvision.utils.save_image(
                             test_img, "./test/fourier/test_3.png", nrow = 8
@@ -238,12 +238,13 @@ def main():
                 t = time.time()
 
         if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
-            torch.save({
-                "epoch": epoch,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'losses': losses
-            }, args.outdir+"/%d.pt"%(epoch + 1))
+            if rank == 0:
+                torch.save({
+                    "epoch": epoch,
+                    'model_state_dict': model.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'losses': losses
+                }, args.outdir+"/%d.pt"%(epoch + 1))
 
             model.eval()
             with torch.no_grad():
