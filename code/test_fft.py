@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 22:45:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-13 00:16:36
+LastEditTime: 2021-10-13 15:54:42
 '''
 import random
 import numpy as np
@@ -39,7 +39,18 @@ def generate_mask(f_c,alpha):
         for j in range(32):
             mask[i,j] = 1/(np.abs(np.sqrt((i-15) ** 2 + (j-15) ** 2)-f_c)+1.0)**alpha
     # mask /= np.linalg.norm(mask)
-    print(np.mean(mask))
+    ax = sns.heatmap(mask,
+            cmap="jet",
+            cbar=True,
+            vmin = 0.0,
+            vmax = 1.0,
+            # cbar_kws={"ticks":[]},
+            xticklabels=False,
+            yticklabels=False,)
+    plt.savefig('./test/vis3/'+str(f_c)+'.png',dpi=250,bbox_inches='tight')
+    # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
+    plt.close()
+        
     return mask
 
 def generate_mask2():
@@ -60,7 +71,7 @@ if __name__ == "__main__":
         for f_c in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]:
             all_data = []
             all_label = []
-            for sev in [1,2,3]:
+            for sev in [1]:
                 
                 plot = []
                 labels = []
@@ -118,7 +129,7 @@ if __name__ == "__main__":
 
                     plot.append(x_restored)
                     labels.append(label)
-                    if i == 99:
+                    if i == 1:
                         break
                     
                 plot = np.clip((np.stack(plot) * 255).astype(int), 0,255)
@@ -136,11 +147,11 @@ if __name__ == "__main__":
             print(all_data.shape, all_label.shape)
             os.makedirs('./data/CIFAR-10-F',exist_ok = True)
 
-            plot = torch.FloatTensor(all_data[200:300])
+            # plot = torch.FloatTensor(all_data[200:300])
             
-            test_img = torchvision.utils.make_grid(plot/255., nrow = 10)
-            torchvision.utils.save_image(
-                test_img, "./test/vis3/" + args.type + '_' + str(f_c) + '_' + str(alpha) + '_' + str(sev) + ".png", nrow = 10
-            )
+            # test_img = torchvision.utils.make_grid(plot/255., nrow = 10)
+            # torchvision.utils.save_image(
+            #     test_img, "./test/vis3/" + args.type + '_' + str(f_c) + '_' + str(alpha) + '_' + str(sev) + ".png", nrow = 10
+            # )
    
     # plt.close()

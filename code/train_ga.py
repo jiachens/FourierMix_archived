@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-22 16:50:40
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 21:38:54
+LastEditTime: 2021-10-13 16:30:08
 '''
 import time
 import matplotlib.pyplot as plt
@@ -170,14 +170,14 @@ def main():
                 logits_orig_0, logits_orig_1 = logits[:bs], logits[bs:2*bs]
                 
                 loss = (F.cross_entropy(logits_orig_0, targets) + F.cross_entropy(logits_orig_1, targets)) / 2.
-                print(loss)
+                # print(loss)
 
                 loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],10,loss='kl')
                 # loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='kl')
                 # loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],10,loss='kl')
 
                 loss += loss1
-                print(loss)
+                # print(loss)
 
                 # p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig_0, dim = -1)+F.softmax(logits_orig_1, dim = -1), F.softmax(logits_aug1_0, dim = -1)+F.softmax(logits_aug1_1, dim = -1), F.softmax(logits_aug2_0, dim = -1)+F.softmax(logits_aug2_1, dim = -1)
 
@@ -258,7 +258,7 @@ def main():
                 for i, (images, targets) in enumerate(test_loader):
                     images, targets = images.to(device), targets.to(device)
                     preds = torch.argmax(model(images), dim = -1)
-                    print(preds)
+                    # print(preds)
                     error += (preds != targets).sum().item()
                     total += targets.size(0)
 

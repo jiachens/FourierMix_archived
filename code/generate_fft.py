@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-13 00:26:55
+LastEditTime: 2021-10-13 11:10:43
 '''
 import random
 import numpy as np
@@ -136,7 +136,7 @@ if __name__ == "__main__":
             print(all_data.shape, all_label.shape)
             os.makedirs('./data/CIFAR-10-F',exist_ok = True)
             
-            np.save('./data/CIFAR-10-F/' + args.type + '_' + str(f_c) + '_' + str(alpha) + '_' + str(sev) + '.npy',all_data)
+            np.save('./data/CIFAR-10-F/' + args.type + '_' + str(f_c) + '_' + str(alpha) + '.npy',all_data)
             np.save('./data/CIFAR-10-F/label.npy',all_label)
             # print(all_label[10000:10])
 
