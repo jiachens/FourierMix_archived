@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 20:26:51
+LastEditTime: 2021-10-12 20:44:08
 '''
 import time
 # import setGPU
@@ -184,6 +184,7 @@ def main():
                 images_new = []
                 for image in images:
                     for i in range(image.shape[0]):
+                        print(i)
                         image[i] = fourier_augment_cuda.augment(image[i].to(device),device=device)
                     images_new.append(image.to(device))
                 if i == 0 and rank == 0:
@@ -214,7 +215,7 @@ def main():
                 loss += 12 * (F.kl_div(p_mixture, p_orig, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
-                print(time.time() - t)
+                # print(time.time() - t)
 
             elif not(js_loss):
                 images, targets = images.to(device), targets.to(device)
