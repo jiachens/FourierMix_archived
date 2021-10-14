@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-13 22:01:52
+LastEditTime: 2021-10-13 22:13:36
 '''
 import random
 import numpy as np
@@ -60,6 +60,7 @@ if __name__ == "__main__":
         for f_c in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]:
             all_data = []
             all_label = []
+            mask = generate_mask(f_c,alpha)
             for sev in [1,2,3]:
                 
                 plot = []
@@ -92,7 +93,7 @@ if __name__ == "__main__":
                         n.imag = n_abs * np.sin(n_pha)
                         x_orig_f += n
                     elif args.type == 'fourier':
-                        n_abs = (np.random.normal(*x_orig_f_abs.shape)) + f * np.minimum(np.maximum(x_orig_f_abs,20),200) * generate_mask(f_c,alpha)
+                        n_abs = (np.random.normal(*x_orig_f_abs.shape)) + f * np.minimum(np.maximum(x_orig_f_abs,20),200) * mask
                         n_pha = np.random.uniform(*x_orig_f_ang.shape) * 2 * np.pi
                         n = np.zeros_like(x_orig_f)
                         n.real = n_abs * np.cos(n_pha)
