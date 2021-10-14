@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 22:45:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-13 21:48:01
+LastEditTime: 2021-10-14 16:04:27
 '''
 import random
 import numpy as np
@@ -37,7 +37,8 @@ def generate_mask(f_c,alpha):
     mask = np.ones((32,32))
     for i in range(32):
         for j in range(32):
-            mask[i,j] = 1/(np.abs(np.maximum(np.abs(i-15),np.abs(j-15))-f_c)+1.0)**alpha
+            # mask[i,j] = 1/(np.abs(np.maximum(np.abs(i-15),np.abs(j-15))-f_c)+1.0)**alpha
+            mask[i,j] = 1/(np.abs(np.sqrt((i-15) ** 2 + (j-15) ** 2)-f_c)+1)**alpha
     # mask /= np.linalg.norm(mask)
     # mask[mask > 0.5] = 1
     ax = sns.heatmap(mask,
@@ -69,9 +70,10 @@ if __name__ == "__main__":
     
     dataset_orig = get_dataset("cifar10", "test")
     for alpha in [3]:
-        for f_c in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]:
+        for f_c in range(1,17):
             all_data = []
             all_label = []
+            mask = generate_mask(f_c,alpha)
             for sev in [1,2,3]:
                 
                 plot = []
@@ -81,11 +83,12 @@ if __name__ == "__main__":
                 e = [2,3,4,5,6][sev-1]
                 f = [0.5,1,1.5][sev-1] 
                 g = [0.4,0.5,0.6,0.7,0.8][sev-1] 
-                basis = fourier_basis.generate_basis(e).cpu().numpy()
+                # basis = fourier_basis.generate_basis(e).cpu().numpy()
                 for i in range(len(dataset_orig)):
 
                     (x_orig, label) = dataset_orig[i]
                     x_orig = x_orig.detach().numpy()
+                    # print(np.max(x_orig))
 
                     x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig))
                     x_orig_f_abs = np.abs(x_orig_f)
@@ -104,12 +107,16 @@ if __name__ == "__main__":
                         n.imag = n_abs * np.sin(n_pha)
                         x_orig_f += n
                     elif args.type == 'fourier':
-                        n_abs = (np.random.normal(*x_orig_f_abs.shape)) + f * np.minimum(np.maximum(x_orig_f_abs,20),200) * generate_mask(f_c,alpha)
+                        # print(np.max(x_orig_f_abs),np.min(x_orig_f_abs))
+                        # x_orig_f_abs[:,15,15] = 0.0
+                        n_abs = (np.random.normal(*x_orig_f_abs.shape)) + np.minimum(np.maximum(x_orig_f_abs,20),200) * mask
+                        n_abs = np.abs(n_abs)
                         n_pha = np.random.uniform(*x_orig_f_ang.shape) * 2 * np.pi
                         n = np.zeros_like(x_orig_f)
                         n.real = n_abs * np.cos(n_pha)
                         n.imag = n_abs * np.sin(n_pha)
                         x_orig_f += n
+                        # print(np.max(np.abs(x_orig_f)),np.min(np.abs(x_orig_f)))
                     elif args.type == 'mixup':
                         j = random.randint(0,len(dataset_orig)-1)
                         x = dataset_orig[j][0]
@@ -119,11 +126,12 @@ if __name__ == "__main__":
 
                     if args.type in ['abs_2','fourier']:
                         x_restored = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
-                        # delta = x_restored - x_orig
+                        x_restored = np.clip(x_restored,0.,1.)
+                        delta = x_restored - x_orig
                         # print(np.max(delta))
-                        # delta = delta / np.linalg.norm(delta) * f
+                        delta = delta / np.linalg.norm(delta) * 8
                         # print(np.max(delta))
-                        # x_restored = delta + x_orig
+                        x_restored = delta + x_orig
                     else:  
                         x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
                         x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
