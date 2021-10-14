@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 22:45:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-13 15:54:42
+LastEditTime: 2021-10-13 21:48:01
 '''
 import random
 import numpy as np
@@ -37,8 +37,9 @@ def generate_mask(f_c,alpha):
     mask = np.ones((32,32))
     for i in range(32):
         for j in range(32):
-            mask[i,j] = 1/(np.abs(np.sqrt((i-15) ** 2 + (j-15) ** 2)-f_c)+1.0)**alpha
+            mask[i,j] = 1/(np.abs(np.maximum(np.abs(i-15),np.abs(j-15))-f_c)+1.0)**alpha
     # mask /= np.linalg.norm(mask)
+    # mask[mask > 0.5] = 1
     ax = sns.heatmap(mask,
             cmap="jet",
             cbar=True,
@@ -71,14 +72,14 @@ if __name__ == "__main__":
         for f_c in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]:
             all_data = []
             all_label = []
-            for sev in [1]:
+            for sev in [1,2,3]:
                 
                 plot = []
                 labels = []
                 c = [0.6,0.65,0.7,0.75,0.8][sev-1]
                 d = [1.5,1.45,1.4,1.35,1.3][sev-1]
                 e = [2,3,4,5,6][sev-1]
-                f = [4,6,8][sev-1] 
+                f = [0.5,1,1.5][sev-1] 
                 g = [0.4,0.5,0.6,0.7,0.8][sev-1] 
                 basis = fourier_basis.generate_basis(e).cpu().numpy()
                 for i in range(len(dataset_orig)):
@@ -103,7 +104,7 @@ if __name__ == "__main__":
                         n.imag = n_abs * np.sin(n_pha)
                         x_orig_f += n
                     elif args.type == 'fourier':
-                        n_abs = (np.random.rand(*x_orig_f_abs.shape)) + np.minimum(np.maximum(x_orig_f_abs,20),200) * generate_mask(f_c,alpha)
+                        n_abs = (np.random.normal(*x_orig_f_abs.shape)) + f * np.minimum(np.maximum(x_orig_f_abs,20),200) * generate_mask(f_c,alpha)
                         n_pha = np.random.uniform(*x_orig_f_ang.shape) * 2 * np.pi
                         n = np.zeros_like(x_orig_f)
                         n.real = n_abs * np.cos(n_pha)
@@ -118,9 +119,11 @@ if __name__ == "__main__":
 
                     if args.type in ['abs_2','fourier']:
                         x_restored = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
-                        delta = x_restored - x_orig
-                        delta = delta / np.linalg.norm(delta) * f
-                        x_restored = delta + x_orig
+                        # delta = x_restored - x_orig
+                        # print(np.max(delta))
+                        # delta = delta / np.linalg.norm(delta) * f
+                        # print(np.max(delta))
+                        # x_restored = delta + x_orig
                     else:  
                         x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
                         x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
@@ -129,7 +132,7 @@ if __name__ == "__main__":
 
                     plot.append(x_restored)
                     labels.append(label)
-                    if i == 1:
+                    if i == 99:
                         break
                     
                 plot = np.clip((np.stack(plot) * 255).astype(int), 0,255)
@@ -147,11 +150,11 @@ if __name__ == "__main__":
             print(all_data.shape, all_label.shape)
             os.makedirs('./data/CIFAR-10-F',exist_ok = True)
 
-            # plot = torch.FloatTensor(all_data[200:300])
+            plot = torch.FloatTensor(all_data[200:300])
             
-            # test_img = torchvision.utils.make_grid(plot/255., nrow = 10)
-            # torchvision.utils.save_image(
-            #     test_img, "./test/vis3/" + args.type + '_' + str(f_c) + '_' + str(alpha) + '_' + str(sev) + ".png", nrow = 10
-            # )
+            test_img = torchvision.utils.make_grid(plot/255., nrow = 10)
+            torchvision.utils.save_image(
+                test_img, "./test/vis3/" + args.type + '_' + str(f_c) + '_' + str(alpha) + '_' + str(sev) + ".png", nrow = 10
+            )
    
     # plt.close()
