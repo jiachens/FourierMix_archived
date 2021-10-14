@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-14 16:31:49
+LastEditTime: 2021-10-14 16:34:18
 '''
 import random
 import numpy as np
@@ -37,7 +37,8 @@ def generate_mask(f_c,alpha):
     mask = np.ones((32,32))
     for i in range(32):
         for j in range(32):
-            mask[i,j] = 1/(np.abs(np.maximum(np.abs(i-15),np.abs(j-15))-f_c)+1.0)**alpha
+            mask[i,j] = 1/(np.abs(np.sqrt((i-15) ** 2 + (j-15) ** 2)-f_c)+1)**alpha
+            # mask[i,j] = 1/(np.abs(np.maximum(np.abs(i-15),np.abs(j-15))-f_c)+1.0)**alpha
     # mask /= np.linalg.norm(mask)
     # print(np.max(mask))
     return mask
