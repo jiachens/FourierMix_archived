@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-14 22:00:06
+LastEditTime: 2021-10-15 11:51:13
 '''
 import random
 import numpy as np
@@ -69,7 +69,7 @@ if __name__ == "__main__":
                 c = [0.6,0.65,0.7,0.75,0.8][sev-1]
                 d = [1.5,1.45,1.4,1.35,1.3][sev-1]
                 e = [2,3,4,5,6][sev-1]
-                f = [4,6,8][sev-1] 
+                f = [8,10,12][sev-1] 
                 g = [0.4,0.5,0.6,0.7,0.8][sev-1] 
                 basis = fourier_basis.generate_basis(e).cpu().numpy()
                 for i in range(len(dataset_orig)):
