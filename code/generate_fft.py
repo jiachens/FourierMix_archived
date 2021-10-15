@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-14 16:34:18
+LastEditTime: 2021-10-14 22:00:06
 '''
 import random
 import numpy as np
@@ -94,7 +94,7 @@ if __name__ == "__main__":
                         n.imag = n_abs * np.sin(n_pha)
                         x_orig_f += n
                     elif args.type == 'fourier':
-                        n_abs = (np.random.normal(*x_orig_f_abs.shape)) + np.minimum(np.maximum(x_orig_f_abs,20),200) * mask
+                        n_abs = np.minimum(np.maximum(x_orig_f_abs,20),200) * mask * np.random.uniform(0.8,1.2,size= x_orig_f_abs.shape)
                         n_pha = np.random.uniform(*x_orig_f_ang.shape) * 2 * np.pi
                         n = np.zeros_like(x_orig_f)
                         n.real = n_abs * np.cos(n_pha)

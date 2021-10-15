@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 22:45:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-14 21:16:30
+LastEditTime: 2021-10-14 22:08:46
 '''
 import random
 import numpy as np
@@ -109,7 +109,7 @@ if __name__ == "__main__":
                     elif args.type == 'fourier':
                         # print(np.max(x_orig_f_abs),np.min(x_orig_f_abs))
                         # x_orig_f_abs[:,15,15] = 0.0
-                        n_abs = (np.random.normal(*x_orig_f_abs.shape)) + np.minimum(np.maximum(x_orig_f_abs,20),200) * mask
+                        n_abs = np.minimum(np.maximum(x_orig_f_abs,20),200) * mask * np.random.uniform(0.8,1.2,size= x_orig_f_abs.shape)
                         # n_abs = np.abs(n_abs)
                         n_pha = np.random.uniform(*x_orig_f_ang.shape) * 2 * np.pi
                         n = np.zeros_like(x_orig_f)
@@ -128,9 +128,9 @@ if __name__ == "__main__":
                         x_restored = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
                         x_restored = np.clip(x_restored,0.,1.)
                         delta = x_restored - x_orig
-                        # print(np.max(delta))
+                        print(np.max(delta))
                         delta = delta / np.linalg.norm(delta) * 8
-                        # print(np.max(delta))
+                        print(np.max(delta))
                         x_restored = delta + x_orig
                     else:  
                         x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
