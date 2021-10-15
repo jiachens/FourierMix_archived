@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 22:45:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-14 16:04:27
+LastEditTime: 2021-10-14 21:16:30
 '''
 import random
 import numpy as np
@@ -110,7 +110,7 @@ if __name__ == "__main__":
                         # print(np.max(x_orig_f_abs),np.min(x_orig_f_abs))
                         # x_orig_f_abs[:,15,15] = 0.0
                         n_abs = (np.random.normal(*x_orig_f_abs.shape)) + np.minimum(np.maximum(x_orig_f_abs,20),200) * mask
-                        n_abs = np.abs(n_abs)
+                        # n_abs = np.abs(n_abs)
                         n_pha = np.random.uniform(*x_orig_f_ang.shape) * 2 * np.pi
                         n = np.zeros_like(x_orig_f)
                         n.real = n_abs * np.cos(n_pha)
