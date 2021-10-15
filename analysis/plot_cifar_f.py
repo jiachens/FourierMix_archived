@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-10 21:59:29
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-10 22:50:27
+LastEditTime: 2021-10-15 11:40:23
 '''
 import os
 import numpy as np
@@ -13,7 +13,7 @@ import torch
 _DIRNAME = 'CIFAR-10-F'
 _LABELS_FILENAME = 'label.npy'
 
-def generate_examples(data_dir='../data', corruption=None, severity=2):
+def generate_examples(data_dir='../data', corruption=None, severity=3):
     severity = severity # (1,2,3,4,5)
     data_dir = os.path.join(data_dir,_DIRNAME)
     images_file = os.path.join(data_dir, 'fourier_' + corruption + '.npy')
