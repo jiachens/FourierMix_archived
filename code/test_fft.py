@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 22:45:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-14 22:08:46
+LastEditTime: 2021-10-16 14:11:31
 '''
 import random
 import numpy as np
@@ -33,12 +33,30 @@ parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
 args = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
+def minFrequency(i,j,f_c):
+    f = []
+    f_min = 1000
+    for i_new in [i-0.5,i,i+0.5]:
+        for j_new in [j-0.5,j,j+0.5]:
+            f.append(np.sqrt((i_new-15) ** 2 + (j_new-15) ** 2)-f_c)
+            f_min = np.minimum(f_min,np.abs(np.sqrt((i_new-15) ** 2 + (j_new-15) ** 2)-f_c))
+
+    max_f = np.max(f)
+    min_f = np.min(f)
+    if min_f * max_f <= 0:
+        return 0
+    
+    return f_min
+
 def generate_mask(f_c,alpha):
-    mask = np.ones((32,32))
+    mask = np.zeros((32,32))
     for i in range(32):
         for j in range(32):
             # mask[i,j] = 1/(np.abs(np.maximum(np.abs(i-15),np.abs(j-15))-f_c)+1.0)**alpha
-            mask[i,j] = 1/(np.abs(np.sqrt((i-15) ** 2 + (j-15) ** 2)-f_c)+1)**alpha
+            f = minFrequency(i,j,f_c)
+            mask[i,j] = 1/(f+1)**alpha
+            # if np.abs(i-15) < f_c and np.abs(j-15) < f_c:
+            #     mask[i,j] = 1
     # mask /= np.linalg.norm(mask)
     # mask[mask > 0.5] = 1
     ax = sns.heatmap(mask,
@@ -69,7 +87,7 @@ MASK2 = generate_mask2()
 if __name__ == "__main__":
     
     dataset_orig = get_dataset("cifar10", "test")
-    for alpha in [3]:
+    for alpha in [1]:
         for f_c in range(1,17):
             all_data = []
             all_label = []

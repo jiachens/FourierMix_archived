@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-09-22 16:50:40
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-13 16:30:08
+LastEditTime: 2021-10-16 11:42:04
 '''
 import time
 import matplotlib.pyplot as plt
@@ -113,7 +113,8 @@ def main():
     elif args.scheme in ['auto_half_ga']:
         train_data = AutoDataset(train_dataset, not(js_loss))
     elif args.scheme in ['pg_half_ga']:
-        train_data = PGDataset(train_dataset, not(js_loss))
+        # train_data = PGDataset(train_dataset, not(js_loss))
+        pass
     elif args.scheme in ['half_ga_jsd']:
         train_data = GADataset(train_dataset, not(js_loss))
     # elif args.scheme in ['half_rand_jsd']:

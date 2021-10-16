@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-15 11:51:13
+LastEditTime: 2021-10-16 14:11:11
 '''
 import random
 import numpy as np
@@ -33,11 +33,27 @@ parser.add_argument("--gpu", type=str, default='0', help="which GPU to use")
 args = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 
+def minFrequency(i,j,f_c):
+    f = []
+    f_min = 1000
+    for i_new in [i-0.5,i,i+0.5]:
+        for j_new in [j-0.5,j,j+0.5]:
+            f.append(np.sqrt((i_new-15) ** 2 + (j_new-15) ** 2)-f_c)
+            f_min = np.minimum(f_min,np.abs(np.sqrt((i_new-15) ** 2 + (j_new-15) ** 2)-f_c))
+
+    max_f = np.max(f)
+    min_f = np.min(f)
+    if min_f * max_f <= 0:
+        return 0
+    
+    return f_min
+
 def generate_mask(f_c,alpha):
     mask = np.ones((32,32))
     for i in range(32):
         for j in range(32):
-            mask[i,j] = 1/(np.abs(np.sqrt((i-15) ** 2 + (j-15) ** 2)-f_c)+1)**alpha
+            f = minFrequency(i,j,f_c)
+            mask[i,j] = 1/(f+1)**alpha
             # mask[i,j] = 1/(np.abs(np.maximum(np.abs(i-15),np.abs(j-15))-f_c)+1.0)**alpha
     # mask /= np.linalg.norm(mask)
     # print(np.max(mask))
