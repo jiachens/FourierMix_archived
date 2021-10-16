@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-16 14:49:04
+LastEditTime: 2021-10-16 15:58:24
 '''
 import time
 # import setGPU
@@ -135,7 +135,7 @@ def main():
                 for key, val in checkpoint['model_state_dict'].items():
                     # print(key)
                     if key[:6] == 'module':
-                        name = key[7:]  # remove 'module.'
+                        name = key#[7:]  # remove 'module.'
                     else:
                         name = key
                     new_state_dict[name] = val
@@ -143,7 +143,7 @@ def main():
                 for key, val in checkpoint['state_dict'].items():
                     # print(key)
                     if key[:6] == 'module':
-                        name = key[7:]  # remove 'module.'
+                        name = key#[7:]  # remove 'module.'
                     else:
                         name = key
                     new_state_dict[name] = val
