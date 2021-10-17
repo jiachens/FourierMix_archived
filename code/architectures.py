@@ -3,14 +3,14 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-05 21:57:24
+LastEditTime: 2021-10-17 14:38:58
 '''
 import torch
 from torchvision.models.resnet import resnet50
 import torch.backends.cudnn as cudnn
 from archs.cifar_resnet import resnet as resnet_cifar
 from archs.dncnn import DnCNN
-from datasets import get_normalize_layer
+from datasets import get_normalize_layer,get_input_center_layer
 from torch.nn.functional import interpolate
 
 # resnet50 - the classic ResNet-50, sized for ImageNet
@@ -55,7 +55,7 @@ def get_architecture(arch: str, dataset: str, normalize :bool = True,local_rank=
         model = DnCNN(image_channels=3, depth=17, n_channels=128).cuda()
         return model
     if normalize:
-        normalize_layer = get_normalize_layer(dataset)
+        normalize_layer = get_input_center_layer(dataset)
         return torch.nn.Sequential(normalize_layer, model)
     else:
         return model

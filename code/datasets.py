@@ -72,6 +72,12 @@ def get_normalize_layer(dataset: str) -> torch.nn.Module:
     elif dataset == "cifar100":
         return NormalizeLayer(_CIFAR10_MEAN, _CIFAR10_STDDEV)
 
+
+def get_input_center_layer(dataset: str) -> torch.nn.Module:
+    """Return the dataset's Input Centering layer"""
+    return InputCenterLayer(_CIFAR10_MEAN)
+
+
 _IMAGENET_MEAN = [0.485, 0.456, 0.406]
 _IMAGENET_STDDEV = [0.229, 0.224, 0.225]
 
