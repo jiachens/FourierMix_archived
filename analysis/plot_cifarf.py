@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-17 00:31:09
+LastEditTime: 2021-10-17 00:33:02
 '''
 import os
 import re
@@ -29,6 +29,7 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
                 c_r += float(lines[-2].split(':')[-1].strip())
                 f.close()
             y[j].append(c_r / len(sev))
+            print(y[j])
 
     x = np.linspace(1,16,num=16)
 
