@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-17 00:33:02
+LastEditTime: 2021-10-17 00:37:39
 '''
 import os
 import re
@@ -21,14 +21,14 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
     for j in range(6):
         for i in range(1,17):
             c_r = 0
-            for sev in ['1','2','3']:
+            for sev in ['3']:
                 f = open(os.path.join('../test/cifar10-f-new', name[j] ,str(i) + '_' + str(alpha) + '_' + sev + '.out'))
                 lines = f.readlines()
                 print(name[j],i,alpha,sev)
                 print(lines[-2])
                 c_r += float(lines[-2].split(':')[-1].strip())
                 f.close()
-            y[j].append(c_r / 3.)
+            y[j].append(c_r)
             # print(y[j])
 
     x = np.linspace(1,16,num=16)
