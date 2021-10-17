@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-01 12:20:18
+LastEditTime: 2021-10-17 14:30:01
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -53,6 +53,14 @@ if __name__ == "__main__":
         new_state_dict = OrderedDict()
         if 'model_state_dict' in checkpoint.keys():
             for key, val in checkpoint['model_state_dict'].items():
+                # print(key)
+                if key[:6] == 'module':
+                    name = key[7:]  # remove 'module.'
+                else:
+                    name = key
+                new_state_dict[name] = val
+        elif 'net' in checkpoint.keys():
+            for key, val in checkpoint['net'].items():
                 # print(key)
                 if key[:6] == 'module':
                     name = key[7:]  # remove 'module.'
