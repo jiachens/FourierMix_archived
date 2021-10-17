@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-17 12:59:45
+LastEditTime: 2021-10-17 16:05:58
 '''
 import time
 # import setGPU
@@ -122,7 +122,7 @@ def main():
 
     
     if args.resume:
-        map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
+        map_location = {'cuda:%d' % 0: 'cuda:%d' % local_rank}
         checkpoint = torch.load(args.resume,map_location=map_location)
         try:
             base_classifier = get_architecture(args.arch, args.dataset,args.no_normalize,local_rank,device)
