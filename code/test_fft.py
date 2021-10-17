@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 22:45:00
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-16 21:18:25
+LastEditTime: 2021-10-17 00:56:39
 '''
 import random
 import numpy as np
@@ -147,7 +147,7 @@ if __name__ == "__main__":
                         x_restored = np.clip(x_restored,0.,1.)
                         delta = x_restored - x_orig
                         print(np.max(delta))
-                        delta = delta / np.linalg.norm(delta) * 8
+                        delta = delta / np.linalg.norm(delta) * 14
                         print(np.max(delta))
                         x_restored = delta + x_orig
                     else:  
