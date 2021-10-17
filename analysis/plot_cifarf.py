@@ -28,8 +28,8 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
                 print(lines[-2])
                 c_r += float(lines[-2].split(':')[-1].strip())
                 f.close()
-            y[j].append(c_r / len(sev))
-            print(y[j])
+            y[j].append(c_r / 3.)
+            # print(y[j])
 
     x = np.linspace(1,16,num=16)
 
