@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 15:31:02
+LastEditTime: 2021-10-17 00:27:25
 '''
 import os
 import re
@@ -21,7 +21,7 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
     for j in range(6):
         for i in range(1,17):
             c_r = 0
-            for sev in ['3']:
+            for sev in ['1','2','3']:
                 f = open(os.path.join('../test/cifar10-f-new', name[j] ,str(i) + '_' + str(alpha) + '_' + sev + '.out'))
                 lines = f.readlines()
                 print(name[j],i,alpha)
