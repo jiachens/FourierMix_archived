@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-16 22:48:37
 LastEditors: Jiachen Sun
-LastEditTime: 2021-07-19 17:02:44
+LastEditTime: 2021-10-19 14:42:03
 '''
 import argparse
 import os
@@ -52,12 +52,23 @@ if __name__ == "__main__":
         base_classifier = get_architecture(checkpoint["arch"], args.dataset, args.no_normalize)
         base_classifier.load_state_dict(checkpoint['state_dict'])
     except:
-        base_classifier = get_architecture("cifar_resnet110", args.dataset, args.no_normalize)
+        if args.dataset in ["imagenet","imagenet-c"]:
+            base_classifier = get_architecture("resnet50", args.dataset, args.no_normalize)
+        else:
+            base_classifier = get_architecture("cifar_resnet110", args.dataset, args.no_normalize)
         # print(checkpoint['model_state_dict'].keys())
         from collections import OrderedDict
         new_state_dict = OrderedDict()
         if 'model_state_dict' in checkpoint.keys():
             for key, val in checkpoint['model_state_dict'].items():
+                # print(key)
+                if key[:6] == 'module':
+                    name = key[7:]  # remove 'module.'
+                else:
+                    name = key
+                new_state_dict[name] = val
+        elif 'net' in checkpoint.keys():
+            for key, val in checkpoint['net'].items():
                 # print(key)
                 if key[:6] == 'module':
                     name = key[7:]  # remove 'module.'
