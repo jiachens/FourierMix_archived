@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-16 16:01:01
+LastEditTime: 2021-10-19 14:35:02
 '''
 import torch
 import fourier_basis
@@ -84,8 +84,8 @@ def augment_single(x_orig,device=None):
     x_orig_f_abs = torch.abs(x_orig_f) 
     x_orig_f_ang = torch.angle(x_orig_f) 
     flag = np.sign(np.random.uniform() - 0.5)
-    x_orig_f_abs *= 1. + flag * torch.rand(*x_orig_f_abs.shape).to(device) * c * 1.5
-    x_orig_f_ang += (torch.rand(*x_orig_f_ang.shape).to(device) - 0.5) * np.pi / d * 1.5
+    x_orig_f_abs *= 1. + flag * torch.rand(*x_orig_f_abs.shape).to(device) * c * 3
+    x_orig_f_ang += (torch.rand(*x_orig_f_ang.shape).to(device) - 0.5) * np.pi / d * 3
     x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * torch.sin(x_orig_f_ang)
     x_restored_1 = torch.abs(torch.fft.ifftn(x_orig_f, s=None, dim=(-2,-1), norm=None))
@@ -97,7 +97,7 @@ def augment_single(x_orig,device=None):
     severity_5 = random.choice(range(1,9))
 
     d = [0,0,0,0,2.5,5,7.5,10][severity_3-1] 
-    t = [None,None,None,None,(1/36.,1/36),(1/24.,1/24.),(1/12.,1/12.),(1/8.,1/8.)][severity_4-1] 
+    t = [None,None,None,None,(1/48.,1/48),(1/36.,1/36.),(1/18.,1/18.),(1/12.,1/12.)][severity_4-1] 
     s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
     
     space = torchvision.transforms.RandomAffine(degrees=d, translate=t, scale=None, shear=s)
