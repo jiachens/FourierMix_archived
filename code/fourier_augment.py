@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-17 12:34:44
+LastEditTime: 2021-10-19 22:51:21
 '''
 import torch
 import fourier_basis
@@ -51,7 +51,7 @@ class FourierDataset(torch.utils.data.Dataset):
         return len(self.dataset)
 
 
-def augment(x_orig, k, p, basis,chain = 3):
+def augment(x_orig, k=0, p=0, basis=None,chain = 3):
     # t = time.time()
     x_aug = torch.zeros_like(x_orig)
     mixing_weight_dist = Dirichlet(torch.empty(chain).fill_(1.))
@@ -73,7 +73,7 @@ def augment_single(x_orig):
     #######NUMPY###########
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
-    c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
+    c = [0.2,0.3,0.4,0.5,0.6][severity_1-1] 
     d = [6,5,4,3,2][severity_2-1]
     x_orig_1 = x_orig.clone().numpy()
     x_orig_f = np.fft.fftshift(np.fft.fft2(x_orig_1))
@@ -82,7 +82,7 @@ def augment_single(x_orig):
     flag = np.sign(np.random.uniform() - 0.5)
     x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c 
     # x_orig_f_abs += (np.random.uniform(*x_orig_f_abs.shape) - 0.5) * f * MASK 
-    x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d 
+    x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d
     x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
     # row = np.random.choice(32,e,replace=True)
@@ -132,7 +132,7 @@ def augment_single(x_orig):
     ##############################
 
     b = np.random.uniform()
-    # b = 0
+    b = 1
     x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
     # # a = np.random.uniform()
     # # x_restored = x_restored * a + x_orig * (1-a)
