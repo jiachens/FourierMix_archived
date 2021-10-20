@@ -226,6 +226,8 @@ def _imagenet_c(corruption: str, severity: str) -> Dataset:
     
     if corruption == 'frosted_glass_blur':
         corruption = 'glass_blur'
+    if corruption == 'elastic':
+        corruption = 'elastic_transform'
 
     dir = "/usr/workspace/safeml/data/imagenet-c/" + corruption + '/' + str(severity)
     # subdir = os.path.join(dir, "val")
