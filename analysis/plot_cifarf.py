@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-17 00:37:39
+LastEditTime: 2021-10-20 12:58:30
 '''
 import os
 import re
@@ -12,23 +12,24 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.pyplot import MultipleLocator
 
-
+sevs = ['1','2','3']
 for alpha in [0.1, 0.5, 1, 2, 3]:
     name = ['cifar10_half_ga_no_normalize_0.25','test_ga_consistency_0.25','test_auto_jsd_2_0.25',
             'augmix_half_ga_0.25','test_fourier_half_ga_13_0.25','cifar10_fourier_consistency_lbd2_40_0.25']
     y = [[],[],[],[],[],[]]
-
+    
     for j in range(6):
         for i in range(1,17):
             c_r = 0
-            for sev in ['3']:
+            
+            for sev in sevs:
                 f = open(os.path.join('../test/cifar10-f-new', name[j] ,str(i) + '_' + str(alpha) + '_' + sev + '.out'))
                 lines = f.readlines()
                 print(name[j],i,alpha,sev)
                 print(lines[-2])
                 c_r += float(lines[-2].split(':')[-1].strip())
                 f.close()
-            y[j].append(c_r)
+            y[j].append(c_r/len(sevs))
             # print(y[j])
 
     x = np.linspace(1,16,num=16)
