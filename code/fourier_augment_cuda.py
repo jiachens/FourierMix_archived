@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 03:18:56
+LastEditTime: 2021-10-21 03:26:50
 '''
 import torch
 import fourier_basis
@@ -76,7 +76,7 @@ def augment_single(x_orig,device=None):
     # x_orig = x_orig.cuda()
     severity_1 = random.choice(range(1,6))
     severity_2 = random.choice(range(1,6))
-    c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
+    c = [0.3,0.4,0.5,0.7,0.8][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
     x_orig_1 = x_orig.detach().clone()
     # print(x_orig_1.shape)
