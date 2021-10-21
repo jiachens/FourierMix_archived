@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 00:07:35
+LastEditTime: 2021-10-21 02:36:49
 '''
 import time
 # import setGPU
@@ -230,13 +230,13 @@ def main():
 
             if js_loss and not new_loss:
                 bs = images[0].size(0)
-                images_new = []
-                for image in images:
+                images_new = [images[0]]
+                for image in images[1:]:
                     length = image.shape[0] // 4
                     for j in range(4):
                         image[j*length:(j+1)*length] = fourier_augment_cuda.augment(image[j*length:(j+1)*length].to(device),device=device)
                     images_new.append(image.to(device))
-                    print(image.shape)
+                    # print(image.shape)
                 if i == 0 and rank == 0:
                     test_img = torchvision.utils.make_grid(images_new[1], nrow = 8)
                     torchvision.utils.save_image(
