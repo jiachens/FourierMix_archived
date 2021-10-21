@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 03:04:03
+LastEditTime: 2021-10-21 03:10:27
 '''
 import torch
 import fourier_basis
@@ -65,7 +65,7 @@ def augment(x_orig,device=None, k=0, p=0, basis=None,chain = 3):
 
     skip_conn_weight_dist = Beta(torch.tensor([1.]), torch.tensor([1.]))
     skip_conn_weight = skip_conn_weight_dist.sample().cuda()
-
+    skip_conn_weight = 1
     x_fourier = skip_conn_weight * x_aug + (1 - skip_conn_weight) * x_orig
     return x_fourier
 
