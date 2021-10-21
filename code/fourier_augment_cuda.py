@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 02:57:34
+LastEditTime: 2021-10-21 02:59:58
 '''
 import torch
 import fourier_basis
@@ -85,8 +85,8 @@ def augment_single(x_orig,device=None):
     # print(x_orig_f_abs)
     x_orig_f_ang = torch.angle(x_orig_f) 
     flag = np.sign(np.random.uniform() - 0.5)
-    x_orig_f_abs *= 1. + flag * torch.rand(*x_orig_f_abs.shape).to(device) * c
-    # x_orig_f_abs = 1.
+    # x_orig_f_abs *= 1. + flag * torch.rand(*x_orig_f_abs.shape).to(device) * c
+    x_orig_f_abs = 100.
     # x_orig_f_ang += (torch.rand(*x_orig_f_ang.shape).to(device) - 0.5) * np.pi 
     x_orig_f_ang = torch.zeros_like(x_orig_f_ang)
     x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
