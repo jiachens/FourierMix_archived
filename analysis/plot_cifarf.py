@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-20 21:57:08
+LastEditTime: 2021-10-20 22:01:33
 '''
 import os
 import re
@@ -48,10 +48,10 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
 
     l1=plt.plot(x,y[0], marker='^', label='Gaussain',markersize=9,lw=2, color='#845EC2')
     l2=plt.plot(x,y[1], marker='^',label='Gaussian+JSD',markersize=9,lw=2,color='#2C73D2')
-    l3=plt.plot(x,y[2],marker='^', label='AutoAugment+JSD',markersize=9,lw=2,color='#0081CF')
-    l4=plt.plot(x,y[3],marker='^', label='AugMix+JSD',markersize=9,lw=2,color='#0089BA')
-    l5=plt.plot(x,y[4], marker='^',label='FourierMix+JSD',markersize=9,lw=2,color='#008E9B')
-    l6=plt.plot(x,y[5],marker='^', label='FourierMix+HCR',markersize=9,lw=2,color='#008F7A')
+    l3=plt.plot(x,y[2],marker='^', label='+AutoAugment+JSD',markersize=9,lw=2,color='#0081CF')
+    l4=plt.plot(x,y[3],marker='^', label='+AugMix+JSD',markersize=9,lw=2,color='#0089BA')
+    l5=plt.plot(x,y[4], marker='^',label='+FourierMix+JSD',markersize=9,lw=2,color='#008E9B')
+    l6=plt.plot(x,y[5],marker='^', label='+FourierMix+HCR',markersize=9,lw=2,color='#008F7A')
 
 
 
@@ -60,10 +60,10 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
     plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
     plt.legend(fontsize=15)
 
-    # plt.ylim(0.15, 0.52)
+    plt.ylim(0.15, 0.52)
 
     plt.xticks(np.linspace(1,16,num=16),fontsize=15)#, color="red", rotation=45)
-    plt.yticks(fontsize=15)#, color="red", rotation=45)
+    plt.yticks(np.linspace(0,1,10),fontsize=15)#, color="red", rotation=45)
     plt.savefig('./analysis_'+str(alpha)+'.png',dpi=300,bbox_inches='tight')
 
     plt.close()
