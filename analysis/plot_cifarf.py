@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-20 22:03:23
+LastEditTime: 2021-10-20 22:07:05
 '''
 import os
 import re
@@ -47,22 +47,22 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
     plt.grid( color = 'black',linestyle='-.',linewidth = 0.25)
 
     l1=plt.plot(x,y[0], marker='^', label='Gaussain',markersize=9,lw=2, color='#845EC2')
-    l2=plt.plot(x,y[1], marker='^',label='Gaussian+JSD',markersize=9,lw=2,color='#2C73D2')
-    l3=plt.plot(x,y[2],marker='^', label='+AutoAugment+JSD',markersize=9,lw=2,color='#0081CF')
-    l4=plt.plot(x,y[3],marker='^', label='+AugMix+JSD',markersize=9,lw=2,color='#0089BA')
-    l5=plt.plot(x,y[4], marker='^',label='+FourierMix+JSD',markersize=9,lw=2,color='#008E9B')
-    l6=plt.plot(x,y[5],marker='^', label='+FourierMix+HCR',markersize=9,lw=2,color='#008F7A')
+    l2=plt.plot(x,y[1], marker='^',label='Gaussian+JSD',markersize=9,lw=2,color='#4B4453')
+    l3=plt.plot(x,y[2],marker='^', label='+AutoAugment+JSD',markersize=9,lw=2,color='#B0A8B9')
+    l4=plt.plot(x,y[3],marker='^', label='+AugMix+JSD',markersize=9,lw=2,color='#C34A36')
+    l5=plt.plot(x,y[4], marker='^',label='+FourierMix+JSD',markersize=9,lw=2,color='#FF8066')
+    l6=plt.plot(x,y[5],marker='^', label='+FourierMix+HCR',markersize=9,lw=2,color='#4E8397')
 
 
 
-    plt.xlabel('center frequency $f_c$',fontsize=20,)
+    plt.xlabel('Center Frequency $f_c$',fontsize=20,)
     plt.ylabel('Average Certified Radius (ACR)',fontsize=20,)
-    plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
+    # plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
     plt.legend(fontsize=15)
 
     plt.xticks(np.linspace(1,16,num=16),fontsize=15)#, color="red", rotation=45)
     plt.yticks(np.linspace(0,1,11),fontsize=15)#, color="red", rotation=45)
-    plt.ylim(0.15, 0.52)
+    plt.ylim(np.min(l1)-0.025, np.max(l6)+0.025)
 
     plt.savefig('./analysis_'+str(alpha)+'.png',dpi=300,bbox_inches='tight')
 
