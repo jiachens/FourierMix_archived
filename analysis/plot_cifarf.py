@@ -34,7 +34,7 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
 
     x = np.linspace(1,16,num=16)
 
-    plt.figure(figsize=(12,6))
+    plt.figure(figsize=(12,10))
 
     ax = plt.gca()#获取边框
     ax.spines['bottom'].set_linewidth(1.5)
