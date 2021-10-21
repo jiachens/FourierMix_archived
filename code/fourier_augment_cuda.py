@@ -79,7 +79,7 @@ def augment_single(x_orig,device=None):
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
     x_orig_1 = x_orig.detach().clone()
-    print(x_orig_1.shape)
+    # print(x_orig_1.shape)
     x_orig_f = torch.fft.fftn(x_orig_1, s=None, dim=(2,3), norm=None) 
     x_orig_f_abs = torch.abs(x_orig_f)
     # print(x_orig_f_abs)
