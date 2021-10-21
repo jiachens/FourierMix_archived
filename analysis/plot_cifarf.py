@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-20 22:08:50
+LastEditTime: 2021-10-20 23:58:45
 '''
 import os
 import re
@@ -36,7 +36,7 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
 
     plt.figure(figsize=(12,10))
 
-    ax = plt.gca()#获取边框
+    ax = plt.gca()
     ax.spines['bottom'].set_linewidth(1.5)
     ax.spines['left'].set_linewidth(1.5)
     ax.spines['top'].set_linewidth(1.5)
@@ -46,23 +46,23 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
 
     plt.grid( color = 'black',linestyle='-.',linewidth = 0.25)
 
-    l1=plt.plot(x,y[0], marker='^', label='Gaussain',markersize=9,lw=2, color='#845EC2')
-    l2=plt.plot(x,y[1], marker='^',label='Gaussian+JSD',markersize=9,lw=2,color='#4B4453')
-    l3=plt.plot(x,y[2],marker='^', label='+AutoAugment+JSD',markersize=9,lw=2,color='#B0A8B9')
-    l4=plt.plot(x,y[3],marker='^', label='+AugMix+JSD',markersize=9,lw=2,color='#C34A36')
-    l5=plt.plot(x,y[4], marker='^',label='+FourierMix+JSD',markersize=9,lw=2,color='#FF8066')
-    l6=plt.plot(x,y[5],marker='^', label='+FourierMix+HCR',markersize=9,lw=2,color='#4E8397')
+    l1=plt.plot(x,y[0], marker='^', label='Gaussain',markersize=15,lw=3, color='#845EC2')
+    l2=plt.plot(x,y[1], marker='^',label='Gaussian+JSD',markersize=15,lw=3,color='#4B4453')
+    l3=plt.plot(x,y[2],marker='^', label='+AutoAugment+JSD',markersize=15,lw=3,color='#B0A8B9')
+    l4=plt.plot(x,y[3],marker='^', label='+AugMix+JSD',markersize=15,lw=3,color='#C34A36')
+    l5=plt.plot(x,y[4], marker='^',label='+FourierMix+JSD',markersize=15,lw=3,color='#FF8066')
+    l6=plt.plot(x,y[5],marker='^', label='+FourierMix+HCR',markersize=15,lw=3,color='#4E8397')
 
 
 
-    plt.xlabel('Center Frequency $f_c$',fontsize=20,)
-    plt.ylabel('Average Certified Radius (ACR)',fontsize=20,)
+    plt.xlabel('Center Frequency $f_c$',fontsize=25,)
+    plt.ylabel('Average Certified Radius (ACR)',fontsize=25,)
     # plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
-    plt.legend(fontsize=15)
+    plt.legend(fontsize=25)
 
-    plt.xticks(np.linspace(1,16,num=16),fontsize=15)#, color="red", rotation=45)
-    plt.yticks(np.linspace(0,1,21),fontsize=15)#, color="red", rotation=45)
-    plt.ylim(np.min(y[0])-0.025, np.max(y[5])+0.025)
+    plt.xticks(np.linspace(1,16,num=16),fontsize=25)#, color="red", rotation=45)
+    plt.yticks(np.linspace(0,1,21),fontsize=25)#, color="red", rotation=45)
+    plt.ylim(np.min(y[0])-0.025, np.max(y[5])+0.025) 
 
     plt.savefig('./analysis_'+str(alpha)+'.png',dpi=300,bbox_inches='tight')
 
