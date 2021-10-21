@@ -6,6 +6,7 @@ from torch.utils.data import Dataset
 import cifar10_c
 import cifar10_c_bar
 import cifar10_f
+import cifar100_f
 import cifar100_c
 import cifar100_c_bar
 import transformation
@@ -17,7 +18,7 @@ os.environ["IMAGENET_DIR"] = '/usr/workspace/safeml/data/james-imagenet'
 IMAGENET_LOC_ENV = "IMAGENET_DIR"
 
 # list of all datasets
-DATASETS = ["imagenet", "imagenet-c", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100","cifar100-c","cifar100-c-bar"]
+DATASETS = ["imagenet", "imagenet-c", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100-f","cifar100","cifar100-c","cifar100-c-bar"]
 
 
 def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None,scheme = None) -> Dataset:
@@ -40,6 +41,8 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
         return _cifar10_c_bar(data_dir,corruption,severity)
     elif dataset == "cifar10-f":
         return _cifar10_f(data_dir,corruption,severity)
+    elif dataset == "cifar100-f":
+        return _cifar100_f(data_dir,corruption,severity)
 
 def get_num_classes(dataset: str):
     """Return the number of classes in the dataset. """
@@ -53,7 +56,7 @@ def get_num_classes(dataset: str):
         return 10
     elif dataset == "cifar10-f":
         return 10
-    elif dataset in ["cifar100","cifar100-c","cifar100-c-bar"]:
+    elif dataset in ["cifar100","cifar100-c","cifar100-c-bar","cifar100-f"]:
         return 100
 
 
@@ -181,6 +184,9 @@ def _cifar100_c_bar(data_dir: str, corruption: str, severity: int) -> Dataset:
 
 def _cifar10_f(data_dir: str, corruption, severity: int) -> Dataset:
     return cifar10_f.generate_examples(data_dir,corruption,severity)
+
+def _cifar100_f(data_dir: str, corruption, severity: int) -> Dataset:
+    return cifar100_f.generate_examples(data_dir,corruption,severity)
 
 
 def _imagenet(split: str, scheme: str) -> Dataset:
