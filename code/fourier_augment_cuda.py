@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 03:12:59
+LastEditTime: 2021-10-21 03:15:33
 '''
 import torch
 import fourier_basis
@@ -110,8 +110,8 @@ def augment_single(x_orig,device=None):
     x_restored_2 = space(x_orig_2)
     ##############################
 
-    # b = np.random.uniform()
-    b = 1
+    b = np.random.uniform()
+    # b = 1
     x_restored = x_restored_1 * b + x_restored_2 * (1 - b)
     # # a = np.random.uniform()
     # # x_restored = x_restored * a + x_orig * (1-a)
