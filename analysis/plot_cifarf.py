@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-20 22:07:05
+LastEditTime: 2021-10-20 22:08:50
 '''
 import os
 import re
@@ -62,7 +62,7 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
 
     plt.xticks(np.linspace(1,16,num=16),fontsize=15)#, color="red", rotation=45)
     plt.yticks(np.linspace(0,1,11),fontsize=15)#, color="red", rotation=45)
-    plt.ylim(np.min(l1)-0.025, np.max(l6)+0.025)
+    plt.ylim(np.min(y[0])-0.025, np.max(y[5])+0.025)
 
     plt.savefig('./analysis_'+str(alpha)+'.png',dpi=300,bbox_inches='tight')
 
