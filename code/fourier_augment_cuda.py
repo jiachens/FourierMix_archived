@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 02:59:58
+LastEditTime: 2021-10-21 03:02:10
 '''
 import torch
 import fourier_basis
@@ -79,7 +79,7 @@ def augment_single(x_orig,device=None):
     c = [0.2,0.3,0.4,0.5,0.6][severity_1-1]
     d = [6,5,4,3,2][severity_2-1]
     x_orig_1 = x_orig.detach().clone()
-    
+    print(x_orig_1.shape)
     x_orig_f = torch.fft.fftn(x_orig_1, s=None, dim=(-2,-1), norm=None) 
     x_orig_f_abs = torch.abs(x_orig_f)
     # print(x_orig_f_abs)
@@ -89,6 +89,7 @@ def augment_single(x_orig,device=None):
     x_orig_f_abs = 100.
     # x_orig_f_ang += (torch.rand(*x_orig_f_ang.shape).to(device) - 0.5) * np.pi 
     x_orig_f_ang = torch.zeros_like(x_orig_f_ang)
+    print(x_orig_f_ang)
     x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * torch.sin(x_orig_f_ang)
     x_restored_1 = torch.abs(torch.fft.ifftn(x_orig_f, s=None, dim=(-2,-1), norm=None))
