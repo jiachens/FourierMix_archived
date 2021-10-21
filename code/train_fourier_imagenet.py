@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 02:36:49
+LastEditTime: 2021-10-21 02:38:23
 '''
 import time
 # import setGPU
@@ -230,7 +230,7 @@ def main():
 
             if js_loss and not new_loss:
                 bs = images[0].size(0)
-                images_new = [images[0]]
+                images_new = [images[0].to(device)]
                 for image in images[1:]:
                     length = image.shape[0] // 4
                     for j in range(4):
