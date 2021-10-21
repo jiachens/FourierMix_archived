@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 02:44:45
+LastEditTime: 2021-10-21 02:46:23
 '''
 import torch
 import fourier_basis
@@ -90,7 +90,8 @@ def augment_single(x_orig,device=None):
     x_orig_f.real = x_orig_f_abs * torch.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * torch.sin(x_orig_f_ang)
     x_restored_1 = torch.abs(torch.fft.ifftn(x_orig_f, s=None, dim=(-2,-1), norm=None))
-    print(x_restored_1 - x_orig_1)
+    # print(x_restored_1 - x_orig_1)
+    print(x_restored_1)
     #####################
 
     ######### Spatial #########
