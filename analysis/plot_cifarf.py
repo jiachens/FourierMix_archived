@@ -61,7 +61,7 @@ for alpha in [0.1, 0.5, 1, 2, 3]:
     plt.legend(fontsize=15)
 
     plt.xticks(np.linspace(1,16,num=16),fontsize=15)#, color="red", rotation=45)
-    plt.yticks(np.linspace(0,1,11),fontsize=15)#, color="red", rotation=45)
+    plt.yticks(np.linspace(0,1,21),fontsize=15)#, color="red", rotation=45)
     plt.ylim(np.min(y[0])-0.025, np.max(y[5])+0.025)
 
     plt.savefig('./analysis_'+str(alpha)+'.png',dpi=300,bbox_inches='tight')
