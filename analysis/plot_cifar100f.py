@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-22 02:16:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-22 02:18:07
+LastEditTime: 2021-10-22 11:19:52
 '''
 import os
 import re
@@ -13,7 +13,7 @@ import seaborn as sns
 from matplotlib.pyplot import MultipleLocator
 
 sevs = ['1','2','3']
-for alpha in [3]:
+for alpha in [0.5,1,2,3]:
     name = ['cifar100_half_ga_no_normalize_0.25_0.25','test100_ga_consistency_0.25','test_auto100_jsd_0.25',
             'cifar100_augmix_half_ga_0.25','cifar100_fourier_half_ga_4_0.25','cifar100_fourier_consistency_lbd2_20_0.25']
     y = [[],[],[],[],[],[]]
@@ -47,7 +47,7 @@ for alpha in [3]:
     plt.grid( color = 'black',linestyle='-.',linewidth = 0.25)
 
     l1=plt.plot(x,y[0], marker='^', label='Gaussain',markersize=12,lw=3, color='#845EC2')
-    l2=plt.plot(x,y[1], marker='^',label='Gaussian+JSD',markersize=12,lw=3,color='#4B4453')
+    l2=plt.plot(x,y[1], marker='^',label='+JSD',markersize=12,lw=3,color='#4B4453')
     l3=plt.plot(x,y[2],marker='^', label='+AutoAugment+JSD',markersize=12,lw=3,color='#B0A8B9')
     l4=plt.plot(x,y[3],marker='^', label='+AugMix+JSD',markersize=12,lw=3,color='#C34A36')
     l5=plt.plot(x,y[4], marker='^',label='+FourierMix+JSD',markersize=12,lw=3,color='#FF8066')
