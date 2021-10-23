@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 02:38:23
+LastEditTime: 2021-10-23 16:58:15
 '''
 import time
 # import setGPU
@@ -290,7 +290,7 @@ def main():
                 t = time.time()
 
         epoch += 1
-        if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
+        if (epoch + 1) % 5 == 0 or (epoch + 1) == epochs:
             if rank == 0:
                 torch.save({
                     "epoch": epoch,
