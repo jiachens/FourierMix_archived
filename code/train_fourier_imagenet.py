@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-23 17:06:43
+LastEditTime: 2021-10-23 17:14:20
 '''
 import time
 # import setGPU
@@ -31,7 +31,7 @@ parser = argparse.ArgumentParser(description='PyTorch AugMix Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
 parser.add_argument('arch', type=str, choices=ARCHITECTURES)
 parser.add_argument('outdir', type=str, help='folder to save model and training log)')
-parser.add_argument('--workers', default=4, type=int, metavar='N',
+parser.add_argument('--workers', default=2, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
