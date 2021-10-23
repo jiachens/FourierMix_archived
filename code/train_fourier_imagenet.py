@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-23 16:58:15
+LastEditTime: 2021-10-23 17:06:43
 '''
 import time
 # import setGPU
@@ -289,7 +289,6 @@ def main():
                         %(epoch + 1, epochs, i + 1, len(train_loader), loss.item(), time.time() - t), file=f, flush=True)
                 t = time.time()
 
-        epoch += 1
         if (epoch + 1) % 5 == 0 or (epoch + 1) == epochs:
             if rank == 0:
                 torch.save({
@@ -343,6 +342,7 @@ def main():
                         print("Test error rate on CIFAR-10-C with " + corruption + " : %.4f | time : %.2fs"%(error/total, time.time() - t))
                         print("Test error rate on CIFAR-10-C with " + corruption + " : %.4f | time : %.2fs"%(error/total, time.time() - t),file=f,flush=True)
     
+        epoch += 1
     f.close()
 
 if __name__=="__main__":
