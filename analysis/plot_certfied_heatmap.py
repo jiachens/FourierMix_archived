@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-23 11:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-26 15:56:04
+LastEditTime: 2021-10-26 15:57:19
 '''
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -39,7 +39,7 @@ ax = sns.heatmap(heatmap,
             # cbar_kws={"ticks":[]},
             xticklabels=False,
             yticklabels=False,)
-plt.savefig('./test/certified_accuracy_hm.png',dpi=250,bbox_inches='tight')
+plt.savefig(args.path + '/certified_accuracy_hm.png',dpi=250,bbox_inches='tight')
 # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
 plt.close()
 
@@ -49,7 +49,7 @@ ax = sns.heatmap(heatmap_1,
             # cbar_kws={"ticks":[]},
             xticklabels=False,
             yticklabels=False,)
-plt.savefig('./test/correct_radius_hm.png',dpi=250,bbox_inches='tight')
+plt.savefig(args.path + '/correct_radius_hm.png',dpi=250,bbox_inches='tight')
 # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
 plt.close()
 
@@ -61,6 +61,6 @@ ax = sns.heatmap(heatmap_2,
             # cbar_kws={"ticks":[]},
             xticklabels=False,
             yticklabels=False,)
-plt.savefig('./test/incorrect_radius_hm.png',dpi=250,bbox_inches='tight')
+plt.savefig(args.path + '/incorrect_radius_hm.png',dpi=250,bbox_inches='tight')
 # plt.savefig('./figures/fourier_analysis/' + args.corruption +  '_' + args.severity + '.png',dpi=250,bbox_inches='tight')    
 plt.close()
