@@ -56,8 +56,8 @@ plt.close()
 ax = sns.heatmap(heatmap_2,
             cmap="jet",
             cbar=True,
-            min = 0.0,
-            max = 0.3,
+            vmin = 0.0,
+            vmax = 0.3,
             # cbar_kws={"ticks":[]},
             xticklabels=False,
             yticklabels=False,)
