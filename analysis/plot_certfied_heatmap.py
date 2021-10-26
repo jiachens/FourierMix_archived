@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-23 11:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-06-23 16:52:18
+LastEditTime: 2021-10-26 15:53:44
 '''
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -56,6 +56,8 @@ plt.close()
 ax = sns.heatmap(heatmap_2,
             cmap="jet",
             cbar=True,
+            min = 0.0,
+            max = 0.3,
             # cbar_kws={"ticks":[]},
             xticklabels=False,
             yticklabels=False,)
