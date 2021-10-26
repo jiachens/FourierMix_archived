@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-23 11:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-26 15:53:44
+LastEditTime: 2021-10-26 15:56:04
 '''
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -24,14 +24,14 @@ for i in range(961):
     row = i // 31
     col = i % 31
     try:    
-        f = open(args.path + "fourier_" + str(i) + ".out", "r")
+        f = open(args.path + "/fourier_" + str(i) + ".out", "r")
         data = f.readlines()
         heatmap[row,col] = float(data[-4].split(' ')[-1])
         heatmap_1[row,col] = float(data[-3].split(' ')[-1])
         heatmap_2[row,col] = float(data[-2].split(' ')[-1])
+        f.close()
     except:
         print(i)
-    f.close()
 
 ax = sns.heatmap(heatmap,
             cmap="jet",
