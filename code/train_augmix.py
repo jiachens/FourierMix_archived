@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-12 11:31:26
+LastEditTime: 2021-10-27 19:27:57
 '''
 import time
 import matplotlib.pyplot as plt
@@ -86,7 +86,7 @@ def main():
     alpha = 1.
     js_loss = True
     batch_size = args.batch
-    new_loss = False
+    new_loss = True
 
     if args.gpu:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
