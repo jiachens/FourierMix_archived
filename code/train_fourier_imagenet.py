@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-26 21:07:14
+LastEditTime: 2021-10-27 17:42:44
 '''
 import time
 # import setGPU
@@ -117,7 +117,7 @@ def main():
         train_sampler = torch.utils.data.distributed.DistributedSampler(train_data)
     else:
         train_sampler = None
-    train_loader = torch.utils.data.DataLoader(train_data, shuffle=not(args.dataset == 'imagenet'), batch_size=args.batch,
+    train_loader = torch.utils.data.DataLoader(train_data, shuffle=not(args.dataset == 'imagenet'), drop_last=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory,sampler=train_sampler)
 
     
