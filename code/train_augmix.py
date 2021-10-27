@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-27 19:27:57
+LastEditTime: 2021-10-27 19:33:22
 '''
 import time
 import matplotlib.pyplot as plt
@@ -53,6 +53,9 @@ parser.add_argument('--scheme', default='ga', type=str,
                     help='training schemes like gaussian augmentation')
 parser.add_argument("--no_normalize", default=True, action='store_false')
 parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
+
+parser.add_argument("--lbd1", type=int,default=10)
+parser.add_argument("--lbd2", type=int,default=10)
 
 args = parser.parse_args()
 
@@ -164,9 +167,9 @@ def main():
                 loss = (F.cross_entropy(logits_orig_0, targets) + F.cross_entropy(logits_orig_1, targets)) / 2.
                 print(loss)
 
-                loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],10,loss='kl')
-                loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],10,loss='kl')
-                loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],10,loss='kl')
+                loss1 = consistency.consistency_loss([logits_orig_0, logits_orig_1],args.lbd1,loss='kl')
+                loss2 = consistency.consistency_loss([logits_aug1_0, logits_aug1_1],args.lbd1,loss='kl')
+                loss3 = consistency.consistency_loss([logits_aug2_0, logits_aug2_1],args.lbd1,loss='kl')
 
                 loss += (loss1 + loss2 + loss3) / 3
                 print(loss)
@@ -175,7 +178,7 @@ def main():
 
                 # Clamp mixture distribution to avoid exploding KL divergence
                 p_mixture = torch.clamp((p_orig/2 + p_augmix1/2 + p_augmix2/2) / 3., 1e-7, 1).log()
-                loss += 10 * (F.kl_div(p_mixture, p_orig/2, reduction='batchmean') +
+                loss += args.lbd2 * (F.kl_div(p_mixture, p_orig/2, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix1/2, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix2/2, reduction='batchmean')) / 3.
                 print(loss)
