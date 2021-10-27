@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-23 19:48:21
+LastEditTime: 2021-10-26 21:04:21
 '''
 import time
 # import setGPU
@@ -195,7 +195,13 @@ def main():
             optimizer.zero_grad()
             if new_loss:
                 bs = images[0].size(0)
-                images[0],images[1],images[2] = images[0].to(device),images[1].to(device),images[2].to(device)
+                images_new = [images[0].to(device)]
+                for image in images[1:]:
+                    length = image.shape[0] // 4
+                    for j in range(4):
+                        image[j*length:(j+1)*length] = fourier_augment_cuda.augment(image[j*length:(j+1)*length].to(device),device=device)
+                    images_new.append(image.to(device))
+                images[0],images[1],images[2] = images_new[0], images_new[1], images_new[2]
                 images_0_0 = images[0] + torch.randn_like(images[0], device='cuda') * args.noise_sd
                 images_0_1 = images[0] + torch.randn_like(images[0], device='cuda') * args.noise_sd
                 images_1_0 = images[1] + torch.randn_like(images[1], device='cuda') * args.noise_sd
