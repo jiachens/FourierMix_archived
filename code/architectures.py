@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-27 21:41:26
+LastEditTime: 2021-10-27 22:10:05
 '''
 import torch
 from torchvision.models.resnet import resnet50
@@ -30,7 +30,7 @@ def get_architecture(arch: str, dataset: str, normalize :bool = True,local_rank=
     :param dataset: the dataset - should be in the datasets.DATASETS list
     :return: a Pytorch module
     """
-    if arch == "resnet50" and dataset in ["imagenet","imagenet-c",,"imagenet-c-bar"]:
+    if arch == "resnet50" and dataset in ["imagenet","imagenet-c","imagenet-c-bar"]:
         # model = torch.nn.DataParallel(resnet50(pretrained=False)).cuda(}
         if local_rank != None:
             model = torch.nn.parallel.DistributedDataParallel(resnet50(pretrained=False).to(device), device_ids=[local_rank])
