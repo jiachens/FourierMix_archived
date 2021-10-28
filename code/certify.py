@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-27 19:52:45
+LastEditTime: 2021-10-27 23:14:51
 '''
 # evaluate a smoothed classifier on a dataset
 import argparse
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         base_classifier = get_architecture(checkpoint["arch"], args.dataset, args.no_normalize)
         base_classifier.load_state_dict(checkpoint['state_dict'])
     except:
-        if args.dataset in ["imagenet","imagenet-c"]:
+        if args.dataset in ["imagenet","imagenet-c","imagenet-c-bar"]:
             base_classifier = get_architecture("resnet50", args.dataset, args.no_normalize)
         else:
             base_classifier = get_architecture("cifar_resnet110", args.dataset, args.no_normalize)
