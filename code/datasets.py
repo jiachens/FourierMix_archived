@@ -18,7 +18,7 @@ os.environ["IMAGENET_DIR"] = '/usr/workspace/safeml/data/james-imagenet'
 IMAGENET_LOC_ENV = "IMAGENET_DIR"
 
 # list of all datasets
-DATASETS = ["imagenet", "imagenet-c", "cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100-f","cifar100","cifar100-c","cifar100-c-bar"]
+DATASETS = ["imagenet", "imagenet-c","imagenet-c-bar","cifar10", "cifar10-c", "cifar10-c-bar","cifar10-f","cifar100-f","cifar100","cifar100-c","cifar100-c-bar"]
 
 
 def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity=None,scheme = None) -> Dataset:
@@ -27,6 +27,8 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
         return _imagenet(split, scheme)
     if dataset == "imagenet-c":
         return _imagenet_c(corruption, severity)
+    if dataset == "imagenet-c-bar":
+        return _imagenet_c_bar(corruption, severity)
     elif dataset == "cifar10":
         return _cifar10(split, scheme, severity)
     elif dataset == "cifar100":
@@ -46,7 +48,7 @@ def get_dataset(dataset: str, split: str, data_dir=None,corruption=None,severity
 
 def get_num_classes(dataset: str):
     """Return the number of classes in the dataset. """
-    if dataset in ["imagenet","imagenet-c"]:
+    if dataset in ["imagenet","imagenet-c","imagenet-c-bar"]:
         return 1000
     elif dataset == "cifar10":
         return 10
@@ -226,7 +228,7 @@ def _imagenet(split: str, scheme: str) -> Dataset:
     return datasets.ImageFolder(subdir, transform)
 
 
-def _imagenet_c(corruption: str, severity: str) -> Dataset:
+def _imagenet_c(corruption: str, severity: int) -> Dataset:
     if not IMAGENET_LOC_ENV in os.environ:
         raise RuntimeError("environment variable for ImageNet directory not set")
     
@@ -236,6 +238,25 @@ def _imagenet_c(corruption: str, severity: str) -> Dataset:
         corruption = 'elastic_transform'
 
     dir = "/usr/workspace/safeml/data/imagenet-c/" + corruption + '/' + str(severity)
+    # subdir = os.path.join(dir, "val")
+    transform = transforms.Compose([
+        transforms.Scale(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor()
+    ])
+    return datasets.ImageFolder(dir, transform)
+
+def _imagenet_c_bar(corruption: str, severity: int) -> Dataset:
+    if not IMAGENET_LOC_ENV in os.environ:
+        raise RuntimeError("environment variable for ImageNet directory not set")
+
+    
+    root = "/usr/workspace/safeml/data/img-c-bar/ImageNet-C-Bar/" + corruption
+    g = os.listdir(root)  
+    # g = [float(x) for x in g]
+    # g.sort()
+
+    dir = "/usr/workspace/safeml/data/img-c-bar/ImageNet-C-Bar/" + corruption + '/' + str(g[severity-1])
     # subdir = os.path.join(dir, "val")
     transform = transforms.Compose([
         transforms.Scale(256),
