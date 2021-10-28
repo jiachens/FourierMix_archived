@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-29 22:44:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 15:20:35
+LastEditTime: 2021-10-28 17:22:47
 '''
 import random
 import numpy as np
@@ -73,7 +73,7 @@ MASK2 = generate_mask2()
 if __name__ == "__main__":
     
     dataset_orig = get_dataset("cifar100", "test")
-    for alpha in [0.1,0.3,0.5,1,2,3]:
+    for alpha in [5]:
         for f_c in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]:
             all_data = []
             all_label = []
