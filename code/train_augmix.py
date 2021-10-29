@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-27 19:33:22
+LastEditTime: 2021-10-29 11:53:26
 '''
 import time
 import matplotlib.pyplot as plt
@@ -233,13 +233,21 @@ def main():
                 t = time.time()
 
         if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
-            if rank == 0:
+            if args.dataset == 'imagenet':
+                if rank == 0:
+                    torch.save({
+                        "epoch": epoch,
+                        'model_state_dict': model.state_dict(),
+                        'optimizer_state_dict': optimizer.state_dict(),
+                        'losses': losses
+                    }, args.outdir+"/%d.pt"%(epoch + 1))
+            else:
                 torch.save({
-                    "epoch": epoch,
-                    'model_state_dict': model.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'losses': losses
-                }, args.outdir+"/%d.pt"%(epoch + 1))
+                        "epoch": epoch,
+                        'model_state_dict': model.state_dict(),
+                        'optimizer_state_dict': optimizer.state_dict(),
+                        'losses': losses
+                    }, args.outdir+"/%d.pt"%(epoch + 1))
 
             model.eval()
             with torch.no_grad():
