@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-08-18 16:11:26
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-30 01:29:36
+LastEditTime: 2021-10-30 01:31:20
 '''
 
 import argparse
@@ -78,7 +78,7 @@ if args.dataset == 'cifar10-c':
             f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:6] + ' ' + c_r[:6]  +'\n')
             avg.append(float(c_r))
             f.close()
-        f_w.write('Avg ACR: ' + np.mean(avg) +'\n')
+        f_w.write('Avg ACR: ' + str(np.mean(avg)) +'\n')
 
 elif args.dataset == 'cifar10-c-bar':
     for cor in C_BAR:
@@ -95,7 +95,7 @@ elif args.dataset == 'cifar10-c-bar':
             f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:6]  + ' ' + c_r[:6] +'\n')
             avg.append(float(c_r))
             f.close()
-        f_w.write('Avg ACR: ' + np.mean(avg) +'\n')
+        f_w.write('Avg ACR: ' + str(np.mean(avg)) +'\n')
 
 elif args.dataset == 'cifar10-c-bar':
     for cor in IMG_C_BAR:
@@ -112,6 +112,6 @@ elif args.dataset == 'cifar10-c-bar':
             f_w.write(sev + ' ' + emp_acc + ' ' + cer_acc + ' ' + r[:6]  + ' ' + c_r[:6] +'\n')
             avg.append(float(c_r))
             f.close()
-        f_w.write('Avg ACR: ' + np.mean(avg) +'\n')
+        f_w.write('Avg ACR: ' + str(np.mean(avg)) +'\n')
 
 f_w.close()
