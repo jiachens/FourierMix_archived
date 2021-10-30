@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-08-18 16:11:26
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-30 01:31:20
+LastEditTime: 2021-10-30 01:39:41
 '''
 
 import argparse
@@ -97,7 +97,7 @@ elif args.dataset == 'cifar10-c-bar':
             f.close()
         f_w.write('Avg ACR: ' + str(np.mean(avg)) +'\n')
 
-elif args.dataset == 'cifar10-c-bar':
+elif args.dataset == 'imagenet-c-bar':
     for cor in IMG_C_BAR:
         f_w.write(cor+'\n')
         f_w.write('Severity EmpAcc AvgAcc AvgRadius ACR\n')
