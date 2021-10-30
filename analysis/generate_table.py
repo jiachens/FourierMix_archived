@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-08-18 16:11:26
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-30 01:39:41
+LastEditTime: 2021-10-30 01:54:09
 '''
 
 import argparse
@@ -47,7 +47,7 @@ IMG_C_BAR = [
     'inverse_sparkles',
     'perlin_noise',
     'cocentric_sine_waves',
-    'brownish_noise',
+    # 'brownish_noise',
     'plasma_noise',
     'caustic_refraction',
     'sparkles',
