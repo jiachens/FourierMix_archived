@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-27 17:42:44
+LastEditTime: 2021-10-31 20:55:33
 '''
 import time
 # import setGPU
@@ -304,6 +304,7 @@ def main():
                     'losses': losses
                 }, args.outdir+"/%d.pt"%(epoch + 1))
 
+        if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
             model.eval()
             with torch.no_grad():
                 test_loader = torch.utils.data.DataLoader(test_data, shuffle=False, batch_size=args.batch,
