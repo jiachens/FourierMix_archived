@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:28:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-01 02:11:59
+LastEditTime: 2021-11-01 02:13:26
 '''
 import time
 # import setGPU
@@ -264,7 +264,7 @@ def main():
                 logits = model(images_cat)
                 logits_orig, logits_augmix1, logits_augmix2 = logits[:bs], logits[bs:2*bs], logits[2*bs:]
                 loss = F.cross_entropy(logits_orig, targets)
-
+                print(loss)
                 p_orig, p_augmix1, p_augmix2 = F.softmax(logits_orig, dim = -1), F.softmax(logits_augmix1, dim = -1), F.softmax(logits_augmix2, dim = -1)
 
                 # Clamp mixture distribution to avoid exploding KL divergence
@@ -273,6 +273,7 @@ def main():
                                 F.kl_div(p_mixture, p_augmix1, reduction='batchmean') +
                                 F.kl_div(p_mixture, p_augmix2, reduction='batchmean')) / 3.
                 # print(time.time() - t)
+                print(loss)
 
             elif not(js_loss):
                 images, targets = images.to(device), targets.to(device)
