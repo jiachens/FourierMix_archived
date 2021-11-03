@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-22 02:16:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-03 13:03:04
+LastEditTime: 2021-11-03 13:05:18
 '''
 import os
 import re
@@ -59,7 +59,7 @@ for alpha in [0.5,1,2,3]:
     plt.xlabel('Center Frequency $f_c$',fontsize=25,)
     plt.ylabel('Average Certified Radius (ACR)',fontsize=25,)
     # plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
-    plt.legend(fontsize=20)
+    plt.legend(fontsize=20,loc=3)
 
     plt.xticks(np.linspace(1,16,num=16),fontsize=25)#, color="red", rotation=45)
     plt.yticks(np.linspace(0,1,21),fontsize=25)#, color="red", rotation=45)
