@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-03 01:06:01
+LastEditTime: 2021-11-03 12:56:10
 '''
 import os
 import re
@@ -50,7 +50,7 @@ for alpha in [0.5, 1, 2, 3]:
     l2=plt.plot(x,y[1], marker='^',label='+JSD',markersize=12,lw=3,color='#4B4453')
     l3=plt.plot(x,y[2],marker='^', label='+AutoAugment+JSD',markersize=12,lw=3,color='#B0A8B9')
     l4=plt.plot(x,y[3],marker='^', label='+AugMix+JSD',markersize=12,lw=3,color='#C34A36')
-    l41=plt.plot(x,y[4],marker='^', label='+AugMix+JSD',markersize=12,lw=3,color='#4AA233')
+    l41=plt.plot(x,y[4],marker='^', label='+AugMix+HCR',markersize=12,lw=3,color='#4AA233')
     l5=plt.plot(x,y[5], marker='^',label='+FourierMix+JSD',markersize=12,lw=3,color='#FF8066')
     l6=plt.plot(x,y[6],marker='^', label='+FourierMix+HCR',markersize=12,lw=3,color='#4E8397')
 

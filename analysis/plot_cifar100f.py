@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-22 02:16:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-22 23:03:39
+LastEditTime: 2021-11-03 12:55:33
 '''
 import os
 import re
@@ -15,10 +15,10 @@ from matplotlib.pyplot import MultipleLocator
 sevs = ['1','2','3']
 for alpha in [1,2,3]:
     name = ['cifar100_half_ga_no_normalize_0.25_0.25','test100_ga_consistency_0.25','test_auto100_jsd_0.25',
-            'cifar100_augmix_half_ga_0.25','cifar100_fourier_half_ga_4_0.25','cifar100_fourier_consistency_lbd2_20_0.25']
-    y = [[],[],[],[],[],[]]
+            'cifar100_augmix_half_ga_0.25','cifar100_augmix_hcr_20_0.25','cifar100_fourier_half_ga_4_0.25','cifar100_fourier_consistency_lbd2_20_0.25']
+    y = [[],[],[],[],[],[],[]]
     
-    for j in range(6):
+    for j in range(7):
         for i in range(1,17):
             c_r = 0
             
@@ -50,6 +50,7 @@ for alpha in [1,2,3]:
     l2=plt.plot(x,y[1], marker='^',label='+JSD',markersize=12,lw=3,color='#4B4453')
     l3=plt.plot(x,y[2],marker='^', label='+AutoAugment+JSD',markersize=12,lw=3,color='#B0A8B9')
     l4=plt.plot(x,y[3],marker='^', label='+AugMix+JSD',markersize=12,lw=3,color='#C34A36')
+    l41=plt.plot(x,y[4],marker='^', label='+AugMix+HCR',markersize=12,lw=3,color='#4AA233')
     l5=plt.plot(x,y[4], marker='^',label='+FourierMix+JSD',markersize=12,lw=3,color='#FF8066')
     l6=plt.plot(x,y[5],marker='^', label='+FourierMix+HCR',markersize=12,lw=3,color='#4E8397')
 
