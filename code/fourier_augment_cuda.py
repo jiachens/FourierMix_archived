@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 17:37:13
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-21 03:30:17
+LastEditTime: 2021-11-01 22:24:40
 '''
 import torch
 import fourier_basis
