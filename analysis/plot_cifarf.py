@@ -13,7 +13,7 @@ import seaborn as sns
 from matplotlib.pyplot import MultipleLocator
 
 sevs = ['1','2','3']
-for alpha in [0.1, 0.5, 1, 2, 3]:
+for alpha in [0.5, 1, 2, 3]:
     name = ['cifar10_half_ga_no_normalize_0.25','test_ga_consistency_0.25','test_auto_jsd_2_0.25',
             'augmix_half_ga_0.25','cifar10_augmix_hcr_40_0.25','test_fourier_half_ga_13_0.25','cifar10_fourier_consistency_lbd2_40_0.25']
     y = [[],[],[],[],[],[],[]]
