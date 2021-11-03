@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-12 14:38:44
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-03 01:04:23
+LastEditTime: 2021-11-03 01:06:01
 '''
 import os
 import re
@@ -18,7 +18,7 @@ for alpha in [0.5, 1, 2, 3]:
             'augmix_half_ga_0.25','cifar10_augmix_hcr_40_0.25','test_fourier_half_ga_13_0.25','cifar10_fourier_consistency_lbd2_40_0.25']
     y = [[],[],[],[],[],[],[]]
     
-    for j in range(6):
+    for j in range(7):
         for i in range(1,17):
             c_r = 0
             
