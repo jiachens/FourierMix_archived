@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-29 11:53:26
+LastEditTime: 2021-11-06 23:35:17
 '''
 import time
 import matplotlib.pyplot as plt
@@ -123,7 +123,7 @@ def main():
         train_sampler = torch.utils.data.distributed.DistributedSampler(train_data)
     else:
         train_sampler = None
-    train_loader = torch.utils.data.DataLoader(train_data, shuffle=not(args.dataset == 'imagenet'), batch_size=args.batch,
+    train_loader = torch.utils.data.DataLoader(train_data, shuffle=not(args.dataset == 'imagenet'),  drop_last=True, batch_size=args.batch,
                               num_workers=args.workers, pin_memory=pin_memory,sampler=train_sampler)
 
     # 2. model
