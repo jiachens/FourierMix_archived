@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-06 23:35:17
+LastEditTime: 2021-11-09 11:36:36
 '''
 import time
 import matplotlib.pyplot as plt
@@ -53,6 +53,7 @@ parser.add_argument('--scheme', default='ga', type=str,
                     help='training schemes like gaussian augmentation')
 parser.add_argument("--no_normalize", default=True, action='store_false')
 parser.add_argument("--path", type=str, help="path to cifar10-c dataset")
+parser.add_argument("--resume", type=str, default=None)
 
 parser.add_argument("--lbd1", type=int,default=10)
 parser.add_argument("--lbd2", type=int,default=10)
@@ -128,7 +129,41 @@ def main():
 
     # 2. model
     if args.dataset == 'imagenet':
-        model = get_architecture(args.arch, args.dataset,args.no_normalize,local_rank,device)
+        if args.resume:
+            map_location = {'cuda:%d' % 0: 'cuda:%d' % local_rank}
+            checkpoint = torch.load(args.resume,map_location=map_location)
+            try:
+                base_classifier = get_architecture(args.arch, args.dataset,args.no_normalize,local_rank,device)
+                base_classifier.load_state_dict(checkpoint['state_dict'])
+            except:
+                base_classifier = get_architecture(args.arch, args.dataset,args.no_normalize,local_rank,device)
+                # print(checkpoint['model_state_dict'].keys())
+                from collections import OrderedDict
+                new_state_dict = OrderedDict()
+                if 'model_state_dict' in checkpoint.keys():
+                    for key, val in checkpoint['model_state_dict'].items():
+                        # print(key)
+                        if key[:6] == 'module':
+                            name = key#[7:]  # remove 'module.'
+                        else:
+                            name = key
+                        new_state_dict[name] = val
+                else:
+                    for key, val in checkpoint['state_dict'].items():
+                        # print(key)
+                        if key[:6] == 'module':
+                            name = key#[7:]  # remove 'module.'
+                        else:
+                            name = key
+                        new_state_dict[name] = val
+                base_classifier.load_state_dict(new_state_dict)
+                model = base_classifier
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+                optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+                epoch = checkpoint['epoch']
+        else:
+            # 2. model
+            model = get_architecture(args.arch, args.dataset,args.no_normalize,local_rank,device)
     else:
         model = get_architecture(args.arch, args.dataset,args.no_normalize)
 
@@ -232,7 +267,7 @@ def main():
                         %(epoch + 1, epochs, i + 1, len(train_loader), loss.item(), time.time() - t))
                 t = time.time()
 
-        if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
+        if (epoch + 1) % 5 == 0 or (epoch + 1) == epochs:
             if args.dataset == 'imagenet':
                 if rank == 0:
                     torch.save({
@@ -249,6 +284,7 @@ def main():
                         'losses': losses
                     }, args.outdir+"/%d.pt"%(epoch + 1))
 
+        if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
             model.eval()
             with torch.no_grad():
                 test_loader = torch.utils.data.DataLoader(test_data, shuffle=False, batch_size=args.batch,
