@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-09 11:36:36
+LastEditTime: 2021-11-09 14:58:06
 '''
 import time
 import matplotlib.pyplot as plt
@@ -177,7 +177,10 @@ def main():
     losses = []
     t = time.time()
 
-    for epoch in range(epochs):
+    if not args.resume:
+        epoch = 0
+
+    while epoch < epochs:
         model.train()
         for i, (images, targets) in enumerate(train_loader):
             optimizer.zero_grad()
@@ -325,6 +328,7 @@ def main():
                             total += targets.size(0)
 
                         print("Test error rate on CIFAR-10-C with " + corruption + " : %.4f | time : %.2fs"%(error/total, time.time() - t))
+        epoch += 1
 
 if __name__=="__main__":
     main()
