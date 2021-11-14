@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-10 21:59:29
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-15 11:40:23
+LastEditTime: 2021-11-13 19:43:28
 '''
 import os
 import numpy as np
@@ -26,7 +26,7 @@ def generate_examples(data_dir='../data', corruption=None, severity=3):
     return images[:200] / 255.
 
 imag = []
-for alpha in [0.1, 0.5, 1, 2, 3]:
+for alpha in [0.5, 1, 2, 3]:
     for i in range(1,17):
         images = generate_examples(corruption=str(i)+"_"+str(alpha))
         imag.append(images)
