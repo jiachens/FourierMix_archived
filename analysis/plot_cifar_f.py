@@ -27,7 +27,7 @@ def generate_examples(data_dir='../data', corruption=None, severity=3):
 
 imag = []
 for alpha in [0.5, 1, 2, 3]:
-    for i in range(1,17):
+    for i in range(1,17,2):
         images = generate_examples(corruption=str(i)+"_"+str(alpha))
         imag.append(images)
 
