@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-22 02:16:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-10 17:42:45
+LastEditTime: 2021-11-14 21:54:07
 '''
 import os
 import re
@@ -25,8 +25,8 @@ for alpha in [0.5,1,2,3]:
             for sev in sevs:
                 f = open(os.path.join('../test/cifar100-f-new', name[j] ,str(i) + '_' + str(alpha) + '_' + sev + '.out'))
                 lines = f.readlines()
-                print(name[j],i,alpha,sev)
-                print(lines[-2])
+                # print(name[j],i,alpha,sev)
+                # print(lines[-2])
                 c_r += float(lines[-2].split(':')[-1].strip())
                 f.close()
             y[j].append(c_r/len(sevs))
@@ -54,12 +54,13 @@ for alpha in [0.5,1,2,3]:
     l5=plt.plot(x,y[5], marker='^',label='+FourierMix+JSD',markersize=12,lw=3,color='#FF8066')
     l6=plt.plot(x,y[6],marker='^', label='+FourierMix+HCR',markersize=12,lw=3,color='#4E8397')
 
-
+    for i in range(len(y)):
+        print(name[i],np.mean(y[i]))
 
     plt.xlabel('Center Frequency $f_c$',fontsize=25,)
     plt.ylabel('Average Certified Radius (ACR)',fontsize=25,)
     # plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
-    plt.legend(fontsize=20,loc=4)
+    # plt.legend(fontsize=20,loc=4)
 
     plt.xticks(np.linspace(1,16,num=16),fontsize=25)#, color="red", rotation=45)
     plt.yticks(np.linspace(0,1,21),fontsize=25)#, color="red", rotation=45)
