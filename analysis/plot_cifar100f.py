@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-10-22 02:16:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-14 21:54:07
+LastEditTime: 2021-11-14 21:59:22
 '''
 import os
 import re
@@ -56,7 +56,8 @@ for alpha in [0.5,1,2,3]:
 
     for i in range(len(y)):
         print(name[i],np.mean(y[i]))
-
+    
+    print('\n')
     plt.xlabel('Center Frequency $f_c$',fontsize=25,)
     plt.ylabel('Average Certified Radius (ACR)',fontsize=25,)
     # plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
