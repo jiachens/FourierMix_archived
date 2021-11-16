@@ -61,7 +61,7 @@ for alpha in [0.5, 1, 2, 3]:
     plt.xlabel('Center Frequency $f_c$',fontsize=25,)
     plt.ylabel('Average Certified Radius (ACR)',fontsize=25,)
     # plt.title(r'$\alpha$='+str(alpha),fontsize=20,)  
-    plt.legend(fontsize=25,loc=4,ncol=1)
+    # plt.legend(fontsize=25,loc=4,ncol=1)
 
     plt.xticks(np.linspace(1,16,num=16),fontsize=25)#, color="red", rotation=45)
     plt.yticks(np.linspace(0,1,21),fontsize=25)#, color="red", rotation=45)
