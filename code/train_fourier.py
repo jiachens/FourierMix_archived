@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-10-13 16:29:20
+LastEditTime: 2021-11-22 20:50:04
 '''
 import time
 # import setGPU
@@ -181,13 +181,13 @@ def main():
 
             if js_loss and not new_loss:
                 if i == 0:
-                    test_img = torchvision.utils.make_grid(images[1], nrow = 8)
+                    test_img = torchvision.utils.make_grid(images[1], nrow = 16)
                     torchvision.utils.save_image(
-                            test_img, "./test/fourier/test_3.png", nrow = 8
+                            test_img, "./test/fourier/test_3.png", nrow = 16
                         )
-                    test_img = torchvision.utils.make_grid(images[0], nrow = 8)
+                    test_img = torchvision.utils.make_grid(images[0], nrow = 16)
                     torchvision.utils.save_image(
-                            test_img, "./test/fourier/orig_3.png", nrow = 8
+                            test_img, "./test/fourier/orig_3.png", nrow = 16
                         )
                 bs = images[0].size(0)
                 images_cat = torch.cat(images, dim = 0).to(device) # [3 * batch, 3, 32, 32]
