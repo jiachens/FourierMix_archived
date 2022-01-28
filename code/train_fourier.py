@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-22 20:50:04
+LastEditTime: 2022-01-28 11:39:40
 '''
 import time
 # import setGPU
@@ -236,6 +236,7 @@ def main():
 
         if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
             torch.save({
+                "arch": args.arch,
                 "epoch": epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
