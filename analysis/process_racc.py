@@ -27,7 +27,7 @@ def calculate(corruptions,dir):
             # error = float(f.readlines()[-1].split(' ')[-2].split('=')[-1])
             # total_error += error
             for line in f.readlines()[1:]:
-                line = line.split(' ')
+                line = line.split('\t')
                 print(line)
                 if len(line) == 6:
                     total += 1
