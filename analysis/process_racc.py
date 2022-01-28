@@ -3,11 +3,11 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 16:21:40
+LastEditTime: 2022-01-28 16:38:56
 '''
 import os
 
-MODEL = ['cifar10_fourier_consistency_lbd2_40_0.25_0.25']
+MODEL = ['resnet_18_rebuttal']
 COR_H = ['gaussian_noise', 'shot_noise', 'impulse_noise', 'pixelate', 'jpeg_compression']
 COR_M = [ 'defocus_blur', 'frosted_glass_blur', 'motion_blur', 'zoom_blur', 'elastic']
 COR_L = ['contrast','fog','snow','frost','brightness']
@@ -39,15 +39,15 @@ def calculate(corruptions,dir):
 def process(data_dir='./test/'):
     for model in MODEL:
         print("evaluating " + model + " ......")
-        # _dir = os.path.join(data_dir, model)
-        # print("Clean RACC :" )
-        # print(calculate(CLEAN,os.path.join(data_dir,'cifar10',model)))
-        print("High Frequency RACC :" )
-        print(calculate(COR_H,os.path.join(data_dir,'cifar10-c',model)))
-        print("Mid Frequency RACC :" )
-        print(calculate(COR_M,os.path.join(data_dir,'cifar10-c',model)))
-        print("Low Frequency RACC :" )
-        print(calculate(COR_L,os.path.join(data_dir,'cifar10-c',model)))
+        _dir = os.path.join(data_dir, model)
+        print("Clean RACC :" )
+        print(calculate(CLEAN,os.path.join(data_dir,'cifar10',model)))
+        # print("High Frequency RACC :" )
+        # print(calculate(COR_H,os.path.join(data_dir,'cifar10-c',model)))
+        # print("Mid Frequency RACC :" )
+        # print(calculate(COR_M,os.path.join(data_dir,'cifar10-c',model)))
+        # print("Low Frequency RACC :" )
+        # print(calculate(COR_L,os.path.join(data_dir,'cifar10-c',model)))
 
 if __name__ == '__main__':
     process()
