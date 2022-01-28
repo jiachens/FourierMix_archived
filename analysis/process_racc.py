@@ -3,11 +3,11 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 16:16:48
+LastEditTime: 2022-01-28 16:21:40
 '''
 import os
 
-MODEL = ['cifar10_fourier_consistency_lbd2_40']
+MODEL = ['cifar10_fourier_consistency_lbd2_40_0.25_0.25']
 COR_H = ['gaussian_noise', 'shot_noise', 'impulse_noise', 'pixelate', 'jpeg_compression']
 COR_M = [ 'defocus_blur', 'frosted_glass_blur', 'motion_blur', 'zoom_blur', 'elastic']
 COR_L = ['contrast','fog','snow','frost','brightness']
