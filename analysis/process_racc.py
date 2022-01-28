@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 15:26:37
+LastEditTime: 2022-01-28 15:28:09
 '''
 import os
 
@@ -28,6 +28,7 @@ def calculate(corruptions,dir):
             # total_error += error
             for line in f.readlines()[1:]:
                 line = line.split(' ')
+                print(line)
                 if len(line) == 6:
                     total += 1
                     if line[4] == '1' and float(line[3]) > eps:
