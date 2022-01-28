@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 16:46:17
+LastEditTime: 2022-01-28 16:47:45
 '''
 import os
 import argparse
@@ -20,7 +20,7 @@ COR_L = ['contrast','fog','snow','frost','brightness']
 CLEAN = ['cifar']
 SEV = ['1','2','3','4','5']
 
-def calculate(corruptions,dir,clean):
+def calculate(corruptions,dir,clean=False):
 
     total = 0
     total_correct = 0
