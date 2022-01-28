@@ -3,11 +3,11 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 15:29:13
+LastEditTime: 2022-01-28 15:31:04
 '''
 import os
 
-MODEL = ['half_ga_0.25_0.25']
+MODEL = ['test_fourier_half_ga_13_0.25_0.25']
 COR_H = ['gaussian_noise', 'shot_noise', 'impulse_noise', 'pixelate', 'jpeg_compression']
 COR_M = [ 'defocus_blur', 'frosted_glass_blur', 'motion_blur', 'zoom_blur', 'elastic']
 COR_L = ['contrast','fog','snow','frost','brightness']
