@@ -102,12 +102,12 @@ def main():
     criterion = CrossEntropyLoss().cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
     
-    if args.arch in ['cifar_resnet110']:
+    if args.arch in ['cifar_resnet110','resnet_18']:
         scheduler = MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
     else:
         scheduler = StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
 
-    if args.arch in ['cifar_resnet110']:
+    if args.arch in ['cifar_resnet110','resnet_18']:
         # for resnet110 original paper uses lr=0.01 for first 400 minibatches for warm-up
         # then switch back. In this setup it will correspond for first epoch.
         for param_group in optimizer.param_groups:
