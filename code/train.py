@@ -126,13 +126,13 @@ def main():
             scheduler.get_lr()[0], train_loss, train_acc, test_loss, test_acc))
         
         scheduler.step(epoch)
-        if rank == 0:
-            torch.save({
-                'epoch': epoch + 1,
-                'arch': args.arch,
-                'state_dict': model.state_dict(),
-                'optimizer': optimizer.state_dict(),
-            }, os.path.join(args.outdir, 'checkpoint.pth.tar'))
+        # if rank == 0:
+        torch.save({
+            'epoch': epoch + 1,
+            'arch': args.arch,
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+        }, os.path.join(args.outdir, 'checkpoint.pth.tar'))
 
 
 def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Optimizer, epoch: int, noise_sd: float):
