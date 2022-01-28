@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 16:44:06
+LastEditTime: 2022-01-28 16:46:17
 '''
 import os
 import argparse
@@ -17,7 +17,7 @@ args = parser.parse_args()
 COR_H = ['gaussian_noise', 'shot_noise', 'impulse_noise', 'pixelate', 'jpeg_compression']
 COR_M = [ 'defocus_blur', 'frosted_glass_blur', 'motion_blur', 'zoom_blur', 'elastic']
 COR_L = ['contrast','fog','snow','frost','brightness']
-CLEAN = ['cifar10']
+CLEAN = ['cifar']
 SEV = ['1','2','3','4','5']
 
 def calculate(corruptions,dir,clean):
