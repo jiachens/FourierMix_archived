@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-27 00:00:03
+LastEditTime: 2022-01-29 14:49:14
 '''
 import torch
 import fourier_basis
@@ -81,13 +81,9 @@ def augment_single(x_orig):
     x_orig_f_ang = np.angle(x_orig_f) 
     flag = np.sign(np.random.uniform() - 0.5)
     x_orig_f_abs *= 1. + flag * np.random.rand(*x_orig_f_abs.shape) * c 
-    # x_orig_f_abs += (np.random.uniform(*x_orig_f_abs.shape) - 0.5) * f * MASK 
     x_orig_f_ang += (np.random.rand(*x_orig_f_ang.shape) - 0.5) * np.pi / d
     x_orig_f.real = x_orig_f_abs * np.cos(x_orig_f_ang)
     x_orig_f.imag = x_orig_f_abs * np.sin(x_orig_f_ang)
-    # row = np.random.choice(32,e,replace=True)
-    # col = np.random.choice(32,e,replace=True)
-    # x_orig_f[:,row,col] = 0
     x_restored_1 = np.abs(np.fft.ifft2(np.fft.ifftshift(x_orig_f)))
     x_restored_1 = torch.FloatTensor(x_restored_1) 
     ###################################
