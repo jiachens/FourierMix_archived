@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-07 15:20:41
 LastEditors: Jiachen Sun
-LastEditTime: 2021-11-09 14:58:06
+LastEditTime: 2022-01-29 00:23:15
 '''
 import time
 import matplotlib.pyplot as plt
@@ -90,7 +90,7 @@ def main():
     alpha = 1.
     js_loss = True
     batch_size = args.batch
-    new_loss = True
+    new_loss = False
 
     if args.gpu:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
