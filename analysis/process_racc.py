@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-29 01:15:04
+LastEditTime: 2022-01-29 01:21:28
 '''
 import os
 import argparse
@@ -19,7 +19,7 @@ COR_M = [ 'defocus_blur', 'frosted_glass_blur', 'motion_blur', 'zoom_blur', 'ela
 COR_L = ['contrast','fog','snow','frost','brightness']
 CLEAN = ['cifar']
 SEV = ['1','2','3','4','5']
-EPS = [0.25, 0.5, 0.75, 1., 1.25]
+EPS = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
 def calculate(corruptions,dir,eps,clean=False):
 
