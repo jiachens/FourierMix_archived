@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-29 01:11:11
+LastEditTime: 2022-01-29 01:15:04
 '''
 import os
 import argparse
@@ -72,15 +72,15 @@ def process(data_dir='./test/'):
         res_l = []
         print("High Frequency RACC :" )
         for eps in EPS:
-            res_h.append(calculate(COR_H,os.path.join(data_dir,'cifar10-c',args.model)))
+            res_h.append(calculate(COR_H,os.path.join(data_dir,'cifar10-c',args.model),eps))
         print(res_h)
         print("Mid Frequency RACC :" )
         for eps in EPS:
-            res_m.append(calculate(COR_M,os.path.join(data_dir,'cifar10-c',args.model)))
+            res_m.append(calculate(COR_M,os.path.join(data_dir,'cifar10-c',args.model),eps))
         print(res_m)
         print("Low Frequency RACC :" )
         for eps in EPS:
-            res_l.append(calculate(COR_L,os.path.join(data_dir,'cifar10-c',args.model)))
+            res_l.append(calculate(COR_L,os.path.join(data_dir,'cifar10-c',args.model),eps))
         print(res_l)
 
 if __name__ == '__main__':
