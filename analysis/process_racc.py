@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-29 18:27:23
+LastEditTime: 2022-01-29 18:29:23
 '''
 import os
 import argparse
@@ -31,7 +31,7 @@ def calculate2(corruptions,dir,clean=False):
             f = open(output,'r')
             # error = float(f.readlines()[-1].split(' ')[-2].split('=')[-1])
             # total_error += error
-            acr = float(f.readlines()[-2].split(':')[-1].stripe())
+            acr = float(f.readlines()[-2].split(':')[-1].strip())
             return acr
         else:
             for sev in SEV:
@@ -40,7 +40,7 @@ def calculate2(corruptions,dir,clean=False):
                 f = open(output,'r')
                 # error = float(f.readlines()[-1].split(' ')[-2].split('=')[-1])
                 # total_error += error
-                acr += float(f.readlines()[-2].split(':')[-1].stripe())
+                acr += float(f.readlines()[-2].split(':')[-1].strip())
 
     return acr / (len(corruptions) * len(SEV))
 
