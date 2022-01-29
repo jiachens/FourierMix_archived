@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-29 14:49:14
+LastEditTime: 2022-01-29 17:58:58
 '''
 import torch
 import fourier_basis
@@ -119,7 +119,7 @@ def augment_single(x_orig):
     severity_4 = random.choice(range(1,9))
     severity_5 = random.choice(range(1,9))
 
-    d = [0,0,0,0,2.5,5,7.5,10][severity_3-1]
+    d = [0,0,0,0,5,10,15,20][severity_3-1]
     t = [None,None,None,None,(1/24.,1/24.),(1/12.,1/12.),(1/8.,1/8.),(1/6.,1/6.)][severity_4-1]
     s = [None,None,None,None,0.03,0.07,0.11,0.15][severity_5-1]
     
