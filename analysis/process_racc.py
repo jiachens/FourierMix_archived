@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2022-01-28 12:27:41
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 16:47:45
+LastEditTime: 2022-01-29 01:11:11
 '''
 import os
 import argparse
@@ -19,12 +19,12 @@ COR_M = [ 'defocus_blur', 'frosted_glass_blur', 'motion_blur', 'zoom_blur', 'ela
 COR_L = ['contrast','fog','snow','frost','brightness']
 CLEAN = ['cifar']
 SEV = ['1','2','3','4','5']
+EPS = [0.25, 0.5, 0.75, 1., 1.25]
 
-def calculate(corruptions,dir,clean=False):
+def calculate(corruptions,dir,eps,clean=False):
 
     total = 0
     total_correct = 0
-    eps = 0.25
     for cor in corruptions:
         if clean:
             file_name = cor + '.out'
@@ -62,14 +62,26 @@ def process(data_dir='./test/'):
     _dir = os.path.join(data_dir, args.model)
     if args.clean:
         print("Clean RACC :" )
-        print(calculate(CLEAN,os.path.join(data_dir,'cifar10',args.model),True))
+        res = []
+        for eps in EPS:
+            res.append(calculate(CLEAN,os.path.join(data_dir,'cifar10',args.model),eps,True))
+        print(res)
     else:
+        res_h = []
+        res_m = []
+        res_l = []
         print("High Frequency RACC :" )
-        print(calculate(COR_H,os.path.join(data_dir,'cifar10-c',args.model)))
+        for eps in EPS:
+            res_h.append(calculate(COR_H,os.path.join(data_dir,'cifar10-c',args.model)))
+        print(res_h)
         print("Mid Frequency RACC :" )
-        print(calculate(COR_M,os.path.join(data_dir,'cifar10-c',args.model)))
+        for eps in EPS:
+            res_m.append(calculate(COR_M,os.path.join(data_dir,'cifar10-c',args.model)))
+        print(res_m)
         print("Low Frequency RACC :" )
-        print(calculate(COR_L,os.path.join(data_dir,'cifar10-c',args.model)))
+        for eps in EPS:
+            res_l.append(calculate(COR_L,os.path.join(data_dir,'cifar10-c',args.model)))
+        print(res_l)
 
 if __name__ == '__main__':
     process()
