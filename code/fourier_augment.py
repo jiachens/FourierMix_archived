@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:37:09
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-29 19:23:19
+LastEditTime: 2022-01-30 17:44:41
 '''
 import torch
 import fourier_basis
@@ -15,7 +15,7 @@ from torch.distributions.beta import Beta
 import time
 
 pre = torchvision.transforms.Compose([
-                # torchvision.transforms.RandomCrop(32, padding=4),
+                torchvision.transforms.RandomCrop(32, padding=4),
                 torchvision.transforms.RandomHorizontalFlip()
             ])
 
