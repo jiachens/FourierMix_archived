@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-06-09 00:21:36
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 00:36:12
+LastEditTime: 2022-01-30 14:56:34
 '''
 import torch
 from torchvision.models.resnet import resnet50
@@ -13,11 +13,12 @@ from archs.dncnn import DnCNN
 from datasets import get_normalize_layer,get_input_center_layer
 from torch.nn.functional import interpolate
 from archs.resnet_18 import ResNet18
+from archs.resnet_dubin import ResNet18_DuBIN
 
 # resnet50 - the classic ResNet-50, sized for ImageNet
 # cifar_resnet20 - a 20-layer residual network sized for CIFAR
 # cifar_resnet110 - a 110-layer residual network sized for CIFAR
-ARCHITECTURES = ["resnet50", "cifar_resnet20", "cifar_resnet110","cifar_resnet20_4","resnet_18"]
+ARCHITECTURES = ["resnet50", "cifar_resnet20", "cifar_resnet110","cifar_resnet20_4","resnet_18","resnet_dubin"]
 
 DENOISERS_ARCHITECTURES = ["cifar_dncnn", "cifar_dncnn_wide"
                         ]
@@ -57,6 +58,9 @@ def get_architecture(arch: str, dataset: str, normalize :bool = True,local_rank=
         return model
     elif arch == "resnet_18":
         model = ResNet18().cuda()
+        return model
+    elif arch == "resnet_dubin":
+        model = ResNet18_DuBIN().cuda()
         return model
     if normalize:
         normalize_layer = get_input_center_layer(dataset)

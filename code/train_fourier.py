@@ -3,7 +3,7 @@ Description:
 Autor: Jiachen Sun
 Date: 2021-07-30 16:33:35
 LastEditors: Jiachen Sun
-LastEditTime: 2022-01-28 11:39:40
+LastEditTime: 2022-01-30 14:57:03
 '''
 import time
 # import setGPU
@@ -126,7 +126,7 @@ def main():
 
     # 3. Optimizer & Scheduler
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    if args.arch in ['cifar_resnet110']:
+    if args.arch in ['cifar_resnet110','resnet_18','resnet_dubin']:
         scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,milestones=[100, 150],gamma=args.gamma)
     else:
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.gamma)
@@ -241,7 +241,7 @@ def main():
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'losses': losses
-            }, args.outdir+"/%d.pt"%(epoch + 1))
+            }, args.outdir+"/%d.pth.tar"%(epoch + 1))
 
             model.eval()
             with torch.no_grad():
